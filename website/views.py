@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import TemplateView, UpdateView
 
+from product.models import Price
 from website import settings
 
 logger = logging.getLogger(__name__)
@@ -43,3 +44,11 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
 
     def get_success_url(self):
         return '/userprofile/' + str(self.request.user.id) + '/'
+
+class MainView(TemplateView):
+    template_name = 'website/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['contact_email'] = Price.objects.all()[0]
+        return context
