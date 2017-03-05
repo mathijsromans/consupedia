@@ -15,6 +15,7 @@ class ProductNameInline(admin.TabularInline):
 
 
 class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price')
     inlines = [
         PriceInline,
         ProductNameInline,

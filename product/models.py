@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=300)
 
     @property
     def name(self):
@@ -32,8 +31,13 @@ class ProductName(Revision):
     name = models.CharField(max_length=300)
     product = models.ForeignKey(Product)
 
+    def __str__(self):
+        return self.name
+
 
 class Price(Revision):
     cent = models.IntegerField(default=0)
     product = models.ForeignKey(Product)
 
+    def __str__(self):
+        return str(self.cent)
