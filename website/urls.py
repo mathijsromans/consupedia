@@ -4,6 +4,8 @@ from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 
+import product.views
+
 from website.views import ContactView
 from website.views import UserProfileView
 from website.views import MainView
@@ -13,6 +15,9 @@ urlpatterns = [
     url(r'^about/$', TemplateView.as_view(template_name="website/about.html"), name='about'),
     url(r'^contact/$', ContactView.as_view(), name='contact'),
     url(r'^contribute/$', TemplateView.as_view(template_name="website/contribute.html"), name='contribute'),
+
+    url(r'^products/$', product.views.ProductsView.as_view(), name='products'),
+    url(r'^product/(?P<id>[0-9]+)/$', product.views.ProductView.as_view(), name='product'),
 
     url(r'^userprofile/(?P<pk>[0-9]+)/$', login_required(UserProfileView.as_view()), name='userprofile'),
 
