@@ -26,6 +26,9 @@ class Revision(models.Model):
     class Meta:
         ordering = ['-datetime_created']
 
+    def __str__(self):
+        return self.user.username + ' ' + str(self.datetime_created)
+
 
 class ProductName(Revision):
     name = models.CharField(max_length=300)
