@@ -1,39 +1,17 @@
-# django-project-template
-[![Build Status](https://travis-ci.org/bartromgens/django-project-template.svg?branch=master)](https://travis-ci.org/bartromgens/django-project-template) [![Coverage Status](https://coveralls.io/repos/github/bartromgens/django-project-template/badge.svg?branch=master)](https://coveralls.io/github/bartromgens/django-project-template?branch=master) [![Dependency Status](https://gemnasium.com/badges/github.com/bartromgens/django-project-template.svg)](https://gemnasium.com/github.com/bartromgens/django-project-template)
+# Consupedia 
 
-django-project-template is an example Django + bootstrap project with a basic project configuration that I often use. 
+Consupedia is based on a django project template at https://github.com/bartromgens/django-project-template.
+
+These instrutions provide you with a working system where you can test consupedia yourself.
 
 Requires Python 3.4+ and Django 1.10+
-
-#### Configuration
-
-- Django 1.10 and Bootstrap 3 
-- Example Django app, with empty views.py and models.py
-- Base page template with,
-  - Top navbar with menu, sign up/log in, and user profile
-  - Page content
-  - Footer
-- Home, About, Contact, Contribute pages
-- Sign up/log in (by username or email)
-- Reset/change password
-- Update userprofile
-- Basic tests
-- Logging
-- Project version as global context variable
-- Daily backups
-- travis-ci config
-- coveralls config
-- django-debug-toolbar
-
-#### TODO
-- Create/load demo data
 
 ## Installation (Linux)
 
 Get the code and enter the project directory,
 ```
-$ git clone https://github.com/bartromgens/django-project-template.git
-$ cd django-project-template
+$ git clone https://github.com/mathijsromans/consupedia.git
+$ cd consupedia
 ```
 Install dependencies that you will need
 ```
