@@ -10,7 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 INSTALLED_APPS = [
     'website',
-    'exampleapp',
+    'product',
     'bootstrap3',
     'registration',
     'dbbackup',
@@ -171,7 +171,7 @@ LOGGING = {
             'propagate': True,
             'level': 'ERROR',
         },
-        'exampleapp': {
+        'product': {
             'handlers': ['file_debug', 'file_error', 'console'],
             'propagate': True,
             'level': 'DEBUG',

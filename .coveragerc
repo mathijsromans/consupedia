@@ -1,5 +1,5 @@
 [run]
-source = website, exampleapp
+source = website, product
 
 [report]
 omit =
