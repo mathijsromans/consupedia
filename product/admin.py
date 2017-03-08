@@ -1,16 +1,17 @@
 from django.contrib import admin
 
 from product.models import Product
+from product.models import Revision
 from product.models import ProductName, Price
 
 
 class PriceInline(admin.TabularInline):
-    max_num = 1
+    extra = 1
     model = Price
 
 
 class ProductNameInline(admin.TabularInline):
-    max_num = 1
+    extra = 1
     model = ProductName
 
 
@@ -23,3 +24,4 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Product, ProductAdmin)
+admin.site.register(Revision)
