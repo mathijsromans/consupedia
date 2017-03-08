@@ -8,8 +8,9 @@ from website.views import ContactView
 from website.views import UserProfileView
 from website.views import MainView
 
+# defines what view will be used to render a certain url, the views are defined in views.py
 urlpatterns = [
-    url(r'^$', MainView.as_view(template_name='website/index.html'), name='homepage'),
+    url(r'^$', MainView.as_view(), name='homepage'),
     url(r'^about/$', TemplateView.as_view(template_name="website/about.html"), name='about'),
     url(r'^contact/$', ContactView.as_view(), name='contact'),
     url(r'^contribute/$', TemplateView.as_view(template_name="website/contribute.html"), name='contribute'),

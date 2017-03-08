@@ -5,11 +5,21 @@ from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import TemplateView, UpdateView
 
-from product.models import Price
+from product.models import Price, Product
 from website import settings
 
 logger = logging.getLogger(__name__)
 
+# This class defines a view for a certain URL
+class MainView(TemplateView):
+    template_name = 'website/index.html' # the template that will be used to render the page (in this case website/templates/website/index.html)
+
+    # Specifies variables that can be used in the template
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['recommended_product'] = 'tomatenpuree'
+        context['all_products'] = Product.objects.all()
+        return context
 
 class ContactView(TemplateView):
     template_name = 'website/contact.html'
@@ -45,10 +55,3 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
     def get_success_url(self):
         return '/userprofile/' + str(self.request.user.id) + '/'
 
-class MainView(TemplateView):
-    template_name = 'website/index.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['contact_email'] = Price.objects.all()[0]
-        return context

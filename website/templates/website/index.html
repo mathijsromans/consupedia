@@ -12,7 +12,12 @@
 
   <div class="row">
     <div class="col-sm-12" align="left">
-      <p>{{ contact_email.product.name }}!!!!!!! </p>
+      <p>The recommended product is: {{ recommended_product }}!!!!!!! </p>
+        <table>
+      {% for e in all_products %}
+        <tr><td> {{ e.name }} </td><td> {{ e.price }} </td></tr>
+      {% endfor %}
+      </table>
     </div>
   </div>
 
