@@ -6,8 +6,9 @@ These instrutions provide you with a working system where you can test consupedi
 
 Requires Python 3.4+ and Django 1.10+
 
-## Installation (Linux)
+## Installation
 
+#### Linux
 Get the code and enter the project directory,
 ```
 $ git clone https://github.com/mathijsromans/consupedia.git
@@ -21,7 +22,7 @@ or
 ```
 $ pip install virtualenv
 ```
-Install via the install script (creates a Python 3 virtualenv with dependencies, a local_settings.py file, and a sqlite database),
+Run the install script (creates a Python 3 virtualenv with dependencies, a local_settings.py file, and a sqlite database),
 ```
 $ ./install.sh
 ```
@@ -29,6 +30,25 @@ $ ./install.sh
 Activate the virtualenv (always do this before working on the project),
 ```
 $ source env/bin/activate
+```
+
+#### Windows
+
+Install [git](https://git-scm.com/download/win) and [Python 3](https://www.python.org/downloads/windows/). 
+
+Get the code and enter the project directory,
+```
+> git clone https://github.com/mathijsromans/consupedia.git
+> cd consupedia
+```
+Run the install script (creates a Python 3 virtualenv with dependencies, a local_settings.py file, and a sqlite database),
+```
+> install.bat
+```
+
+Activate the virtualenv (always do this before working on the project),
+```
+> env\Scripts\activate.bat
 ```
 
 #### Create a superuser (optional)
@@ -54,7 +74,7 @@ These are not under version control and you are free change these for your perso
 This is also the place for secret settings. An example, on which this file is based, is found in `website/local_settings_example.py`.
 
 #### Daily backups (cronjob)
-This project has a django-cronjob that makes daily backups of the raw database (includes everyting), and a json dump of the data.
+This project has a django-cronjob that makes daily backups of the raw database (includes everything), and a json dump of the data.
 These are defined in `website/cron.py`. The location of the backup files is defined in `website/local_settings.py`. 
 Create the following cronjob (Linux) to kickstart the `django-cron` jobs,
 ```
@@ -62,7 +82,9 @@ $ crontab -e
 */5 * * * * source /home/<username>/.bashrc && source /home/<path-to-project>/env/bin/activate && python /home/<path-to-project>/website/manage.py runcrons > /home/<path-to-project>/log/cronjob.log
 ```
 
-## Testing
+## Development
+
+#### Testing
 
 Run all tests,
 ```
@@ -74,7 +96,7 @@ Run specific tests (example),
 $ python manage.py test website.test.TestCaseAdminLogin
 ```
 
-## Logging
+#### Logging
 There are 3 log files (`debug.log`, `error.log`, `django.log`) available, with different log levels and for different applications.
 The log files are found in the `log` directory of the project.
 The log statements contain the time, log level, file, class, function name and line. 
@@ -84,11 +106,11 @@ The log something, create a logger at the top of you python file,
 import logging
 logger = logging.getLogger(__name__)
 ```
-then create a log statement as follows,
+then create a log statement,
 ```python
 logger.debug('an info log message')
 logger.info('an info log message')
 logger.warning('a warning log message')
-logger.error('a error log message')
+logger.error('an error log message')
 logger.exception(exception_object)
 ```
