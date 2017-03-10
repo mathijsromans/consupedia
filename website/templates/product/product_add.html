@@ -1,0 +1,40 @@
+{% extends "website/base.html" %}
+
+{% load bootstrap3 %}
+
+{% block title %}Add product {{ block.super }}{% endblock %}
+
+{% block content %}
+
+<div class="row" align="center">
+  <h3>Add product</h3>
+</div>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <div class="well well-sm">
+
+      <form action="" method="post">
+        {% csrf_token %}
+
+        <div class="row">
+          <div class="col-sm-6">
+            {% bootstrap_field form.name %}
+          </div>
+          <div class="col-sm-6">
+            {% bootstrap_field form.price %}
+          </div>
+        </div>
+
+        {% buttons %}
+          <button type="submit" class="btn btn-primary">
+            Create
+          </button>
+        {% endbuttons %}
+      </form>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

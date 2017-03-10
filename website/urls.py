@@ -18,7 +18,9 @@ urlpatterns = [
     url(r'^contribute/$', TemplateView.as_view(template_name="website/contribute.html"), name='contribute'),
 
     url(r'^products/$', product.views.ProductsView.as_view(), name='products'),
-    url(r'^product/(?P<id>[0-9]+)/$', product.views.ProductView.as_view(), name='product'),
+    url(r'^product/add/$', product.views.ProductCreateView.as_view(), name='product-add'),
+    url(r'^product/edit/(?P<product_id>[0-9]+)/$', product.views.ProductEditView.as_view(), name='product-edit'),
+    url(r'^product/(?P<product_id>[0-9]+)/$', product.views.ProductView.as_view(), name='product'),
 
     url(r'^userprofile/(?P<pk>[0-9]+)/$', login_required(UserProfileView.as_view()), name='userprofile'),
 
