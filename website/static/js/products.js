@@ -35,4 +35,6 @@ function changeRating(e) {
 	rater.addClass('csp-user-rated');
 
 	setRating(rater, rating);
+	
+	// HIER MOET DE CODE OM DE RATING OP TE SLAAN 
 }
