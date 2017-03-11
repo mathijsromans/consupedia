@@ -12,8 +12,9 @@ class rating_manager():
         return ratings['rating__avg']
 
     @staticmethod
-    def get_userrating(user):
-        return 1
+    def get_userrating(user, product):
+        rating = Rating.objects.filter(user=user, product=product)
+        return rating
 
     @staticmethod
     def set_rating(user, product, rating):

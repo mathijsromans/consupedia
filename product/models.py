@@ -38,8 +38,8 @@ class UserPreferences(models.Model):
 
 
 class Rating(models.Model):
-    user = models.ForeignKey(User)
-    product = models.ForeignKey(Product)
+    user = models.ForeignKey(User, null=False)
+    product = models.ForeignKey(Product, null=False)
     rating = models.IntegerField(null=False)
 
     class Meta:
