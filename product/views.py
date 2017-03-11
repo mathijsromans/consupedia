@@ -74,15 +74,19 @@ class UserPreferenceEditView(FormView):
 
     def get_initial(self):
         return {'price_weight': self.get_my_preference().price_weight,
-                'sustainability_weight': self.get_my_preference().sustainability_weight,
-                'quality_weight': self.get_my_preference().quality_weight}
+                'environment_weight': self.get_my_preference().environment_weight,
+                'social_weight': self.get_my_preference().social_weight,
+                'animals_weight': self.get_my_preference().animals_weight,
+                'personal_health_weight': self.get_my_preference().personal_health_weight}
 
     @transaction.atomic
     def form_valid(self, form):
         userPreference = self.get_my_preference()
         userPreference.price_weight = form.cleaned_data['price_weight']
-        userPreference.sustainability_weight = form.cleaned_data['sustainability_weight']
-        userPreference.quality_weight = form.cleaned_data['quality_weight']
+        userPreference.environment_weight = form.cleaned_data['environment_weight']
+        userPreference.social_weight = form.cleaned_data['social_weight']
+        userPreference.animals_weight = form.cleaned_data['animals_weight']
+        userPreference.personal_health_weight = form.cleaned_data['personal_health_weight']
         userPreference.save()
         return super().form_valid(form)
 

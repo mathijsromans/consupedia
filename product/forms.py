@@ -12,6 +12,8 @@ class ProductForm(forms.Form):
     price = forms.IntegerField(label='Price (cents)',validators=[validate_price])
 
 class UserPreferenceForm(forms.Form):
-    price_weight = forms.IntegerField(label='Value1')
-    sustainability_weight = forms.IntegerField(label='Value2')
-    quality_weight = forms.IntegerField(label='Value3')
+    price_weight = forms.IntegerField(label='Prijs')
+    environment_weight = forms.IntegerField(label='Milieu')
+    social_weight = forms.IntegerField(label='Mensenrechten')
+    animals_weight = forms.IntegerField(label='Dieren')
+    personal_health_weight = forms.IntegerField(label='Gezond')

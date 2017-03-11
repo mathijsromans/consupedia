@@ -19,8 +19,10 @@ class Product(models.Model):
 class UserPreferences(models.Model):
     user = models.ForeignKey(User)
     price_weight = models.IntegerField(default=0)
-    sustainability_weight = models.IntegerField(default=0)
-    quality_weight = models.IntegerField(default=0)
+    environment_weight = models.IntegerField(default=0)
+    social_weight = models.IntegerField(default=0)
+    animals_weight = models.IntegerField(default=0)
+    personal_health_weight = models.IntegerField(default=0)
 
     def __str__(self):
         return 'Preferences of ' + self.user.username
