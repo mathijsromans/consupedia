@@ -22,6 +22,7 @@ class Product(models.Model):
     price = models.IntegerField(null=True)
     category = models.ForeignKey(Category, null=True)
     scores = models.OneToOneField(Score, null=True)
+    thumb_url = models.CharField(max_length=256, null=True)
     product_score = 0
     product_score_details = ''  
 

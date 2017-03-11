@@ -4,6 +4,7 @@ class QuestionmarkMapper:
     def map_to_product(self, product, product_dict):
         self.map_scores(product, product_dict)
         self.map_usages(product, product_dict)
+        self.map_urls(product, product_dict)
 
         product.save()
         return product
@@ -16,6 +17,12 @@ class QuestionmarkMapper:
             category, created = Category.objects.get_or_create(name=newCategory['name'])
             product.category = category
 
+    def map_urls(self, product, product_dict):
+        if 'image_urls' in product_dict:
+            urls = product_dict['image_urls']
+            for url in urls:
+                if 'thumb' in url:
+                    product.thumb_url = url['thumb']
 
     def map_scores(self, product, product_dict):
         theme_scores = product_dict["theme_scores"]

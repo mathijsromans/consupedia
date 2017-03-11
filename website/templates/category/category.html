@@ -6,7 +6,10 @@
 
 <div class="row" align="center">
   <h3>{{ category.name }}</h3>
-  <p>Het product van de dag is {{ recommended_product }}!!!!!!! </p>
+  <p>Het product van de dag is {{ product }}!!!!!!! </p>
+
+  {% include "product/product.html" %}
+
 </div>
 
 

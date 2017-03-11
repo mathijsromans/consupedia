@@ -26,7 +26,7 @@ class ProductsView(TemplateView):
 
 
 class ProductView(TemplateView):
-    template_name = 'product/product.html'
+    template_name = 'product/product_page.html'
 
     def get_context_data(self, product_id, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -43,7 +43,7 @@ class CategoryView(TemplateView):
         context['category'] = category
         if(self.request and self.request.user and self.request.user.is_authenticated()):
             up, created = UserPreferences.objects.get_or_create( user = self.request.user )
-            context['recommended_product'] = ProductChooseAlgorithm.return_product(up, category)
+            context['product'] = ProductChooseAlgorithm.return_product(up, category)
         return context
 
 

@@ -1,12 +1,12 @@
-{% extends "website/base.html" %}
-
-{% block title %}{{ product.name }} {{ block.super }}{% endblock %}
-
-{% block content %}
-
 <div class="row" align="center">
   <h3>{{ product.name }}</h3>
 </div>
+
+{% if product.thumb_url %}
+<img src="{{ product.thumb_url }}"/>
+{% else %}
+Geen plaatje beschikbaar
+{% endif %}
 
 <div class="row" align="center">
   <table class="table table-striped">
@@ -49,5 +49,3 @@
   </div>
 
 </div>
-
-{% endblock %}
