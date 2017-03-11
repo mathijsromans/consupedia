@@ -4,8 +4,17 @@
 
 {% block content %}
 
-<div class="row" align="center">
+
+<div align="center">
   <h3>Products</h3>
+</div>
+
+<div class="row">
+  <ul class="nav navbar-nav">
+    <li>
+      <a href="{% url 'product-add' %}"><strong>New</strong></a>
+    </li>
+  </ul>
 </div>
 
 <div class="row">
@@ -13,8 +22,11 @@
   {% for product in products %}
 
     <div class="col-sm-3" align="center">
-      <h4><a href="{% url 'product' product.id %}">{{ product.name }}</a></h4>
-      <p>{{ product.price }} cent</p>
+      <div class="well well-sm">
+        <h4><a href="{% url 'product' product.id %}">{{ product.name }}</a></h4>
+        <p>{{ product.price }} cent</p>
+        <a href="{% url 'product-edit' product.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
+      </div>
     </div>
 
   {% endfor %}

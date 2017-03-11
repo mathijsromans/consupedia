@@ -96,6 +96,19 @@ Run specific tests (example),
 $ python manage.py test website.test.TestCaseAdminLogin
 ```
 
+### Import/export demo data
+
+Create a json database dump,
+ ```
+$ python manage.py dumpdata --all --natural-foreign --indent 2 product auth.User auth.Group > demo_data.json
+```
+Note: this includes user data.
+
+Import a json dump,
+```
+$ python manage.py loaddata demo_data.json
+```
+
 ### Logging
 There are 3 log files (`debug.log`, `error.log`, `django.log`) available, with different log levels and for different applications.
 The log files are found in the `log` directory of the project.
