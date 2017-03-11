@@ -3,7 +3,8 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.db import transaction
 
-from .models import Product, ProductName, Price
+from .models import Product
+from .productservice import ProductService
 from .forms import ProductForm
 
 
@@ -12,7 +13,7 @@ class ProductsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['products'] = Product.objects.all()
+        context['products'] = ProductService().get_all_products();
         return context
 
 
