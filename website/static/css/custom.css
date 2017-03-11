@@ -26,13 +26,17 @@ body {
 .csp-rater {
 	font-size: 1.5em;
 	position:relative;
+	cursor:default;
+	color:#BBB;
 }
 
 .csp-global-rating {
 	color:green;
 	position:absolute;
-	z-index:1;
+	z-index:2;
 	overflow:hidden;
+	transition: width 1s;
+	white-space: nowrap;
 }
 
 .csp-rater.csp-user-rated  .csp-global-rating {
@@ -43,7 +47,7 @@ body {
 	display:none;
 }
 
-.csp-user-rating:hover i {
+.csp-user-rating:hover i, .csp-starred {
 	color:gold;
 }
 
