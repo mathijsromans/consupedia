@@ -8,6 +8,6 @@ class QMProductsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        products_json = api.search_product('pindakaas')
+        products_json = api.search_product('mais')
         context['products'] = products_json['products']
         return context
