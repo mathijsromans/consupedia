@@ -29,7 +29,7 @@ class ProductChooseAlgorithm:
                     if result > maxScore:
                         maxScore = result
                         productToReturn = product
-            return productToReturn.name + ', ' + str(result)
+                    return productToReturn.name + ', ' + str(result)
         return None
 
     @staticmethod
