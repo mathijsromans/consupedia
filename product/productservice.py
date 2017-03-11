@@ -41,6 +41,10 @@ class ProductService:
                     product.scores.animals = score["score"]
         if personal_health_score:
             product.scores.personal_health_score = personal_health_score
+
+        if product.scores:
+            product.scores.save()
+
         product.save()
         return product
 
