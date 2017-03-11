@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 
 import product.views
+import questionmark.views
 
 from website.views import ContactView
 from website.views import UserProfileView
@@ -21,6 +22,8 @@ urlpatterns = [
     url(r'^product/add/$', product.views.ProductCreateView.as_view(), name='product-add'),
     url(r'^product/edit/(?P<product_id>[0-9]+)/$', product.views.ProductEditView.as_view(), name='product-edit'),
     url(r'^product/(?P<product_id>[0-9]+)/$', product.views.ProductView.as_view(), name='product'),
+
+    url(r'^questionmark/$', questionmark.views.QMProductsView.as_view(), name='questionmark-products'),
 
     url(r'^userprofile/(?P<pk>[0-9]+)/$', login_required(UserProfileView.as_view()), name='userprofile'),
 
