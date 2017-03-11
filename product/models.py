@@ -1,8 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Category(models.Model):
     name = models.CharField(max_length=256)
+
 
 class Score(models.Model):
     environment = models.IntegerField(null=True)
@@ -29,3 +31,12 @@ class UserPreferences(models.Model):
 
     def __str__(self):
         return 'Preferences of ' + self.user.username
+
+
+class Rating(models.Model):
+    user = models.ForeignKey(User)
+    product = models.ForeignKey(Product)
+    rating = models.IntegerField(null=False)
+
+    class Meta:
+        unique_together = ('user', 'product')

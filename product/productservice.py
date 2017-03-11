@@ -1,6 +1,7 @@
 from questionmark import api
 from .models import Product, Score
 from .questionmarkmapper import QuestionmarkMapper
+from .rating import rating_manager
 
 
 class ProductService:
@@ -16,5 +17,6 @@ class ProductService:
         for product_dict in products_dict["products"]:
             product, created = Product.objects.get_or_create(name=product_dict["name"])
             product = QuestionmarkMapper().map_to_product(product, product_dict)
+            print(rating_manager.get_avarage_rating(product))
             products.append(product)
         return products
