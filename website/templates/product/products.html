@@ -1,5 +1,7 @@
 {% extends "website/base.html" %}
 
+{% load static %}
+
 {% block title %}Products {{ block.super }}{% endblock %}
 
 {% block content %}
@@ -8,7 +10,7 @@
   <h3 class="view-title">Products</h3>
 
 {% if user.is_authenticated %}
-  <section class="menu">
+  <section class="csp-menu">
     <a class="button primary" href="{% url 'product-add' %}">Nieuw</a>
   </section>
 {% endif %}
@@ -17,16 +19,26 @@
 
   {% for product in products %}
 
-    <div class="product card">
+    <div class="csp-product csp-card">
         <h4><a href="{% url 'product' product.id %}">{{ product.name }}</a></h4>
         <p>{{ product.price }} cent</p>
+		<section class="csp-rater csp-user-rated" data-global-rating="2.2" data-user-rating="">
+			<div class="csp-global-rating">
+			<i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
+			</div>
+			<div class="csp-user-rating">
+			<i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
+			</div>			
+		</section>
 {% if user.is_authenticated %}
-		<a class='edit btn' href="{% url 'product-edit' product.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
+		<div>
+			<a class='csp-edit csp-btn' href="{% url 'product-edit' product.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
+		</div>
 {% endif %}
     </div>
 
   {% endfor %}
 
 </section>
-
+<script src="{% static 'js/products.js' %}" type="text/javascript"></script>
 {% endblock %}
