@@ -20,7 +20,9 @@
     <div class="product card">
         <h4><a href="{% url 'product' product.id %}">{{ product.name }}</a></h4>
         <p>{{ product.price }} cent</p>
+{% if user.is_authenticated %}
 		<a class='edit btn' href="{% url 'product-edit' product.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
+{% endif %}
     </div>
 
   {% endfor %}
