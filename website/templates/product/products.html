@@ -7,19 +7,22 @@
 
   <h3 class="view-title">Products</h3>
 
+{% if user.is_authenticated %}
   <section class="menu">
     <a class="button primary" href="{% url 'product-add' %}">Nieuw</a>
   </section>
- 
+{% endif %}
 
 <section class="grid">
 
   {% for product in products %}
 
-    <div class="csp-product csp-card">
+    <div class="product card">
         <h4><a href="{% url 'product' product.id %}">{{ product.name }}</a></h4>
         <p>{{ product.price }} cent</p>
-		<a class='csp-edit csp-btn' href="{% url 'product-edit' product.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
+{% if user.is_authenticated %}
+		<a class='edit btn' href="{% url 'product-edit' product.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
+{% endif %}
     </div>
 
   {% endfor %}
