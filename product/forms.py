@@ -10,3 +10,8 @@ def validate_price(value):
 class ProductForm(forms.Form):
     name = forms.CharField(label='Name', max_length=100)
     price = forms.IntegerField(label='Price (cents)',validators=[validate_price])
+
+class UserPreferenceForm(forms.Form):
+    price_weight = forms.IntegerField(label='Value1')
+    sustainability_weight = forms.IntegerField(label='Value2')
+    quality_weight = forms.IntegerField(label='Value3')
