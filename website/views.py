@@ -19,7 +19,7 @@ class MainView(TemplateView):
     # Specifies variables that can be used in the template
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if(self.request and self.request.user):
+        if(self.request and self.request.user and self.request.user.is_authenticated()):
             up, created = UserPreferences.objects.get_or_create( user = self.request.user )
             context['recommended_product'] = ProductChooseAlgorithm.return_product(up)
         context['all_products'] = Product.objects.all()
