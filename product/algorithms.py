@@ -6,7 +6,7 @@ class ProductScoring:
         self.productScores = productScores        
         #normaliseren van de gebruikersgewichten.
         #voorbeeld : 6,2,4,1 => 1,0.3333,0.66666,0.
-        maxval = max(self.userweights)
+        maxval = max(self.userweights) or 1
         normalizedUserweights = []
         for weight in self.userweights:         
             normalizedUserweights.append(float(weight / maxval))
@@ -27,7 +27,8 @@ class ProductScoring:
                 sum += 4 * self.userweights[counter] #niet bekende score. Dan score 4, slechter dan gemiddelde.      
                 result += '(n/a (4, '+ str(self.userweights[counter]) +')'                      
             sumOfUserWeights += self.userweights[counter]         
-            counter += 1            
+            counter += 1
+            sumOfUserWeights = sumOfUserWeights or 1.0        
         return sum / sumOfUserWeights, result #Som normaliseren door te delen door aantal scores.
             
 class ProductChooseAlgorithm:    
