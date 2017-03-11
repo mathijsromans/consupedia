@@ -8,7 +8,7 @@ class ProductService:
         self.update_products_from_api("pindakaas")
         self.update_products_from_api("spinazie")
 
-        return Products.objects.all()
+        return Product.objects.all()
 
     def update_products_from_api(self, category):
         products_dict = api.search_product(category)
