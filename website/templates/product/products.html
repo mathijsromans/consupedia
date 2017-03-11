@@ -1,6 +1,7 @@
 {% extends "website/base.html" %}
 
 {% load static %}
+{% load consupedia %}
 
 {% block title %}Products {{ block.super }}{% endblock %}
 
@@ -23,7 +24,8 @@
         <h4><a href="{% url 'product' product.id %}">{{ product.name }}</a></h4>
         <p>{{ product.price }} cent</p>
 		<p>Category: {{ product.category.name }}</p>
-		<section class="csp-rater" data-global-rating="4.3" data-user-rating="" data-product-id="{{ product.id }}">
+		{% get_product_rating product user as user_rating %}
+		<section class="csp-rater" data-global-rating="4.3" data-user-rating="{{ user_rating }}" data-product-id="{{ product.id }}">
 			<div class="csp-global-rating">
 			<i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
 			</div>
