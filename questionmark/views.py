@@ -1,6 +1,3 @@
-import json
-
-from django.utils.safestring import mark_safe
 from django.views.generic import TemplateView
 
 from questionmark import api

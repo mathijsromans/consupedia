@@ -1,4 +1,3 @@
-import json
 import requests
 
 BASE_URL = 'https://api-c.thequestionmark.org/api/v1.1/'

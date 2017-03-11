@@ -1,7 +1,9 @@
 from questionmark import api
 from .models import Product
 
+
 class ProductService:
+
     def get_all_products(self):
         products_dict = api.search_product('pindakaas')
         products = self.get_or_create_from_json(products_dict)
