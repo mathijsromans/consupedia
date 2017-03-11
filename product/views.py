@@ -3,8 +3,10 @@ from django.views.generic.edit import FormView
 from django.db import transaction
 
 from .models import Product
+from .models import UserPreferences
 from .productservice import ProductService
 from .forms import ProductForm
+from .forms import UserPreferenceForm
 
 
 class ProductsView(TemplateView):
@@ -50,9 +52,45 @@ class ProductEditView(FormView):
 
     @transaction.atomic
     def form_valid(self, form):
+        product = self.product
+        product.name = form.cleaned_data['name']
+        product.price = form.cleaned_data['price']
+        product.save()
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['product'] = self.product
+        return context
+
+class UserPreferenceEditView(FormView):
+    template_name = 'user/user_preference_edit.html'
+    form_class = UserPreferenceForm
+    success_url = '/'
+
+    def get_my_preference(self):
+        up, created = UserPreferences.objects.get_or_create( user = self.request.user )
+        return up
+
+    def get_initial(self):
+        return {'price_weight': self.get_my_preference().price_weight,
+                'environment_weight': self.get_my_preference().environment_weight,
+                'social_weight': self.get_my_preference().social_weight,
+                'animals_weight': self.get_my_preference().animals_weight,
+                'personal_health_weight': self.get_my_preference().personal_health_weight}
+
+    @transaction.atomic
+    def form_valid(self, form):
+        userPreference = self.get_my_preference()
+        userPreference.price_weight = form.cleaned_data['price_weight']
+        userPreference.environment_weight = form.cleaned_data['environment_weight']
+        userPreference.social_weight = form.cleaned_data['social_weight']
+        userPreference.animals_weight = form.cleaned_data['animals_weight']
+        userPreference.personal_health_weight = form.cleaned_data['personal_health_weight']
+        userPreference.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['userPreference'] = self.get_my_preference()
         return context

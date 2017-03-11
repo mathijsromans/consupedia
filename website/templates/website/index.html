@@ -6,18 +6,22 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-12" align="center">
-      <h2>Homepage</h2>
+      <h2>Welkom op Consupedia</h2>
     </div>
   </div>
 
   <div class="row">
     <div class="col-sm-12" align="left">
+      {% if user.is_authenticated %}
       <p>Het product van de dag is {{ recommended_product }}!!!!!!! </p>
-        <table>
-      {% for e in all_products %}
-        <tr><td> {{ e.name }} </td><td> {{ e.price }} </td></tr>
-      {% endfor %}
-      </table>
+		<table>
+		{% for e in all_products %}
+			<tr><td> {{ e.name }} </td><td> {{ e.price }} </td></tr>
+		{% endfor %}
+		</table>
+	  {% else %}
+      <p>Je moet inloggen om je aanbevolen product te zien. </p>
+	  {% endif %}        
     </div>
   </div>
 

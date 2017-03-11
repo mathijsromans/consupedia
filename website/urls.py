@@ -25,7 +25,7 @@ urlpatterns = [
     url(r'^product/(?P<product_id>[0-9]+)/$', product.views.ProductView.as_view(), name='product'),
 
     url(r'^questionmark/$', questionmark.views.QMProductsView.as_view(), name='questionmark-products'),
-    url(r'^user_preferences/$', UserPreferencesView.as_view(), name='user_prefs'),
+    url(r'^user_preferences/$', product.views.UserPreferenceEditView.as_view(), name='user_prefs'),
 
     url(r'^userprofile/(?P<pk>[0-9]+)/$', login_required(UserProfileView.as_view()), name='userprofile'),
 
