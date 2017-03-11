@@ -50,6 +50,10 @@ class ProductEditView(FormView):
 
     @transaction.atomic
     def form_valid(self, form):
+        product = self.product
+        product.name = form.cleaned_data['name']
+        product.price = form.cleaned_data['price']
+        product.save()
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
