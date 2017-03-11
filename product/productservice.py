@@ -17,13 +17,12 @@ class ProductService:
                 # TODO: what if more than one product is found?
                 product = existing_products[0]
             else:
-                product = self.map_to_product(product_dict)
+                product = Product.objects.create(name=product_dict["name"])
+            product = self.map_to_product(product, product_dict)
             products.append(product)
         return products
 
-    def map_to_product(self, product_dict):
-        product = Product.objects.create(
-            name=product_dict["name"])
+    def map_to_product(self, product, product_dict):
         theme_scores = product_dict["theme_scores"]
         personal_health_score = product_dict["personal_health_score"]
         
@@ -40,4 +39,6 @@ class ProductService:
                     product.scores.animals = score["score"]
         if personal_health_score:
             product.scores.personal_health_score = personal_health_score
+        product.save()
+        return product
 
