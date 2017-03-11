@@ -6,12 +6,14 @@ from .rating import rating_manager
 
 class ProductService:
 
-    def get_all_products(self):
-        self.update_products_from_questionmarkapi("pindakaas")
+    @staticmethod
+    def get_all_products():
+        ProductService.update_products_from_questionmarkapi("tomatenpuree")
 
         return Product.objects.all()
 
-    def update_products_from_questionmarkapi(self, category):
+    @staticmethod
+    def update_products_from_questionmarkapi(category):
         products_dict = api.search_product(category)
         products = []
         for product_dict in products_dict["products"]:
