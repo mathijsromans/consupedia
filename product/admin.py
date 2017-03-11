@@ -1,2 +1,3 @@
-from product.models import Revision, UserPreferences
+from django.contrib import admin
+from product.models import UserPreferences
 admin.site.register(UserPreferences)

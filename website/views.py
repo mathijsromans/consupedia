@@ -6,8 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import TemplateView, UpdateView
 
-from product.models import Price, Product
-from product.models import Price, Product, UserPreferences
+from product.models import UserPreferences
 from website import settings
 
 logger = logging.getLogger(__name__)
