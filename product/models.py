@@ -44,3 +44,9 @@ class Price(Revision):
 
     def __str__(self):
         return str(self.cent)
+
+class UserPreferences(models.Model):
+    user = models.ForeignKey(User)
+
+    def __str__(self):
+        return 'Preferences of ' + self.user.username
