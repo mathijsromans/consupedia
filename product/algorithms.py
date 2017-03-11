@@ -37,7 +37,7 @@ class ProductChooseAlgorithm:
         if Product.objects.all():
             productToReturn = Product.objects.all()[0]
             for product in Product.objects.all():
-                price = product.price or 0
+                price = product.price or 999999999999
                 if price < minPrice:
                     minPrice = price
                     productToReturn = product
