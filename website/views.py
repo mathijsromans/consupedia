@@ -7,6 +7,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import TemplateView, UpdateView
 
 from product.models import UserPreferences
+from product.models import Product
 from website import settings
 
 logger = logging.getLogger(__name__)
