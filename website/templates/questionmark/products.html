@@ -1,0 +1,33 @@
+{% extends "website/base.html" %}
+
+{% block title %}Questionmark Products {{ block.super }}{% endblock %}
+
+{% block content %}
+
+<div align="center">
+  <h3>Questionmark Products</h3>
+</div>
+
+<div class="row">
+
+  {% for product in products %}
+
+    <div class="col-sm-6" align="center">
+      <div class="well well-sm">
+        <h4>{{ product.name }}</h4>
+        <h4>{{ product.brand.name }}</h4>
+        {% for retailer in product.retailers %}
+          {{ retailer.name }}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+        <br/>
+        {% for url in product.image_urls %}
+          <img src="{{ url.thumb }}"/>
+        {% endfor %}
+      </div>
+    </div>
+
+  {% endfor %}
+
+</div>
+
+{% endblock %}
