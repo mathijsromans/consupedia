@@ -1,9 +1,9 @@
-from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.db import transaction
 
-from .models import Product, ProductName, Price
+from .models import Product
+from .productservice import ProductService
 from .forms import ProductForm
 
 
@@ -12,7 +12,7 @@ class ProductsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['products'] = Product.objects.all()
+        context['products'] = ProductService().get_all_products()
         return context
 
 
@@ -24,6 +24,7 @@ class ProductView(TemplateView):
         context['product'] = Product.objects.get(id=product_id)
         return context
 
+
 class ProductCreateView(FormView):
     template_name = 'product/product_add.html'
     form_class = ProductForm
@@ -31,9 +32,7 @@ class ProductCreateView(FormView):
 
     @transaction.atomic
     def form_valid(self, form):
-        product = Product.objects.create()
-        ProductName.objects.create(name=form.cleaned_data['name'], user=self.request.user, product=product)
-        Price.objects.create(cent=form.cleaned_data['price'], user=self.request.user, product=product)
+        Product.objects.create(name=form.cleaned_data['name'], price=form.cleaned_data['price'])
         return super().form_valid(form)
 
 
@@ -51,8 +50,6 @@ class ProductEditView(FormView):
 
     @transaction.atomic
     def form_valid(self, form):
-        ProductName.objects.create(name=form.cleaned_data['name'], user=self.request.user, product=self.product)
-        Price.objects.create(cent=form.cleaned_data['price'], user=self.request.user, product=self.product)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):

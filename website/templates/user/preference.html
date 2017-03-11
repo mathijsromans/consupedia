@@ -11,8 +11,11 @@
 <div class="row" align="center">
 
   <div class="col-md-6">
-    <h4>I am rich?</h4>
-    {{ user_is_rich }}
+    <h4>Gebruikersvoorkeuren</h4>
+    <p>Gebruiker = {{ user_preference.user.username }}</p>
+    <p>Voorkeur prijs = {{ user_preference.price_weight }}</p>
+    <p>Voorkeur duurzaamheid = {{ user_preference.sustainability_weight }}</p>
+    <p>Voorkeur kwaliteit = {{ user_preference.quality_weight }}</p>
   </div>
 
 </div>
