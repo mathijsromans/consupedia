@@ -9,7 +9,6 @@ class Category(models.Model):
         return self.name
 
 
-
 class Score(models.Model):
     environment = models.IntegerField(null=True)
     social = models.IntegerField(null=True)
@@ -23,7 +22,8 @@ class Product(models.Model):
     price = models.IntegerField(null=True)
     category = models.ForeignKey(Category, null=True)
     scores = models.OneToOneField(Score, null=True)
-
+    product_score = 0
+    product_score_details = ''  
 
 class UserPreferences(models.Model):
     user = models.ForeignKey(User)
