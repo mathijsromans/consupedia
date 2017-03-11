@@ -5,32 +5,25 @@
 {% block content %}
 
 
-<div align="center">
-  <h3>Products</h3>
-</div>
+  <h3 class="view-title">Products</h3>
 
-<div class="row">
-  <ul class="nav navbar-nav">
-    <li>
-      <a href="{% url 'product-add' %}"><strong>New</strong></a>
-    </li>
-  </ul>
-</div>
+  <section class="menu">
+    <a class="button primary" href="{% url 'product-add' %}">Nieuw</a>
+  </section>
+ 
 
-<div class="row">
+<section class="grid">
 
   {% for product in products %}
 
-    <div class="col-sm-3" align="center">
-      <div class="well well-sm">
+    <div class="product card">
         <h4><a href="{% url 'product' product.id %}">{{ product.name }}</a></h4>
         <p>{{ product.price }} cent</p>
-        <a href="{% url 'product-edit' product.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
-      </div>
+		<a class='edit btn' href="{% url 'product-edit' product.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
     </div>
 
   {% endfor %}
 
-</div>
+</section>
 
 {% endblock %}
