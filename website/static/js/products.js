@@ -35,6 +35,16 @@ function changeRating(e) {
 	rater.addClass('csp-user-rated');
 
 	setRating(rater, rating);
-	
-	// HIER MOET DE CODE OM DE RATING OP TE SLAAN 
+
+	$.post(
+	    "/product/rating/set/",
+	    {
+	        product_id: rater.data('product-id'),
+	        rating: rating
+	    },
+	    function(data) {
+	        console.log(data.message);
+	    },
+	    "json"
+	);
 }

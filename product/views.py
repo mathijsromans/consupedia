@@ -1,12 +1,18 @@
+import json
+
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.db import transaction
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 from .models import Product
+from .models import Rating
 from .models import UserPreferences
 from .productservice import ProductService
 from .forms import ProductForm
 from .forms import UserPreferenceForm
+from .rating import rating_manager
 
 
 class ProductsView(TemplateView):
@@ -94,3 +100,11 @@ class UserPreferenceEditView(FormView):
         context = super().get_context_data(**kwargs)
         context['userPreference'] = self.get_my_preference()
         return context
+
+
+@login_required
+def set_product_rating(request):
+    product = Product.objects.get(id=request.POST['product_id'])
+    rating_manager.set_rating(request.user, product, int(request.POST['rating']))
+    response = json.dumps({'message': 'success',})
+    return HttpResponse(response, content_type='application/json')

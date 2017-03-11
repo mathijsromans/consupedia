@@ -18,6 +18,10 @@ class rating_manager():
 
     @staticmethod
     def set_rating(user, product, rating):
-        rating = Rating.get_or_create(user=user, product=product)
-        rating.rating = rating
-        rating.save()
+        ratings = Rating.objects.filter(product=product, user=user)
+        if ratings:
+            rating_obj = ratings[0]
+        else:
+            rating_obj = Rating(product=product, user=user)
+        rating_obj.rating = rating
+        rating_obj.save()
