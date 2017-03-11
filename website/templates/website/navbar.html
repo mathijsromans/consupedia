@@ -15,7 +15,9 @@
 
           <li><a href="{% url 'products' %}">Products</a></li>
           <li><a href="{% url 'questionmark-products' %}">Questionmark</a></li>
+          {% if user.is_authenticated %}
           <li><a href="{% url 'user_prefs' %}">My Preferences</a></li>
+		  {% endif %}
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
