@@ -1,10 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
+class Score(models.Model):
+    environment = models.IntegerField(null=True)
+    social = models.IntegerField(null=True)
+    animals = models.IntegerField(null=True)
+    personal_health = models.IntegerField(null=True)
+
+
 class Product(models.Model):
     name = models.CharField(max_length=256, null=True)
     ean_code = models.CharField(max_length=25, null=True)
     price = models.IntegerField(null=True)
+    scores = models.OneToOneField(Score, null=True)
 
 
 class UserPreferences(models.Model):
