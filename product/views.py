@@ -24,7 +24,6 @@ class ProductView(TemplateView):
         context['product'] = Product.objects.get(id=product_id)
         return context
 
-
 class ProductCreateView(FormView):
     template_name = 'product/product_add.html'
     form_class = ProductForm
