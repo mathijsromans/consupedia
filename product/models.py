@@ -5,6 +5,10 @@ from django.contrib.auth.models import User
 class Category(models.Model):
     name = models.CharField(max_length=256)
 
+    def __str__(self):
+        return self.name
+
+
 
 class Score(models.Model):
     environment = models.IntegerField(null=True)

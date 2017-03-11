@@ -13,7 +13,7 @@ class QuestionmarkMapper:
 
         if usages:
             newCategory = usages[-1]
-            category, created = Category.objects.get_or_create(name=newCategory)
+            category, created = Category.objects.get_or_create(name=newCategory['name'])
             product.category = category
 
 
