@@ -7,10 +7,11 @@
 
   <h3 class="view-title">Products</h3>
 
+{% if user.is_authenticated %}
   <section class="menu">
     <a class="button primary" href="{% url 'product-add' %}">Nieuw</a>
   </section>
- 
+{% endif %}
 
 <section class="grid">
 
