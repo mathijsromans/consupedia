@@ -16,10 +16,10 @@
 
   {% for product in products %}
 
-    <div class="product card">
+    <div class="csp-product csp-card">
         <h4><a href="{% url 'product' product.id %}">{{ product.name }}</a></h4>
         <p>{{ product.price }} cent</p>
-		<a class='edit btn' href="{% url 'product-edit' product.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
+		<a class='csp-edit csp-btn' href="{% url 'product-edit' product.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
     </div>
 
   {% endfor %}
