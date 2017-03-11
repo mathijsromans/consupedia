@@ -5,11 +5,13 @@ from .models import Product, Score
 class ProductService:
 
     def get_all_products(self):
-        products_dict = api.search_product('pindakaas')
-        products = self.get_or_create_from_json(products_dict)
-        return products
+        self.update_products_from_api("pindakaas")
+        self.update_products_from_api("spinazie")
 
-    def get_or_create_from_json(self, products_dict):
+        return Products.objects.all()
+
+    def update_products_from_api(self, category):
+        products_dict = api.search_product(category)
         products = []
         for product_dict in products_dict["products"]:
             existing_products = Product.objects.filter(name=product_dict["name"])
