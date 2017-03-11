@@ -1,4 +1,5 @@
 import logging
+from product.algorithms import ProductChooseAlgorithm
 
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User
@@ -17,7 +18,7 @@ class MainView(TemplateView):
     # Specifies variables that can be used in the template
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['recommended_product'] = 'tomatenpuree'
+        context['recommended_product'] = ProductChooseAlgorithm.return_product()
         context['all_products'] = Product.objects.all()
         return context
 
