@@ -6,7 +6,8 @@ from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import TemplateView, UpdateView
 
-from product.models import Product
+from product.models import Price, Product
+from product.models import Price, Product, UserPreferences
 from website import settings
 
 logger = logging.getLogger(__name__)
@@ -60,7 +61,7 @@ class UserPreferencesView(TemplateView):
     template_name = 'user/preference.html'
 
     def get_context_data(self, **kwargs):
+        up = UserPreferences.objects.filter( user = self.request.user )
         context = super().get_context_data(**kwargs)
-        context['user_name'] = 'Peter'
-        context['user_is_rich'] = True
+        context['user_preference'] = up[0]
         return context
