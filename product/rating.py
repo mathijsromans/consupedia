@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.db.models import Avg
 from product.models import Rating
 
 
@@ -8,17 +8,15 @@ class rating_manager():
 
     @staticmethod
     def get_avarage_rating(product):
-        ratings = Rating.objects.filter(product=product)
-        n_ratings = ratings.count()
-        if n_ratings == 0:
-            return None
-
-        return justarandomreturn
+        ratings = Rating.objects.filter(product=product).aggregate(Avg('rating'))
+        return ratings['rating__avg']
 
     @staticmethod
     def get_userrating(user):
         return 1
 
     @staticmethod
-    def set_userrating(user):
-        return 1
+    def set_rating(user, product, rating):
+        rating = Rating.get_or_create(user=user, product=product)
+        rating.rating = rating
+        rating.save()

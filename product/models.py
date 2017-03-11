@@ -43,4 +43,4 @@ class Rating(models.Model):
     rating = models.IntegerField(null=False)
 
     class Meta:
-        unique_together = ('user', 'product')
+        unique_together = (('user', 'product'),)
