@@ -1,4 +1,4 @@
-from product.models import Product, UserPreferences
+from product.models import Product, UserPreferences, Category
 
 class ProductScoring:
     def __init__(self, userweights, productScores):
@@ -42,21 +42,22 @@ class ProductChooseAlgorithm:
         return 0, 'weetniet'
         
     @staticmethod
-    def maximize_product_scores(user):
+    def maximize_product_scores(user, category):
         maxScore = -99999999999
         if Product.objects.all():
             productToReturn = Product.objects.all()[0]
             for product in Product.objects.all():
-                result, test = ProductChooseAlgorithm.calculate_product_score(product, user)
-                if result > maxScore:
-                    maxScore = result
-                    productToReturn = product
+                if(product.category == category or not category):
+                    result, test = ProductChooseAlgorithm.calculate_product_score(product, user)
+                    if result > maxScore:
+                        maxScore = result
+                        productToReturn = product
             return productToReturn.name + ', ' + str(maxScore)
         return None
 
     @staticmethod
-    def return_product(user):
-        return ProductChooseAlgorithm.maximize_product_scores(user)
+    def return_product(user, category=None):
+        return ProductChooseAlgorithm.maximize_product_scores(user, category)
 
     @staticmethod
     def cheapest_product():

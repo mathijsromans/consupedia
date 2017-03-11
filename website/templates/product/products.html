@@ -23,7 +23,11 @@
     <div class="csp-product csp-card">
         <h4><a href="{% url 'product' product.id %}">{{ product.name }}</a></h4>
         <p>{{ product.price }} cent</p>
+		{% if product.category %}
+		<p>Category: <a href="{% url 'category' product.category.id %}">{{ product.category.name }}</a></p>
+		{% else %}
 		<p>Category: {{ product.category.name }}</p>
+		{% endif %}
 		{% get_product_rating product user as user_rating %}
 		<section class="csp-rater" data-global-rating="4.3" data-user-rating="{{ user_rating }}" data-product-id="{{ product.id }}">
 			<div class="csp-global-rating">

@@ -6,13 +6,14 @@ from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
-from .models import Product
+from .models import Product, Category
 from .models import Rating
 from .models import UserPreferences
 from .productservice import ProductService
 from .forms import ProductForm
 from .forms import UserPreferenceForm
 from .rating import rating_manager
+from product.algorithms import ProductChooseAlgorithm
 
 
 class ProductsView(TemplateView):
@@ -30,6 +31,19 @@ class ProductView(TemplateView):
     def get_context_data(self, product_id, **kwargs):
         context = super().get_context_data(**kwargs)
         context['product'] = Product.objects.get(id=product_id)
+        return context
+
+
+class CategoryView(TemplateView):
+    template_name = 'category/category.html'
+
+    def get_context_data(self, category_id, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category = Category.objects.get(id=category_id)
+        context['category'] = category
+        if(self.request and self.request.user and self.request.user.is_authenticated()):
+            up, created = UserPreferences.objects.get_or_create( user = self.request.user )
+            context['recommended_product'] = ProductChooseAlgorithm.return_product(up, category)
         return context
 
 
