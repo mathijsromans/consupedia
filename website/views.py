@@ -63,5 +63,6 @@ class UserPreferencesView(TemplateView):
     def get_context_data(self, **kwargs):
         up = UserPreferences.objects.filter( user = self.request.user )
         context = super().get_context_data(**kwargs)
-        context['user_preference'] = up[0]
+        test = UserPreferences()
+        context['user_preference'] = test
         return context
