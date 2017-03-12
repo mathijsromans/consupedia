@@ -199,10 +199,26 @@ def get_what_to_eat_result(request):
     return HttpResponse(data, content_type='application/json')
 
 @login_required
-def get_user_preference_data(request):
+def set_user_preference_data(request):
     up = UserPreferenceEditView.get_my_preference(request)
-    rel = up.get_rel_weights()
 
+    pref_to_change = request.POST['user_preference']
+    print(pref_to_change)
+    new_weight = int(request.POST['weight'])
+    print(new_weight)
+
+    if new_weight == 'price':
+        up.price_weight = new_weight
+    elif new_weight == 'environment':
+        up.environment_weight = new_weight
+    elif new_weight == 'social':
+        up.social_weight = new_weight
+    elif new_weight == 'animals':
+        up.animals_weight = new_weight
+    elif new_weight == 'personal_health':
+        up.personal_health_weight = new_weight
+
+    rel = up.get_rel_weights()
     response = json.dumps({'status': 'success',
                            'user_preferences': [
                                { "preference": "price",
@@ -217,7 +233,7 @@ def get_user_preference_data(request):
                                { "preference": "animals",
                                  "weight:": up.animals_weight,
                                  "rel_weight": rel[3] },
-                               { "preference": "price",
+                               { "preference": "personal_health",
                                  "weight:": up.personal_health_weight,
                                  "rel_weight": rel[4] } ] })
     return HttpResponse(response, content_type='application/json')
