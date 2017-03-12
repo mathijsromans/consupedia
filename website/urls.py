@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^category/(?P<category_id>[0-9]+)/$', product.views.CategoryView.as_view(), name='category'),
 
     url(r'^user_preferences/$', product.views.UserPreferenceEditView.as_view(), name='user_prefs'),
+    url(r'^user_preference/set/?', login_required(product.views.get_user_preference_data)),
     url(r'^what_to_eat/$', product.views.WhatToEatView.as_view(), name='what_to_eat'),
     url(r'^what_to_eat/get_result/?', product.views.get_what_to_eat_result),
 
