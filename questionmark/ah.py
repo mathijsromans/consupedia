@@ -1,8 +1,11 @@
+import logging
 import requests
 import re
 import json
 from html.parser import HTMLParser
 from .models import AHQuery
+
+logger = logging.getLogger(__name__)
 
 
 def search_product(search_term):
@@ -18,7 +21,11 @@ def search_product(search_term):
 
 
     results = []
-    items = json_products['_embedded']['lanes'][6]['_embedded']['items']
+    try:
+        items = json_products['_embedded']['lanes'][6]['_embedded']['items']
+    except Exception as error:
+        logger.exception(error)
+        return results
     for item in items:
         if '_embedded' in item:
             ah_product = item['_embedded']['product']
