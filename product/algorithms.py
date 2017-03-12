@@ -24,7 +24,7 @@ class ProductScoring:
             sumOfUserWeights = sumOfUserWeights or 1.0
         return sum / sumOfUserWeights, result #Som normaliseren door te delen door aantal scores.
             
-class ProductChooseAlgorithm:    
+class ProductChooseAlgorithm:
     @staticmethod
     def calculate_product_score(product, user_pref):
         if(product.scores):

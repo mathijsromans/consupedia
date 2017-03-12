@@ -94,7 +94,6 @@ class Recipe(models.Model):
     def __str__(self):
         return 'Recept ' + self.name
 
-
 class Ingredient(models.Model):
     NO_UNIT = '-'
     GRAM = 'g'

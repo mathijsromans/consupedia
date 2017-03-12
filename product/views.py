@@ -219,9 +219,7 @@ def set_user_preference_data(request):
     up = UserPreferenceEditView.get_my_preference_by_request(request)
 
     pref_to_change = request.POST['user_preference']
-    print(pref_to_change)
     new_weight = int(request.POST['weight'])
-    print(new_weight)
 
     if pref_to_change == 'price':
         up.price_weight = new_weight
