@@ -46,6 +46,15 @@ class RecipesView(TemplateView):
         return context
 
 
+class RecipeDetailView(TemplateView):
+    template_name = 'recipe/recipe_show.html'
+
+    def get_context_data(self, recipe_id, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['recipe'] = Recipe.objects.get(id=recipe_id)
+        return context
+
+
 class RecipeAddView(FormView):
     template_name = 'recipe/recipe_edit.html'
     form_class = RecipeForm
