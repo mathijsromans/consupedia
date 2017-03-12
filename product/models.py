@@ -86,10 +86,12 @@ class Ingredient(models.Model):
     NO_UNIT = '-'
     GRAM = 'g'
     ML = 'ml'
+    EL = 'el'
     UNIT_CHOICES = (
-        (NO_UNIT, '-'),
+        (NO_UNIT, 'st.'),
         (GRAM, 'g'),
-        (ML, 'ml')
+        (ML, 'ml'),
+        (EL, 'el')
     )
     quantity = models.IntegerField()
     unit = models.CharField(max_length=5, choices=UNIT_CHOICES, default=NO_UNIT)
