@@ -7,9 +7,9 @@ from .questionmarkmapper import QuestionmarkMapper
 class ProductService:
 
     @staticmethod
-    def get_all_products():
-        ProductService.update_products_from_questionmarkapi("pindakaas")
-
+    def get_all_products(search_query):
+        if search_query:
+            return ProductService.update_products_from_questionmarkapi(search_query)
         return Product.objects.all()
 
     @staticmethod

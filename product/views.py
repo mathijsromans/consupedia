@@ -20,8 +20,10 @@ class ProductsView(TemplateView):
     template_name = 'product/products.html'
 
     def get_context_data(self, **kwargs):
+        if self.request.method == 'GET': # If the form is submitted
+            search_query = self.request.GET.get('search_box', None)
         context = super().get_context_data(**kwargs)
-        context['products'] = ProductService().get_all_products()
+        context['products'] = ProductService().get_all_products(search_query)
         return context
 
 
