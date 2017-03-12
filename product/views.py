@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.core import serializers
 
 from .models import Product, Category
+from .management.commands.create_recipes import Command
 from .models import Rating, Recipe
 from .models import UserPreferences
 from .productservice import ProductService, RecipeService
@@ -22,8 +23,6 @@ class ProductsView(TemplateView):
     def get_context_data(self, **kwargs):
         if self.request.method == 'GET': # If the form is submitted
             search_query = self.request.GET.get('search_box', None)
-            if search_query == 'maakrecept':
-                RecipeService.create_recipe('test_recept_naam', None, 'http://test', 10, 45, 'gooi alles in de mixer, klaar', None)
         context = super().get_context_data(**kwargs)
         context['products'] = ProductService().get_all_products(search_query)
         return context
@@ -42,7 +41,11 @@ class RecipesView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['recipes'] = Recipe.objects.all()
+        recipes = Recipe.objects.all()
+        if not recipes:
+            Command.create_recipe('R-R399568')   # create a default recipe so there is something to show
+            recipes = Recipe.objects.all()
+        context['recipes'] = recipes
         return context
 
 
