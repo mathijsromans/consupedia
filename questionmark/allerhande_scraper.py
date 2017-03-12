@@ -27,7 +27,7 @@ class AllerhandeScraper:
     #
     #     for match in matches:
     #         results.append({ match[0]: str(match[1] + '' + match[2])})
-    # 
+    #
     #     params = {
     #         'SearchTerm': search_term,
     #         'PageNumber': 2

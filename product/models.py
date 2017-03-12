@@ -80,8 +80,8 @@ class Recipe(models.Model):
 
 
 class Ingredient(models.Model):
-    NO_UNIT =  '-'
-    GRAM =  'g'
+    NO_UNIT = '-'
+    GRAM = 'g'
     ML = 'ml'
     UNIT_CHOICES = (
         (NO_UNIT, '-'),
@@ -89,7 +89,7 @@ class Ingredient(models.Model):
         (ML, 'ml')
     )
     quantity = models.IntegerField()
-    unit = models.CharField(max_length=20, choices=UNIT_CHOICES, default=NO_UNIT)
+    unit = models.CharField(max_length=5, choices=UNIT_CHOICES, default=NO_UNIT)
     category = models.ForeignKey(Category)
     recipe = models.ForeignKey(Recipe)
 
