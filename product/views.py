@@ -130,10 +130,10 @@ class UserPreferenceEditView(FormView):
     success_url = '/'
 
     def get_my_preference(self):
-        return UserPreferenceEditView.get_my_preference(self.request)
+        return UserPreferenceEditView.get_my_preference_by_request(self.request)
 
     @staticmethod
-    def get_my_preference(request):
+    def get_my_preference_by_request(request):
         up, created = UserPreferences.objects.get_or_create( user = request.user )
         return up
 
