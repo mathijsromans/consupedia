@@ -101,6 +101,12 @@ class CategoryView(TemplateView):
         if(self.request and self.request.user and self.request.user.is_authenticated()):
             up, created = UserPreferences.objects.get_or_create( user = self.request.user )
             context['product'] = ProductChooseAlgorithm.maximize_product_scores(up, category)
+            productList = Product.objects.filter(category=category)
+            for product in productList:
+                product.product_score, product.product_score_details = ProductChooseAlgorithm.calculate_product_score(product, up)
+            productList = list(productList)
+            productList.sort(key= lambda x: x.product_score, reverse=True)
+            context['all_products'] = productList
         return context
 
 
