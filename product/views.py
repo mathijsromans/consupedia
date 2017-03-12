@@ -12,7 +12,6 @@ from .models import UserPreferences
 from .productservice import ProductService
 from .forms import ProductForm
 from .forms import UserPreferenceForm
-from .rating import rating_manager
 from product.algorithms import ProductChooseAlgorithm
 
 
@@ -138,6 +137,12 @@ class WhatToEatView(TemplateView):
 @login_required
 def set_product_rating(request):
     product = Product.objects.get(id=request.POST['product_id'])
-    rating_manager.set_rating(request.user, product, int(request.POST['rating']))
-    response = json.dumps({'message': 'success',})
+    product.set_rating(request.user, int(request.POST['rating']))
+    ratings = product.get_rating(request.user)
+    user_rating = None
+    if ratings.exists():
+        user_rating = ratings[0].rating
+
+    average_rating = product.get_average_rating()
+    response = json.dumps({'status': 'success', 'user_rating': str(user_rating), 'average_rating': str(average_rating)})
     return HttpResponse(response, content_type='application/json')

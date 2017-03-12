@@ -7,7 +7,7 @@ register = template.Library()
 
 @register.assignment_tag
 def get_product_rating(product, user):
-    ratings = Rating.objects.filter(product=product, user=user)
-    if ratings:
-        return ratings[0].rating
-    return None
+	ratings = product.get_rating(user)
+	if ratings.exists():
+		return ratings[0].rating
+	return None

@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.db.models import Avg
 
 class Category(models.Model):
     name = models.CharField(max_length=256)
@@ -25,7 +25,26 @@ class Product(models.Model):
     scores = models.OneToOneField(Score, null=True)
     thumb_url = models.CharField(max_length=256, null=True)
     product_score = 0
-    product_score_details = ''  
+    product_score_details = ''
+
+    def set_rating(self, user, rating_value):
+        ratings = Rating.objects.filter(product=self, user=user)
+        if ratings.exists():
+            rating = ratings[0]
+            rating.rating = rating_value
+            rating.save()
+        else:
+            rating = Rating.objects.create(product=self, user=user, rating=rating_value)
+
+    def get_rating(self, user):
+        rating = Rating.objects.filter(product=self, user=user)
+        return rating
+
+    def get_average_rating(self):
+        ratings = Rating.objects.filter(product=self).aggregate(Avg('rating'))
+        return ratings['rating__avg']
+
+
 
 class UserPreferences(models.Model):
     user = models.ForeignKey(User)
