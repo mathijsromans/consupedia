@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from .models import Product, Category
 from .models import Rating
 from .models import UserPreferences
-from .productservice import ProductService
+from .productservice import ProductService, RecipeService
 from .forms import ProductForm
 from .forms import UserPreferenceForm
 from product.algorithms import ProductChooseAlgorithm
@@ -21,6 +21,8 @@ class ProductsView(TemplateView):
     def get_context_data(self, **kwargs):
         if self.request.method == 'GET': # If the form is submitted
             search_query = self.request.GET.get('search_box', None)
+            if search_query == 'maakrecept':
+                RecipeService.create_recipe('test_recept_naam', None, 'http://test', 10, 45, 'gooi alles in de mixer, klaar', None)
         context = super().get_context_data(**kwargs)
         context['products'] = ProductService().get_all_products(search_query)
         return context
