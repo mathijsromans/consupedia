@@ -12,6 +12,13 @@ body {
     height: 20px;
 }
 
+.consupediaLogo
+{
+   background: url("ConsupediaLogo.png");
+   background-size: 280px 60px;
+   width: 280px;
+   height: 60px;
+}
 
 .csp-card {
 	float:left;
