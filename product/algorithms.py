@@ -30,6 +30,10 @@ class ProductChooseAlgorithm:
         if(product.scores):
             #price_weight niet in userweights.
             normalizedUserweights = user_pref.get_rel_weights()
+
+            # todo: take price into account
+            normalizedUserweights.pop(0)
+
             productScores = [product.scores.environment, product.scores.social, product.scores.animals, product.scores.personal_health]
             productScoring = ProductScoring(normalizedUserweights, productScores)
             return productScoring.calculateResult() 

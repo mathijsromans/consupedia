@@ -68,7 +68,7 @@ class UserPreferences(models.Model):
         return normalizedUserweights
 
     def get_weights(self):
-        return [self.environment_weight, self.social_weight, self.animals_weight, self.personal_health_weight]
+        return [self.price_weight, self.environment_weight, self.social_weight, self.animals_weight, self.personal_health_weight]
 
     def __str__(self):
         return 'Preferences of ' + self.user.username
