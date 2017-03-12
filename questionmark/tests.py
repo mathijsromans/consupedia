@@ -13,7 +13,7 @@ class TestQuestionApi(TestCase):
 class TestAllerHandeScraper(TestCase):
     recipe_id = 'R-R399568'
 
-    def test_get_recipe(self):
+    def test_get_recipe_page_html(self):
         content, url = allerhande_scraper.get_recipe_page_html(self.recipe_id)
 
     def test_get_preparation_time(self):
@@ -24,9 +24,21 @@ class TestAllerHandeScraper(TestCase):
     def test_get_recipe_ingredient(self):
         content, url = allerhande_scraper.get_recipe_page_html(self.recipe_id)
         ingredients = allerhande_scraper.get_recipe_ingredients(content)
-        self.assertEqual(ingredients[0]['name'], 'ui')
-        self.assertEqual(ingredients[0]['unit'], '')
-        self.assertEqual(ingredients[0]['quantity'], 4)
-        self.assertEqual(ingredients[-1]['name'], 'half-om-halfgehakt')
-        self.assertEqual(ingredients[-1]['unit'], 'kg')
-        self.assertEqual(ingredients[-1]['quantity'], 1)
+        self.assertEqual(ingredients[0][0], 4)
+        self.assertEqual(ingredients[0][1], '')
+        self.assertEqual(ingredients[0][2], 'ui')
+        self.assertEqual(ingredients[-1][0], 1)
+        self.assertEqual(ingredients[-1][1], 'kg')
+        self.assertEqual(ingredients[-1][2], 'half-om-halfgehakt')
+
+    def test_get_recipe(self):
+        recipe = allerhande_scraper.get_recipe(self.recipe_id)
+        self.assertEqual(recipe['url'], 'https://www.ah.nl/allerhande/recept/R-R399568')
+        self.assertEqual(len(recipe['ingredients']), 9)
+        self.assertEqual(recipe['preparation_time_in_min'], 45)
+        self.assertEqual(recipe['number_persons'], 10)
+
+    def test_get_name(self):
+        content, url = allerhande_scraper.get_recipe_page_html(self.recipe_id)
+        name = allerhande_scraper.get_name(content)
+        self.assertEqual(name, 'Tante Greets spaghetti bolognese')

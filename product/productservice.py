@@ -100,3 +100,4 @@ class RecipeService():
             print('Using ingredient ' + str(quantity) + ' ' + str(unit) + ' ' + str(category))
             Ingredient.objects.create(quantity=quantity, unit=unit, category=category, recipe = new_recipe)
         print('Done creating recipe')
+        return new_recipe
