@@ -124,6 +124,15 @@ class UserPreferenceEditView(FormView):
         context = super().get_context_data(**kwargs)
         context['userPreference'] = self.get_my_preference()
         return context
+        
+
+class WhatToEatView(TemplateView):
+    template_name = 'product/what_to_eat.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context
 
 
 @login_required
