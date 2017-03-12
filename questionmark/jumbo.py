@@ -1,20 +1,15 @@
 import requests
 import re
 from html.parser import HTMLParser
+from .models import JumboQuery
+
+regex_product = '<h3 data-jum-action.*quickView">(.*)</a></h3>\s.*\s.*\s.*\s.*\s.*\s.*\s.*\s.*jum-price-format">(.*)<sup>(.*)</sup>.*jum-pack-size">(.*)</span>';
 
 def search_product(search_term):
-    print("jumbo")
     MAX_PAGES = 10
     results = []
-    for i in range(1, MAX_PAGES):
-        params = {
-            'SearchTerm': search_term,
-            'PageNumber': i
-        }
-
-        response = requests.get("https://www.jumbo.com/producten", params)
-        regex = re.compile('<h3 data-jum-action.*quickView">(.*)</a></h3>\s.*\s.*\s.*\s.*\s.*\s.*\s.*\s.*jum-price-format">(.*)<sup>(.*)</sup>.*jum-pack-size">(.*)</span>')
-        matches = regex.findall(response.text)
+    for page_number in range(1, MAX_PAGES):
+        matches = get_search_result(search_term, page_number)
 
         if matches:
             for match in matches:
@@ -27,3 +22,21 @@ def search_product(search_term):
             break
 
     return results
+
+
+def get_search_result(search_term, page_number):
+    params = {
+        'SearchTerm': search_term,
+        'PageNumber': page_number
+    }
+
+    query, created = JumboQuery.objects.get_or_create(q_product_name = search_term + str(page_number))
+    if created:
+        response = requests.get("https://www.jumbo.com/producten", params)
+        query.html = response.text
+        query.save()
+
+    regex = re.compile(regex_product)
+    matches = regex.findall(query.html)
+
+    return matches
