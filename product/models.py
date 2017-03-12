@@ -45,6 +45,8 @@ class Product(models.Model):
         ratings = Rating.objects.filter(product=self).aggregate(Avg('rating'))
         return ratings['rating__avg']
 
+    def __str__(self):
+        return self.name
 
 
 class UserPreferences(models.Model):

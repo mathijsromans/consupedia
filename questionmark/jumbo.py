@@ -3,13 +3,14 @@ import re
 from html.parser import HTMLParser
 
 def search_product(search_term):
+    print("jumbo")
     MAX_PAGES = 10
+    results = []
     for i in range(1, MAX_PAGES):
         params = {
             'SearchTerm': search_term,
             'PageNumber': i
         }
-        results = []
 
         response = requests.get("https://www.jumbo.com/producten", params)
         regex = re.compile('<h3 data-jum-action.*quickView">(.*)</a></h3>\s.*\s.*\s.*\s.*\s.*\s.*\s.*\s.*jum-price-format">(.*)<sup>(.*)</sup>.*jum-pack-size">(.*)</span>')

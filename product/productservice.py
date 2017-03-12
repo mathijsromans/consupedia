@@ -27,6 +27,7 @@ class ProductService:
             product = qm_mapper.map_to_product(product, product_dict)
             for jumbo_result in jumbo_results:
                 name = "Jumbo " + product.name.replace("0 g", "0g")
+                print(name + "   ----   " + jumbo_result['name'])
                 if jumbo_result['name'] == name:
                     jumbo_mapper.map_to_product(product, jumbo_result)
             products.append(product)
