@@ -200,7 +200,7 @@ def get_what_to_eat_result(request):
 
 @login_required
 def set_user_preference_data(request):
-    up = UserPreferenceEditView.get_my_preference(request)
+    up = UserPreferenceEditView.get_my_preference_by_request(request)
 
     pref_to_change = request.POST['user_preference']
     print(pref_to_change)

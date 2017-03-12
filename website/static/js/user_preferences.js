@@ -8,7 +8,7 @@ function sliderChanged(e) {
 	console.log(newWeight);
 	
 	$.post(
-	    "/bla/set/",
+	    "/user_preference/set/",
 	    {
 	        "user_preference": pref,
 	        "weight": newWeight
