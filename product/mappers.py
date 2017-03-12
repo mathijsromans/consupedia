@@ -46,12 +46,14 @@ class QuestionmarkMapper:
             product.scores.save()
 
 
-class JumboMapper:
+class RetailerMapper:
     def map_to_product(self, product, product_dict):
         product.price = int(product_dict['price'])
         product.size = product_dict['size']
         if product.size:
             if product.size.endswith("g"):
-                product.amount_in_gram = product.size[:-1].strip()
+                grams = product.size[:-1].strip()
+                if grams.isnumeric():
+                    product.amount_in_gram = grams
 
         product.save()

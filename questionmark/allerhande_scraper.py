@@ -10,6 +10,19 @@ regex_ingredient_item = re.compile('<li itemprop="ingredients">(.*?)</li>', re.D
 regex_preparation_time = re.compile('<div class="icon icon-time"></div>(\d+).*?</li>', re.DOTALL)
 regex_name = re.compile('<meta property="twitter:title" content="(.*?)">', re.DOTALL)
 regex_number_persons = re.compile('<div class="icon icon-people"></div><span>.*?(\d+).*?</span></li>', re.DOTALL)
+regex_recept_url = re.compile('/allerhande/recept/R-R(.*?)/', re.DOTALL)
+
+
+def get_recipe_ids_from_page(ah_url):
+    response = requests.get(ah_url)
+    if response.status_code != 200:
+        return '', ''
+    matches = regex_recept_url.findall(response.text)
+    matches = list(set(matches))
+    ids = []
+    for match in matches:
+        ids.append('R-R' + match)
+    return ids
 
 
 def get_recipe_page_html(recipe_id):

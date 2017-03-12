@@ -1,8 +1,9 @@
 from django.db import transaction
 
-from questionmark import api, jumbo
+import re
+from questionmark import api, jumbo, ah
 from .models import Product, Category, Score, Ingredient, Recipe
-from .mappers import QuestionmarkMapper, JumboMapper
+from .mappers import QuestionmarkMapper, RetailerMapper
 from collections import defaultdict
 
 class ProductService:
@@ -17,20 +18,23 @@ class ProductService:
     @transaction.atomic
     def update_products_from_questionmarkapi(search_name):
         qm_mapper = QuestionmarkMapper()
-        jumbo_mapper = JumboMapper()
 
         products_dict = api.search_product(search_name)
         jumbo_results = jumbo.search_product(search_name)
+        ah_results = ah.search_product(search_name)
+
         products = []
+        mapper = RetailerMapper()
         for product_dict in products_dict['products']:
             product, created = Product.objects.get_or_create(name=product_dict['name'])
-            product_dict['retailers']
             product = qm_mapper.map_to_product(product, product_dict)
-            for jumbo_result in jumbo_results:
-                name = 'Jumbo ' + product.name.replace('0 g', '0g')
-                if jumbo_result['name'] == name:
-                    jumbo_mapper.map_to_product(product, jumbo_result)
+
+            # TODO: if both have a match, last price wins
+            ProductService.enrich_product_data(mapper, product, jumbo_results)
+            ProductService.enrich_product_data(mapper, product, ah_results)
+
             products.append(product)
+
         return products
 
     @staticmethod
@@ -40,6 +44,51 @@ class ProductService:
             product, created = Product.objects.get_or_create(name='Unknown product')
             product.category = category
         return category
+
+    @staticmethod
+    def enrich_product_data(mapper, product, retailer_results):
+        for retailer_result in retailer_results:
+            if ProductService.matches_name(retailer_result['name'], product.name):
+                mapper.map_to_product(product, retailer_result)
+
+
+    @staticmethod
+    def matches_name(retailer_name, name):
+        if retailer_name == name:
+            return True
+
+        retailer_name = retailer_name.replace('\xad', '')
+        retailer_name = retailer_name.replace(' ', '')
+
+        name = re.sub('\(.*\)', '' , name)
+        name = name.replace(' ', '')
+
+        if retailer_name == name:
+            return True
+
+        brands = ['Hero', 'Jumbo', 'AH']
+        for brand in brands:
+            retailer_name = retailer_name.replace(brand, '').strip()
+
+        if retailer_name == name:
+            return True
+
+
+    @staticmethod
+    def contains_jumbo(product_dict):
+        # Method is not being used right now, since sometimes Jumbo is not present as a retailer or brand
+        # but the product is still available on the Jumbo site
+        contains = False
+        if product_dict['retailers']:
+            for retailer in product_dict['retailers']:
+                if retailer['name'] == 'Jumbo':
+                    contains = True
+                    break;
+        if product_dict['brand']:
+            if product_dict['brand']['name'] == 'Jumbo':
+                contains = True
+        return contains
+
 
 class RecipeService():
 
