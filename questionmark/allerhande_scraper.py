@@ -2,53 +2,64 @@ import requests
 import re
 from html.parser import HTMLParser
 
-class AllerhandeScraper:
-    # ingredientenlijst = [
-    #     [4, 'uien']
-    #     [500, g, 'preien'],
-    #     40, g, boter],
-    #     2, el, olijfolie],
-    #     1, el, gedroogde tijm],
-    #     2, blaadjes, laurierblaadjes],
-    #     198, g, corned beef],
-    #     2, kg, gezeefde tomaten],
-    #     1, kg, half-om-halfgehakt]]
-    #
-    # def get_search_result(self, search_term):
-    #     params = {
-    #         'SearchTerm': search_term,
-    #         'PageNumber': 1
-    #     }
-    #     results = []
-    #
-    #     response = requests.get("https://www.jumbo.com/producten", params)
-    #     regex = re.compile('<h3 data-jum-action.*quickView">(.*)</a></h3>\s.*\s.*\s.*\s.*\s.*\s.*\s.*\s.*jum-price-format">(.*)<sup>(.*)</sup>')
-    #     matches = regex.findall(response.text)
-    #
-    #     for match in matches:
-    #         results.append({ match[0]: str(match[1] + '' + match[2])})
-    #
-    #     params = {
-    #         'SearchTerm': search_term,
-    #         'PageNumber': 2
-    #     }
-    #     response = requests.get("https://www.jumbo.com/producten", params)
-    #     regex = re.compile('<h3 data-jum-action.*quickView">(.*)</a></h3>\s.*\s.*\s.*\s.*\s.*\s.*\s.*\s.*jum-price-format">(.*)<sup>(.*)</sup>')
-    #     matches = regex.findall(response.text)
-    #
-    #     for match in matches:
-    #         results.append({ match[0]: str(match[1] + '' + match[2])})
-    #
-    #     params = {
-    #         'SearchTerm': search_term,
-    #         'PageNumber': 3
-    #     }
-    #     response = requests.get("https://www.jumbo.com/producten", params)
-    #     regex = re.compile('<h3 data-jum-action.*quickView">(.*)</a></h3>\s.*\s.*\s.*\s.*\s.*\s.*\s.*\s.*jum-price-format">(.*)<sup>(.*)</sup>')
-    #     matches = regex.findall(response.text)
-    #
-    #     for match in matches:
-    #         results.append({ match[0]: str(match[1] + '' + match[2])})
-    #
-    #
-    #     return results
+regex_unit = re.compile('data-quantity-unit-singular="(.*?)"')
+regex_quantity = re.compile('data-quantity="(\d+)"')
+regex_name = re.compile('data-description-singular="(.*?)"')
+regex_ingredients_list = re.compile('<ul class="list shopping ingredient-selector-list">(.*?)</ul>', re.DOTALL)
+regex_ingredient_item = re.compile('<li itemprop="ingredients">(.*?)</li>', re.DOTALL)
+regex_preparation_time = re.compile('<div class="icon icon-time"></div>(\d+).*?</li>', re.DOTALL)
+
+
+def get_recipe_page_html(recipe_id):
+    url = 'https://www.ah.nl/allerhande/recept/' + recipe_id
+    response = requests.get(url)
+    if response.status_code != 200:
+        return '', ''
+    return response.text, url
+
+
+def get_recipe(recipe_id):
+    text, url = get_recipe_page_html(recipe_id)
+    ingredients = get_recipe_ingredients(text)
+    preparation_time_in_min = get_preparation_time_min(text)
+    recipe = {
+        'url': url,
+        'ingredients': ingredients,
+        'preparation_time_in_min': preparation_time_in_min
+    }
+    return recipe
+
+
+def get_recipe_ingredients(page_html_text):
+    matches = regex_ingredients_list.findall(page_html_text)
+    ingredient_list = matches[0]
+    matches = regex_ingredient_item.findall(ingredient_list)
+    ingredients = []
+    for match in matches:
+        name = ''
+        unit = ''
+        quantiy = ''
+        matches = regex_quantity.findall(match)
+        if matches:
+            quantiy = int(matches[0])
+        matches = regex_name.findall(match)
+        if matches:
+            name = matches[0]
+        matches = regex_unit.findall(match)
+        if matches:
+            unit = matches[0]
+        ingredients.append({
+            'name': name,
+            'quantity': quantiy,
+            'unit': unit
+        })
+    return ingredients
+
+
+def get_preparation_time_min(page_html_text):
+    matches = regex_preparation_time.findall(page_html_text)
+    try:
+        prep_time = int(matches[0])
+    except ValueError:
+        prep_time = None
+    return prep_time
