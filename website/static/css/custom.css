@@ -44,17 +44,24 @@ body {
 .csp-global-rating {
 	color:green;
 	position:absolute;
+	top:0;
 	z-index:2;
 	overflow:hidden;
-	transition: width 1s;
+	transition: width 1s, top 1s;
 	white-space: nowrap;
 }
 
-.csp-rater.csp-user-rated  .csp-global-rating {
-	height:0.6em;
+.csp-user-rating {
+	position:relative;
+	z-index:1;
 }
 
-.csp-rater:hover .csp-global-rating {
+.csp-rater.csp-user-rated  .csp-global-rating {
+	top:0.15em;
+	z-index:0;
+}
+
+.csp-rater:hover:not(.csp-user-rated) .csp-global-rating {
 	display:none;
 }
 
@@ -63,5 +70,5 @@ body {
 }
 
 .csp-user-rating i:hover  ~ i {
-	color:#EEE;
+	color:#CCC;
 }
