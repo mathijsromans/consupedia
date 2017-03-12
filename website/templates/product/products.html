@@ -29,6 +29,8 @@
 
 <hr/>
 
+{% if products %}{{ products|length }} producten gevonden{% else %}geen producten gevonden{% endif %}
+
 <section class="grid">
 
   {% for product in products %}
