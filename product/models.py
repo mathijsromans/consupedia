@@ -46,3 +46,34 @@ class Rating(models.Model):
 
     class Meta:
         unique_together = (('user', 'product'),)
+
+
+class Recipe(models.Model):
+    name = models.CharField(max_length=256)
+    author_if_user = models.ForeignKey(User, null=True, blank=True)
+    source_if_not_user = models.CharField(max_length=256)
+    number_persons = models.IntegerField(default=0)
+    preparation_time_in_min = models.IntegerField(default=0)
+    preparation = models.TextField()
+
+    def __str__(self):
+        return 'Recept ' + self.name
+
+
+class Ingredient(models.Model):
+    NO_UNIT =  '-'
+    GRAM =  'g'
+    ML = 'ml'
+    UNIT_CHOICES = (
+        (NO_UNIT, '-'),
+        (GRAM, 'g'),
+        (ML, 'ml')
+    )
+    quantity = models.IntegerField()
+    unit = models.CharField(max_length=20, choices=UNIT_CHOICES, default=NO_UNIT)
+    category = models.ForeignKey(Category)
+    recipe = models.ForeignKey(Recipe)
+
+    def __str__(self):
+        return str(self.quantity) + ' ' + str(self.unit) + ' ' + str(self.category)
+
