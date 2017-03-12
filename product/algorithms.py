@@ -53,7 +53,7 @@ class ProductChooseAlgorithm:
                     if result > maxScore:
                         maxScore = result
                         productToReturn = product
-            return productToReturn.name + ', ' + str(maxScore)
+            return productToReturn
         return None
 
     @staticmethod

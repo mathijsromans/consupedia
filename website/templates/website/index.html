@@ -10,20 +10,33 @@
     </div>
   </div>
 
+  {% if user.is_authenticated %}
+  <div class="row">
+    <div class="col-sm-12" align="left">      
+      <p>Het product van de dag is: </p>
+      <div class="csp-product csp-card csp-card-big">
+        <h4>{{ recommended_product.name }}</a></h4>
+        <p>{{ recommended_product.price }} cent</p>
+      </div>
+    </div>
+  </div>  
   <div class="row">
     <div class="col-sm-12" align="left">
-      {% if user.is_authenticated %}
-      <p>Het product van de dag is {{ recommended_product }} !!!!!!! </p>
-		<table>
-		{% for e in all_products %}
-			<tr><td> {{ e.name }} </td><td> {{ e.price }} </td><td> {{ e.product_score }} </td> <td> {{ e.product_score_details }} </td></tr>
-		{% endfor %}
-		</table>
-	  {% else %}
-      <p>Je moet inloggen om je aanbevolen product te zien. </p>
-	  {% endif %}        
+      <p>Ook interestante producten: </p>    
+      <table>
+      {% for e in all_products %}
+        <tr><td> {{ e.name }} </td><td> {{ e.price }} </td><td> {{ e.product_score }} </td> <td> {{ e.product_score_details }} </td></tr>
+      {% endfor %}
+      </table>	     
     </div>
   </div>
+  {% else %}
+  <div class="row">
+    <div class="col-sm-12" align="left">  
+      <p>Je moet inloggen om je aanbevolen product te zien. </p>
+    </div>
+  </div>
+  {% endif %}     
 
 </div>
 {% endblock %}

@@ -26,6 +26,8 @@ class MainView(TemplateView):
             productList = Product.objects.all()
             for product in productList:
                 product.product_score, product.product_score_details = ProductChooseAlgorithm.calculate_product_score(product, up)
+            productList = list(productList)
+            productList.sort(key= lambda x: x.product_score, reverse=True)
             context['all_products'] = productList       
         return context
 
