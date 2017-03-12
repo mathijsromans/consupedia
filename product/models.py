@@ -57,6 +57,19 @@ class UserPreferences(models.Model):
     animals_weight = models.IntegerField(default=0)
     personal_health_weight = models.IntegerField(default=0)
 
+    def get_rel_weights(self):
+        #normaliseren van de gebruikersgewichten.
+        #voorbeeld : 6,2,4,1 => 1,0.3333,0.66666,0.
+        userweights = self.get_weights()
+        maxval = max(userweights) or 1
+        normalizedUserweights = []
+        for weight in userweights:
+            normalizedUserweights.append(float(weight / maxval))
+        return normalizedUserweights
+
+    def get_weights(self):
+        return [self.price_weight, self.environment_weight, self.social_weight, self.animals_weight, self.personal_health_weight]
+
     def __str__(self):
         return 'Preferences of ' + self.user.username
 

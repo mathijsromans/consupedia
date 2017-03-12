@@ -130,7 +130,11 @@ class UserPreferenceEditView(FormView):
     success_url = '/'
 
     def get_my_preference(self):
-        up, created = UserPreferences.objects.get_or_create( user = self.request.user )
+        return UserPreferenceEditView.get_my_preference(self.request)
+
+    @staticmethod
+    def get_my_preference(request):
+        up, created = UserPreferences.objects.get_or_create( user = request.user )
         return up
 
     def get_initial(self):
@@ -189,9 +193,31 @@ def get_what_to_eat_result(request):
     up.animals_weight = 5
     up.personal_health_weight = 5
     result = ProductChooseAlgorithm.return_product(up, category)
-   
-    data = serializers.serialize('json', [result,])
-    struct = json.loads(data)
-    data = json.dumps(struct[0])
-
+    scores = result.scores
+  
+    data = serializers.serialize('json', [result, scores, ])
     return HttpResponse(data, content_type='application/json')
+
+@login_required
+def get_user_preference_data(request):
+    up = UserPreferenceEditView.get_my_preference(request)
+    rel = up.get_rel_weights()
+
+    response = json.dumps({'status': 'success',
+                           'user_preferences': [
+                               { "preference": "price",
+                                 "weight:": up.price_weight,
+                                 "rel_weight": rel[0] },
+                               { "preference": "environment",
+                                 "weight:": up.environment_weight,
+                                 "rel_weight": rel[1] },
+                               { "preference": "social",
+                                 "weight:": up.social_weight,
+                                 "rel_weight": rel[2] },
+                               { "preference": "animals",
+                                 "weight:": up.animals_weight,
+                                 "rel_weight": rel[3] },
+                               { "preference": "price",
+                                 "weight:": up.personal_health_weight,
+                                 "rel_weight": rel[4] } ] })
+    return HttpResponse(response, content_type='application/json')

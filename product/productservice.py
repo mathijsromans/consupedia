@@ -94,11 +94,13 @@ class RecipeService():
             unit = Ingredient.NO_UNIT
             category = ProductService.get_or_create_unknown_category()
             products = ProductService().get_all_products(ing[2])
-            if len(products) != 0:
+            if products:
                 cat_dict = defaultdict(int)
                 for p in products:
                     cat_dict[p.category] += 1
                 category = max(cat_dict.items(), key=(lambda a: a[1]))[0]
+                if not category:
+                    category = ProductService.get_or_create_unknown_category()
             quantity, unit = RecipeService.get_quantity_and_unit( ing[0], ing[1])
             print('Using ingredient ' + str(quantity) + ' ' + str(unit) + ' ' + str(category))
             Ingredient.objects.create(quantity=quantity, unit=unit, category=category, recipe = new_recipe)
