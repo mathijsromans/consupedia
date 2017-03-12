@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 
 import product.views
-import questionmark.views
 
 from website.views import ContactView
 from website.views import UserPreferencesView
@@ -28,11 +27,9 @@ urlpatterns = [
     url(r'^recipes/$', product.views.RecipesView.as_view(), name='recipes'),
     url(r'^recipes/add$', product.views.RecipeAddView.as_view(), name='recipe-add'),
 
-
     url(r'^categories/$', product.views.CategoriesView.as_view(), name='categories'),
     url(r'^category/(?P<category_id>[0-9]+)/$', product.views.CategoryView.as_view(), name='category'),
 
-    url(r'^questionmark/$', questionmark.views.QMProductsView.as_view(), name='questionmark-products'),
     url(r'^user_preferences/$', product.views.UserPreferenceEditView.as_view(), name='user_prefs'),
     url(r'^what_to_eat/$', product.views.WhatToEatView.as_view(), name='what_to_eat'),
     url(r'^what_to_eat/get_result/?', product.views.get_what_to_eat_result),
