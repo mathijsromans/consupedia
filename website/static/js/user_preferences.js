@@ -25,5 +25,5 @@ function sliderChanged(e) {
 }
 
 function updateUiWeights(preferences) {
-
+	console.log(preferences);
 }
