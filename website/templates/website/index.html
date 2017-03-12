@@ -15,8 +15,15 @@
     <div class="col-sm-12" align="left">      
       <p>Het product van de dag is: </p>
       <div class="csp-product csp-card csp-card-big">
-        <h4>{{ recommended_product.name }}</a></h4>
-        <p>{{ recommended_product.price }} cent</p>
+        <h4><a href="{% url 'product' recommended_product.id %}">{{ recommended_product.name }}</a></h4>
+        <div>
+            {% if recommended_product.thumb_url %}
+            <img src="{{ recommended_product.thumb_url }}"/>
+            {% endif %}     
+            {% if recommended_product.price %} 
+            <span>{{ recommended_product.price }} cent</span>
+            {% endif %} 
+        </div>
       </div>
     </div>
   </div>  
