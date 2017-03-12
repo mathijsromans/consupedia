@@ -207,16 +207,17 @@ def set_user_preference_data(request):
     new_weight = int(request.POST['weight'])
     print(new_weight)
 
-    if new_weight == 'price':
+    if pref_to_change == 'price':
         up.price_weight = new_weight
-    elif new_weight == 'environment':
+    elif pref_to_change == 'environment':
         up.environment_weight = new_weight
-    elif new_weight == 'social':
+    elif pref_to_change == 'social':
         up.social_weight = new_weight
-    elif new_weight == 'animals':
+    elif pref_to_change == 'animals':
         up.animals_weight = new_weight
-    elif new_weight == 'personal_health':
+    elif pref_to_change == 'personal_health':
         up.personal_health_weight = new_weight
+    up.save()
 
     rel = up.get_rel_weights()
     response = json.dumps({'status': 'success',
