@@ -25,5 +25,10 @@ function sliderChanged(e) {
 }
 
 function updateUiWeights(preferences) {
-	console.log(preferences);
+	
+	for(var i = 1; i < preferences.length; i++)
+	{
+		console.log(preferences[i]);
+	}
+	
 }
