@@ -177,6 +177,11 @@ LOGGING = {
             'propagate': True,
             'level': 'DEBUG',
         },
+        'questionmark': {
+            'handlers': ['file_debug', 'file_error', 'console'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
         'django_cron': {
             'handlers': ['file_debug', 'file_error', 'console'],
             'propagate': True,

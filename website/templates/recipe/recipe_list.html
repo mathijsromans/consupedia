@@ -24,7 +24,7 @@
             <h4>{{ recipe.number_persons }} personen</h4>
             <h4>{{ recipe.preparation_time_in_min }} minuten</h4>
             {% for ingredient in recipe.ingredient_set.all %}
-                {{ ingredient }}<br/>
+                <a href="{% url 'category' ingredient.category.id %}">{{ ingredient }}</a><br/>
             {% endfor %}
             {% if recipe.source_if_not_user %}
             <br/>
