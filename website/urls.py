@@ -23,8 +23,9 @@ urlpatterns = [
     url(r'^product/add/$', product.views.ProductCreateView.as_view(), name='product-add'),
     url(r'^product/edit/(?P<product_id>[0-9]+)/$', product.views.ProductEditView.as_view(), name='product-edit'),
     url(r'^product/(?P<product_id>[0-9]+)/$', product.views.ProductView.as_view(), name='product'),
-
     url(r'^product/rating/set/?', login_required(product.views.set_product_rating)),
+
+    url(r'^categories/$', product.views.CategoriesView.as_view(), name='categories'),
     url(r'^category/(?P<category_id>[0-9]+)/$', product.views.CategoryView.as_view(), name='category'),
 
     url(r'^questionmark/$', questionmark.views.QMProductsView.as_view(), name='questionmark-products'),

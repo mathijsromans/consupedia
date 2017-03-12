@@ -26,6 +26,14 @@ class ProductsView(TemplateView):
         context['products'] = ProductService().get_all_products(search_query)
         return context
 
+class CategoriesView(TemplateView):
+    template_name = 'category/categories.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context
+
 
 class ProductView(TemplateView):
     template_name = 'product/product_page.html'

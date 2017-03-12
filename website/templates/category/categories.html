@@ -1,0 +1,17 @@
+{% extends "website/base.html" %}
+
+{% load static %}
+{% load consupedia %}
+
+{% block title %} Categories {{ block.super }}{% endblock %}
+
+{% block content %}
+
+
+<h3 class="view-title">Categories</h3>
+
+{% for category in categories %}
+<p><a href="{% url 'category' category.id %}">{{ category.name }}</a></p>
+{% endfor %}
+
+{% endblock %}
