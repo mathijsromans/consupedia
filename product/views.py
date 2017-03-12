@@ -59,6 +59,22 @@ class RecipeAddView(FormView):
     template_name = 'recipe/recipe_edit.html'
     form_class = RecipeForm
     success_url = '/recipes/'
+    recipe = None;
+    
+    def get_initial(self, **kwargs):
+        if ('recipe_id' in self.kwargs):
+            recipe_id = self.kwargs['recipe_id']
+            self.recipe = Recipe.objects.get(id=recipe_id )
+            return {'name': self.recipe.name}
+        return None       
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if ('recipe_id' in self.kwargs):
+            recipe_id = self.kwargs['recipe_id']
+            self.recipe = Recipe.objects.get(id=recipe_id )
+            context['recipe'] = self.recipe
+        return context
 
     @transaction.atomic
     def form_valid(self, form):
