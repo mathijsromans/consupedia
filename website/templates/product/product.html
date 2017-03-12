@@ -21,31 +21,3 @@ Geen plaatje beschikbaar
   </table>
 </div>
 
-<div class="row" align="center">
-  <div class="col-md-6">
-    <h4>Name history</h4>
-    <table class="table table-striped">
-    {% for revision in product.productname_set.all %}
-      <tr>
-        <td>{{ revision.name }}</td>
-        <td>{{ revision.datetime_created|date:'j F Y, H:i' }}</td>
-        <td>{{ revision.user }}</td>
-      </tr>
-    {% endfor %}
-    </table>
-  </div>
-
-  <div class="col-md-6">
-    <h4>Price history</h4>
-    <table class="table table-striped">
-    {% for revision in product.price_set.all %}
-      <tr>
-        <td>{{ revision.cent }}</td>
-        <td>{{ revision.datetime_created|date:'j F Y, H:i' }}</td>
-        <td>{{ revision.user }}</td>
-      </tr>
-    {% endfor %}
-    </table>
-  </div>
-
-</div>
