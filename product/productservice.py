@@ -1,9 +1,8 @@
 from django.db import transaction
 
-from questionmark import api
+from questionmark import api, jumbo
 from .models import Product, Category, Score
-from questionmark.jumbo_scraper import JumboScraper
-from .questionmarkmapper import QuestionmarkMapper
+from .mappers import QuestionmarkMapper, JumboMapper
 
 class ProductService:
 
@@ -16,16 +15,20 @@ class ProductService:
     @staticmethod
     @transaction.atomic
     def update_products_from_questionmarkapi(search_name):
+        qm_mapper = QuestionmarkMapper()
+        jumbo_mapper = JumboMapper()
+
         products_dict = api.search_product(search_name)
-        name_price_list = JumboScraper().get_search_result(search_name)
+        jumbo_results = jumbo.search_product(search_name)
         products = []
         for product_dict in products_dict["products"]:
             product, created = Product.objects.get_or_create(name=product_dict["name"])
-            product = QuestionmarkMapper().map_to_product(product, product_dict)
-            for name_price in name_price_list:
+            product = qm_mapper.map_to_product(product, product_dict)
+            for jumbo_result in jumbo_results:
                 name = "Jumbo " + product.name.replace("0 g", "0g")
-                if name in name_price:
-                    product.price = int(name_price[name])
-                    product.save()
+                if jumbo_result['name'] == name:
+                    jumbo_mapper.map_to_product(product, jumbo_result)
             products.append(product)
         return products
+
+

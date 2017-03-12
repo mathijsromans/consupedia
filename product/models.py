@@ -20,6 +20,7 @@ class Product(models.Model):
     name = models.CharField(max_length=256, null=True)
     ean_code = models.CharField(max_length=25, null=True)
     price = models.IntegerField(null=True)
+    size = models.CharField(max_length=256, null=True)
     amount_in_gram = models.IntegerField(null=True)
     category = models.ForeignKey(Category, null=True)
     scores = models.OneToOneField(Score, null=True)
