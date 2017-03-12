@@ -21,6 +21,14 @@ class TestAllerHandeScraper(TestCase):
         preparation_time_in_min = allerhande_scraper.get_preparation_time_min(content)
         self.assertEqual(preparation_time_in_min, 45)
 
+    def test_get_number_persons(self):
+        content, url = allerhande_scraper.get_recipe_page_html(self.recipe_id)
+        number_persons = allerhande_scraper.get_number_persons(content)
+        self.assertEqual(number_persons, 10)
+        content, url = allerhande_scraper.get_recipe_page_html('R-R543138')
+        number_persons = allerhande_scraper.get_number_persons(content)
+        self.assertEqual(number_persons, 4)
+
     def test_get_recipe_ingredient(self):
         content, url = allerhande_scraper.get_recipe_page_html(self.recipe_id)
         ingredients = allerhande_scraper.get_recipe_ingredients(content)
