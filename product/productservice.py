@@ -33,6 +33,13 @@ class ProductService:
             products.append(product)
         return products
 
+    @staticmethod
+    def get_or_create_unknown_category():
+        category, created = Category.objects.get_or_create(name='Unknown category')
+        if created:
+            product, created = Product.objects.get_or_create(name='Unknown product')
+            product.category = category
+        return category
 
 class RecipeService():
 
@@ -80,14 +87,16 @@ class RecipeService():
         for ing in ingredient_input:
             if len(ing) != 3:
                 continue
+            quantity = 0
+            unit = Ingredient.NO_UNIT
+            category = ProductService.get_or_create_unknown_category()
             products = ProductService().get_all_products(ing[2])
-            if len(products) == 0:
-                continue
-            cat_dict = defaultdict(int)
-            for p in products:
-                cat_dict[p.category] += 1
-            max_cat = max(cat_dict.items(), key=(lambda a: a[1]))
+            if len(products) != 0:
+                cat_dict = defaultdict(int)
+                for p in products:
+                    cat_dict[p.category] += 1
+                category = max(cat_dict.items(), key=(lambda a: a[1]))[0]
             quantity, unit = RecipeService.get_quantity_and_unit( ing[0], ing[1])
-            print('Using ingredient ' + str(quantity) + ' ' + str(unit) + ' ' + str(max_cat[0]))
-            Ingredient.objects.create(quantity=quantity, unit=unit, category=max_cat[0], recipe = new_recipe)
+            print('Using ingredient ' + str(quantity) + ' ' + str(unit) + ' ' + str(category))
+            Ingredient.objects.create(quantity=quantity, unit=unit, category=category, recipe = new_recipe)
         print('Done creating recipe')
