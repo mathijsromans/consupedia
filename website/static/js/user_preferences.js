@@ -24,4 +24,6 @@ function sliderChanged(e) {
 		
 }
 
-function updateUiWeights(data.user_preferences)
+function updateUiWeights(preferences) {
+
+}
