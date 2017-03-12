@@ -40,7 +40,7 @@ class ProductChooseAlgorithm:
         return 0, 'weetniet'
         
     @staticmethod
-    def maximize_product_scores(user_pref, category):
+    def maximize_product_scores(user_pref, category=None):
         maxScore = -99999999999
         if Product.objects.all():
             productToReturn = Product.objects.all()[0]
@@ -52,10 +52,6 @@ class ProductChooseAlgorithm:
                         productToReturn = product
             return productToReturn
         return None
-
-    @staticmethod
-    def return_product(user_pref, category=None):
-        return ProductChooseAlgorithm.maximize_product_scores(user_pref, category)
 
     @staticmethod
     def cheapest_product():

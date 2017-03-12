@@ -100,7 +100,7 @@ class CategoryView(TemplateView):
         context['category'] = category
         if(self.request and self.request.user and self.request.user.is_authenticated()):
             up, created = UserPreferences.objects.get_or_create( user = self.request.user )
-            context['product'] = ProductChooseAlgorithm.return_product(up, category)
+            context['product'] = ProductChooseAlgorithm.maximize_product_scores(up, category)
         return context
 
 
@@ -208,7 +208,7 @@ def get_what_to_eat_result(request):
     up.social_weight = 5
     up.animals_weight = 5
     up.personal_health_weight = 5
-    result = ProductChooseAlgorithm.return_product(up, category)
+    result = ProductChooseAlgorithm.maximize_product_scores(up, category)
     scores = result.scores
   
     data = serializers.serialize('json', [result, scores, ])
