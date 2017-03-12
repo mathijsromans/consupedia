@@ -1,5 +1,5 @@
 $('.csp-rater').each(initRater);
-$('.csp-user-rating i').click(changeRating);
+$('.csp-active-user .csp-user-rating i').click(changeRating);
 
 function initRater() {
 	var globalRating = $(this).data('global-rating');

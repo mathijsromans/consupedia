@@ -61,15 +61,15 @@ body {
 	z-index:0;
 }
 
-.csp-rater:hover:not(.csp-user-rated) .csp-global-rating {
+.csp-active-user  .csp-rater:hover:not(.csp-user-rated) .csp-global-rating {
 	display:none;
 }
 
-.csp-user-rating:hover i, .csp-starred {
+.csp-active-user .csp-user-rating:hover i, .csp-starred {
 	color:gold;
 }
 
-.csp-user-rating i:hover  ~ i {
+.csp-active-user  .csp-user-rating i:hover  ~ i {
 	color:#CCC;
 }
 
