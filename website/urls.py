@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^questionmark/$', questionmark.views.QMProductsView.as_view(), name='questionmark-products'),
     url(r'^user_preferences/$', product.views.UserPreferenceEditView.as_view(), name='user_prefs'),
     url(r'^what_to_eat/$', product.views.WhatToEatView.as_view(), name='what_to_eat'),
+    url(r'^what_to_eat/get_result/?', product.views.get_what_to_eat_result),
 
     url(r'^userprofile/(?P<pk>[0-9]+)/$', login_required(UserProfileView.as_view()), name='userprofile'),
 

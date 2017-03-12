@@ -24,7 +24,7 @@
 
 </head>
 
-<body>
+<body {% if user.is_authenticated %}class="csp-active-user"{% endif %}>
 
   {% include "website/navbar.html" %}
 

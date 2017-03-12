@@ -1,40 +1,42 @@
 $('.csp-rater').each(initRater);
-$('.csp-user-rating i').click(changeRating);
-
+$('.csp-active-user .csp-user-rating i').click(changeRating);
 
 function initRater() {
 	var globalRating = $(this).data('global-rating');
 	var userRating = $(this).data('user-rating');
-	var globalStars = $(this).find('.csp-global-rating');
-	var globalStarsInitialWidth = globalStars.width();
-	var globalStarsDesiredWidth = globalStarsInitialWidth / 5 * globalRating;
-	
 	if (userRating > 0) {
 		$(this).addClass('csp-user-rated');
-		setRating($(this), userRating);
+		updateUiUserRating($(this), userRating);
 	}
-	
-	globalStars.css('width', globalStarsDesiredWidth + 'px');
-		
+	if (globalRating == "None") globalRating = 0;
+	updateUiGlobalRating($(this), globalRating);	
 }
 
-function setRating(rater, rating) {
-	var stars = rater.find('i');
-
+function updateUiUserRating(rater, rating) {
+	var stars = rater.find('.csp-user-rating i');
 	stars.each(function() {
 		if($(this).index() < rating) $(this).addClass('csp-starred');
 		else $(this).removeClass('csp-starred');
 	});
 }
 
+function updateUiGlobalRating(rater, rating) {
+	var starContainer = rater.find('.csp-global-rating');
+	if (!starContainer.data('initialWidth')) starContainer.data('initialWidth', starContainer.width());
+	var totalWidth = starContainer.data('initialWidth');
+	var desiredWidth = totalWidth / 5 * rating;
+	
+	starContainer.css('width', desiredWidth + 'px');
+	
+}
+
 function changeRating(e) {
 	var rating = $(e.target).index() + 1;
 	var rater = $(e.target).closest('.csp-rater');
-
 	rater.data('user-rating', rating);
 	rater.addClass('csp-user-rated');
 
-	setRating(rater, rating);
+	updateUiUserRating(rater, rating);
 
 	$.post(
 	    "/product/rating/set/",
@@ -43,7 +45,12 @@ function changeRating(e) {
 	        rating: rating
 	    },
 	    function(data) {
-	        console.log(data.message);
+			if(data.status == 'success')
+			{
+				var avg = data.average_rating;
+				rater.data('global-rating', avg);
+				updateUiGlobalRating(rater, avg);
+			}
 	    },
 	    "json"
 	);

@@ -5,11 +5,12 @@ from django.views.generic.edit import FormView
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.core import serializers
 
 from .models import Product, Category
 from .models import Rating, Recipe
 from .models import UserPreferences
-from .productservice import ProductService
+from .productservice import ProductService, RecipeService
 from .forms import ProductForm, RecipeForm
 from .forms import UserPreferenceForm
 from product.algorithms import ProductChooseAlgorithm
@@ -21,6 +22,8 @@ class ProductsView(TemplateView):
     def get_context_data(self, **kwargs):
         if self.request.method == 'GET': # If the form is submitted
             search_query = self.request.GET.get('search_box', None)
+            if search_query == 'maakrecept':
+                RecipeService.create_recipe('test_recept_naam', None, 'http://test', 10, 45, 'gooi alles in de mixer, klaar', None)
         context = super().get_context_data(**kwargs)
         context['products'] = ProductService().get_all_products(search_query)
         return context
@@ -166,3 +169,20 @@ def set_product_rating(request):
     average_rating = product.get_average_rating()
     response = json.dumps({'status': 'success', 'user_rating': str(user_rating), 'average_rating': str(average_rating)})
     return HttpResponse(response, content_type='application/json')
+    
+def get_what_to_eat_result(request):
+    category = Category.objects.get(id=request.POST['category_id'])   
+    up = UserPreferences()
+    #todo get user preferences from post request.
+    up.price_weight = 5
+    up.environment_weight = 5
+    up.social_weight = 5
+    up.animals_weight = 5
+    up.personal_health_weight = 5
+    result = ProductChooseAlgorithm.return_product(up, category)
+   
+    data = serializers.serialize('json', [result,])
+    struct = json.loads(data)
+    data = json.dumps(struct[0])
+
+    return HttpResponse(data, content_type='application/json')
