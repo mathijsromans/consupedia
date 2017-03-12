@@ -8,3 +8,8 @@ class QuestionMarkQuery(models.Model):
 class JumboQuery(models.Model):
     q_product_name = models.CharField(max_length=256)
     html = models.TextField()
+    
+
+class AHQuery(models.Model):
+    q_product_name = models.CharField(max_length=256)
+    json = models.TextField()
