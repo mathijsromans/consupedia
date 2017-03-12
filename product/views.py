@@ -180,9 +180,7 @@ def get_what_to_eat_result(request):
     up.animals_weight = 5
     up.personal_health_weight = 5
     result = ProductChooseAlgorithm.return_product(up, category)
-   
-    data = serializers.serialize('json', [result,])
-    struct = json.loads(data)
-    data = json.dumps(struct[0])
-
+    scores = result.scores
+  
+    data = serializers.serialize('json', [result, scores, ])
     return HttpResponse(data, content_type='application/json')
