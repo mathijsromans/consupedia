@@ -3,8 +3,8 @@ $('.csp-user-rating i').click(changeRating);
 
 
 function initRater() {
-	var globalRating = $(this).attr('data-global-rating');
-	var userRating = $(this).attr('data-user-rating');
+	var globalRating = $(this).data('global-rating');
+	var userRating = $(this).data('user-rating');
 	var globalStars = $(this).find('.csp-global-rating');
 	var globalStarsInitialWidth = globalStars.width();
 	var globalStarsDesiredWidth = globalStarsInitialWidth / 5 * globalRating;
@@ -31,7 +31,7 @@ function changeRating(e) {
 	var rating = $(e.target).index() + 1;
 	var rater = $(e.target).closest('.csp-rater');
 
-	rater.attr('data-user-rating', rating);
+	rater.data('user-rating', rating);
 	rater.addClass('csp-user-rated');
 
 	setRating(rater, rating);
