@@ -39,9 +39,17 @@
   </div>
   {% else %}
   <div class="row">
-    <div class="col-sm-12" align="left"> 
-      <p><a href="{% url 'what_to_eat' %}">Wat eten we vanavond?</a><p>
-      <p>Je moet inloggen om je aanbevolen product te zien. </p>
+    <div class="col-sm-12" align="left">
+      <div class="block_header">
+        <div class="block_child">          
+          <a href="{% url 'what_to_eat' %}">Wat eten we vanavond?</a>
+        </div>          
+      </div>
+      <div class="block_header block_header_grey">
+        <div class="block_child">          
+          <a href="#">Je moet inloggen om je aanbevolen product te zien</a>
+        </div>          
+      </div>      
     </div>
   </div>
   {% endif %}     

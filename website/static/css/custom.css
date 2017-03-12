@@ -83,9 +83,66 @@ body {
 	max-width:15em;
     cursor: pointer;
 }
-
 .category:hover {
     background-color: #999;
     color: white;
 	border:1px solid #333;
+}
+
+.block_header {
+    float: left;
+    width: 50%;
+    max-height: 600px;           
+    color: white;
+    font-size: 24px;
+    overflow: hidden;
+    border: 15px solid rgba(52, 73, 94, 1);
+}
+.block_child {
+    width: 100%;
+    height: 100%;     
+    padding: 5em 0em; 
+    background: linear-gradient(rgba(52, 73, 94, 0.45),rgba(52, 73, 94, 0.45)), url("FoodOnTable1.jpg");
+    background-position: center;
+    background-size: cover;
+}
+.block_child::before {
+  content: "";
+  display: none;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(52, 73, 94, 0.75);
+}
+.block_header:hover .block_child,
+.block_header:focus .block_child {
+  transform: scale(1.1);
+  transition: all .5s;
+}
+.block_header:hover .block_child:before,
+.block_header:focus .block_child:before {
+  display: block;
+  transition: all .5s;
+}
+.block_child a {    
+    position:relative;
+    text-align:center;
+    color: #ffffff !important;
+    display:block;
+    width:100%;
+}
+.block_header_grey
+{
+    font-size: 24px;
+}
+.block_header_grey .block_child
+{
+    background: linear-gradient(rgba(125, 125, 125, 0.45),rgba(125, 125, 125, 0.45)), url("FoodOnTable2.jpg");
+}
+.block_header_grey:hover .block_child,
+.block_header:focus .block_child {
+  transform: scale(1);
+  transition: all .5s;
 }
