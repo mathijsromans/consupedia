@@ -1,8 +1,9 @@
+from django.db import transaction
+
 from questionmark import api
 from .models import Product, Category, Score
 from questionmark.jumbo_scraper import JumboScraper
 from .questionmarkmapper import QuestionmarkMapper
-
 
 class ProductService:
 
@@ -13,6 +14,7 @@ class ProductService:
         return Product.objects.all()
 
     @staticmethod
+    @transaction.atomic
     def update_products_from_questionmarkapi(search_name):
         products_dict = api.search_product(search_name)
         name_price_list = JumboScraper().get_search_result(search_name)
