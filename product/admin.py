@@ -15,9 +15,19 @@ class RatingAdmin(admin.ModelAdmin):
     list_display = ('user', 'product', 'rating')
 
 
+class IngredientInline(admin.TabularInline):
+    model = Ingredient
+
+
+class RecipeAdmin(admin.ModelAdmin):
+    inlines = [
+        IngredientInline,
+    ]
+
+
 admin.site.register(UserPreferences)
 admin.site.register(Category)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Rating, RatingAdmin)
-admin.site.register(Recipe)
+admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Ingredient)

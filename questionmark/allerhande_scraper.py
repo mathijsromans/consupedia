@@ -9,7 +9,7 @@ regex_ingredients_list = re.compile('<ul class="list shopping ingredient-selecto
 regex_ingredient_item = re.compile('<li itemprop="ingredients">(.*?)</li>', re.DOTALL)
 regex_preparation_time = re.compile('<div class="icon icon-time"></div>(\d+).*?</li>', re.DOTALL)
 regex_name = re.compile('<meta property="twitter:title" content="(.*?)">', re.DOTALL)
-regex_number_persons = re.compile('<div class="icon icon-people"></div><span>(\d+).*?</span></li>', re.DOTALL)
+regex_number_persons = re.compile('<div class="icon icon-people"></div><span>.*?(\d+).*?</span></li>', re.DOTALL)
 
 
 def get_recipe_page_html(recipe_id):
