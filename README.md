@@ -82,6 +82,13 @@ $ crontab -e
 */5 * * * * source /home/<username>/.bashrc && source /home/<path-to-project>/env/bin/activate && python /home/<path-to-project>/website/manage.py runcrons > /home/<path-to-project>/log/cronjob.log
 ```
 
+## Commands
+
+Create recipes from an [AllerHande](https://www.ah.nl/allerhande/) recipe overview page url (example: https://www.ah.nl/allerhande/recepten-zoeken?Ntt=pasta),
+```
+$ python manage.py create_recipes_from_url <allerhande url>
+```
+
 ## Development
 
 ### Testing
