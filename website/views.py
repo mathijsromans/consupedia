@@ -21,7 +21,7 @@ class MainView(TemplateView):
         context = super().get_context_data(**kwargs)
         if(self.request and self.request.user and self.request.user.is_authenticated()):
             up, created = UserPreferences.objects.get_or_create( user = self.request.user )
-            context['recommended_product'] = ProductChooseAlgorithm.return_product(up)
+            context['recommended_product'] = ProductChooseAlgorithm.maximize_product_scores(up)
             #bereken voor alle producten het score veld.
             productList = Product.objects.all()
             for product in productList:

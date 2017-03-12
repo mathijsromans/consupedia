@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.core import serializers
 
 from .models import Product, Category
+from .management.commands.create_recipes import Command
 from .models import Rating, Recipe
 from .models import UserPreferences
 from .productservice import ProductService, RecipeService
@@ -22,8 +23,6 @@ class ProductsView(TemplateView):
     def get_context_data(self, **kwargs):
         if self.request.method == 'GET': # If the form is submitted
             search_query = self.request.GET.get('search_box', None)
-            if search_query == 'maakrecept':
-                RecipeService.create_recipe('test_recept_naam', None, 'http://test', 10, 45, 'gooi alles in de mixer, klaar', None)
         context = super().get_context_data(**kwargs)
         context['products'] = ProductService().get_all_products(search_query)
         return context
@@ -42,7 +41,11 @@ class RecipesView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['recipes'] = Recipe.objects.all()
+        recipes = Recipe.objects.all()
+        if not recipes:
+            Command.create_recipe('R-R399568')   # create a default recipe so there is something to show
+            recipes = Recipe.objects.all()
+        context['recipes'] = recipes
         return context
 
 
@@ -100,7 +103,13 @@ class CategoryView(TemplateView):
         context['category'] = category
         if(self.request and self.request.user and self.request.user.is_authenticated()):
             up, created = UserPreferences.objects.get_or_create( user = self.request.user )
-            context['product'] = ProductChooseAlgorithm.return_product(up, category)
+            context['product'] = ProductChooseAlgorithm.maximize_product_scores(up, category)
+            productList = Product.objects.filter(category=category)
+            for product in productList:
+                product.product_score, product.product_score_details = ProductChooseAlgorithm.calculate_product_score(product, up)
+            productList = list(productList)
+            productList.sort(key= lambda x: x.product_score, reverse=True)
+            context['all_products'] = productList
         return context
 
 
@@ -208,7 +217,7 @@ def get_what_to_eat_result(request):
     up.social_weight = 5
     up.animals_weight = 5
     up.personal_health_weight = 5
-    result = ProductChooseAlgorithm.return_product(up, category)
+    result = ProductChooseAlgorithm.maximize_product_scores(up, category)
     scores = result.scores
   
     data = serializers.serialize('json', [result, scores, ])
