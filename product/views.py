@@ -7,10 +7,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
 from .models import Product, Category
-from .models import Rating
+from .models import Rating, Recipe
 from .models import UserPreferences
 from .productservice import ProductService
-from .forms import ProductForm
+from .forms import ProductForm, RecipeForm
 from .forms import UserPreferenceForm
 from product.algorithms import ProductChooseAlgorithm
 
@@ -32,6 +32,26 @@ class CategoriesView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
         return context
+
+
+class RecipesView(TemplateView):
+    template_name = 'recipe/recipe_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['recipes'] = Recipe.objects.all()
+        return context
+
+
+class RecipeAddView(FormView):
+    template_name = 'recipe/recipe_edit.html'
+    form_class = RecipeForm
+    success_url = '/recipes/'
+
+    @transaction.atomic
+    def form_valid(self, form):
+        Recipe.objects.create(name=form.cleaned_data['name'])
+        return super().form_valid(form)
 
 
 class ProductView(TemplateView):

@@ -11,9 +11,15 @@ class ProductForm(forms.Form):
     name = forms.CharField(label='Name', max_length=100)
     price = forms.IntegerField(label='Price (cents)',validators=[validate_price])
 
+
 class UserPreferenceForm(forms.Form):
     price_weight = forms.IntegerField(label='Prijs')
     environment_weight = forms.IntegerField(label='Milieu')
     social_weight = forms.IntegerField(label='Mensenrechten')
     animals_weight = forms.IntegerField(label='Dieren')
     personal_health_weight = forms.IntegerField(label='Gezond')
+
+
+class RecipeForm(forms.Form):
+    name = forms.CharField(label='Name', max_length=256)
+ 

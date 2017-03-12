@@ -1,0 +1,25 @@
+{% extends "website/base.html" %}
+
+{% load static %}
+{% load consupedia %}
+
+{% block title %} Recipes {{ block.super }}{% endblock %}
+
+{% block content %}
+
+
+<h3 class="view-title">Recipes</h3>
+
+{% if user.is_authenticated %}
+  <section class="csp-menu">
+    <a class="button primary" href="{% url 'recipe-add' %}">Nieuw</a>
+  </section>
+{% endif %}
+
+
+{% for recipe in recipes %}
+<p>{{ recipe.name }}</p>
+
+ {% endfor %}
+
+{% endblock %}

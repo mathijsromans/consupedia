@@ -25,6 +25,10 @@ urlpatterns = [
     url(r'^product/(?P<product_id>[0-9]+)/$', product.views.ProductView.as_view(), name='product'),
     url(r'^product/rating/set/?', login_required(product.views.set_product_rating)),
 
+    url(r'^recipes/$', product.views.RecipesView.as_view(), name='recipes'),
+    url(r'^recipes/add$', product.views.RecipeAddView.as_view(), name='recipe-add'),
+
+
     url(r'^categories/$', product.views.CategoriesView.as_view(), name='categories'),
     url(r'^category/(?P<category_id>[0-9]+)/$', product.views.CategoryView.as_view(), name='category'),
 
