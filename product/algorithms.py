@@ -3,14 +3,7 @@ from product.models import Product, UserPreferences, Category
 class ProductScoring:
     def __init__(self, userweights, productScores):
         self.userweights = userweights
-        self.productScores = productScores        
-        #normaliseren van de gebruikersgewichten.
-        #voorbeeld : 6,2,4,1 => 1,0.3333,0.66666,0.
-        maxval = max(self.userweights) or 1
-        normalizedUserweights = []
-        for weight in self.userweights:         
-            normalizedUserweights.append(float(weight / maxval))
-        self.userweights = normalizedUserweights
+        self.productScores = productScores
         
     #returns the weighted sum over the user weights and the product scores    
     def calculateResult(self):
@@ -28,28 +21,28 @@ class ProductScoring:
                 result += '(n/a (4, '+ str(self.userweights[counter]) +')'                      
             sumOfUserWeights += self.userweights[counter]         
             counter += 1
-            sumOfUserWeights = sumOfUserWeights or 1.0        
+            sumOfUserWeights = sumOfUserWeights or 1.0
         return sum / sumOfUserWeights, result #Som normaliseren door te delen door aantal scores.
             
 class ProductChooseAlgorithm:    
     @staticmethod
-    def calculate_product_score(product, user):   
+    def calculate_product_score(product, user_pref):
         if(product.scores):
             #price_weight niet in userweights.
-            userweights = [user.environment_weight, user.social_weight, user.animals_weight, user.personal_health_weight]
+            normalizedUserweights = user_pref.get_rel_weights()
             productScores = [product.scores.environment, product.scores.social, product.scores.animals, product.scores.personal_health]
-            productScoring = ProductScoring(userweights, productScores)
+            productScoring = ProductScoring(normalizedUserweights, productScores)
             return productScoring.calculateResult() 
         return 0, 'weetniet'
         
     @staticmethod
-    def maximize_product_scores(user, category):
+    def maximize_product_scores(user_pref, category):
         maxScore = -99999999999
         if Product.objects.all():
             productToReturn = Product.objects.all()[0]
             for product in Product.objects.all():
                 if(product.category == category or not category):
-                    result, test = ProductChooseAlgorithm.calculate_product_score(product, user)
+                    result, test = ProductChooseAlgorithm.calculate_product_score(product, user_pref)
                     if result > maxScore:
                         maxScore = result
                         productToReturn = product
@@ -57,8 +50,8 @@ class ProductChooseAlgorithm:
         return None
 
     @staticmethod
-    def return_product(user, category=None):
-        return ProductChooseAlgorithm.maximize_product_scores(user, category)
+    def return_product(user_pref, category=None):
+        return ProductChooseAlgorithm.maximize_product_scores(user_pref, category)
 
     @staticmethod
     def cheapest_product():
