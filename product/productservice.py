@@ -75,6 +75,9 @@ class RecipeService():
             [2, 'kg', 'gezeefde tomaten'],
             [1, 'kg', 'half-om-halfgehakt']]
 
+        if Recipe.objects.filter(name=name).first():
+            # recipe already exists
+            return
         if not ingredient_input:
             ingredient_input = test_ingredients
         print('Creating recipe with ingredients: ' + str(ingredient_input))
