@@ -5,6 +5,7 @@ from django.views.generic.edit import FormView
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.core import serializers
 
 from .models import Product, Category
 from .models import Rating
@@ -148,3 +149,20 @@ def set_product_rating(request):
     average_rating = product.get_average_rating()
     response = json.dumps({'status': 'success', 'user_rating': str(user_rating), 'average_rating': str(average_rating)})
     return HttpResponse(response, content_type='application/json')
+    
+def get_what_to_eat_result(request):
+    category = Category.objects.get(id=request.POST['category_id'])   
+    up = UserPreferences()
+    #todo get user preferences from post request.
+    up.price_weight = 5
+    up.environment_weight = 5
+    up.social_weight = 5
+    up.animals_weight = 5
+    up.personal_health_weight = 5
+    result = ProductChooseAlgorithm.return_product(up, category)
+   
+    data = serializers.serialize('json', [result,])
+    struct = json.loads(data)
+    data = json.dumps(struct[0])
+
+    return HttpResponse(data, content_type='application/json')

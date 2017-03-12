@@ -1,4 +1,6 @@
 {% extends "website/base.html" %}
+{% load static %}
+{% load consupedia %}
 
 {% block title %} Wat eten we? {{ block.super }}{% endblock %}
 
@@ -7,26 +9,33 @@
 <div class="row" align="center">
   <h3>Wat gaan we vanavond eten?</h3> 
 </div>
-
+<hr/>
 <div class="row" align="center">
   <h4>Vul de volgende gegevens in om te kijken wat je belangerijk vind.</h4> 
 </div>
-
+<hr/>
 <div class="row" align="center">
-  Sliders
+  <div>Milieu (1-10): 5</div> 
+  <div>Mensenrechten(1-10): 5</div>
+  <div>Dierenwelzijn(1-10): 5</div>
+  <div>Gezondheid(1-10): 5</div>
+  <div>Prijs(1-10): 5</div>
 </div>
-
+<hr/>
 <div class="row" align="center">
   <h4>Kies een categorie waar je het beste product in wil vinden</h4> 
 </div>
-
+<hr/>
 <div class="row" align="center">
-  Categorieren
+  {% for category in categories %}
+  <div class="category" id="{{category.id}}">{{ category.name }}</div>
+  {% endfor %}
+</div>
+<hr/>
+<div class="row" align="center">
+  <div id="resultProduct"></div>  
 </div>
 
-<div class="row" align="center">
-  Resultaat
-</div>
-
-
+<script src="{% static 'js/what_to_eat.js' %}" type="text/javascript"></script>
 {% endblock %}
+
