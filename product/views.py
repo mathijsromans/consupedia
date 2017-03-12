@@ -241,10 +241,10 @@ def set_user_preference_data(request):
     elif pref_to_change == 'personal_health':
         up.personal_health_weight = new_weight
     up.save()
-    return get_user_preference_data(request)
+    return get_user_preference_data(up)
 
 @login_required
-def get_user_preference_data(request):
+def get_user_preference_data(up):
     rel = up.get_rel_weights()
     response = json.dumps({'status': 'success',
                            'user_preferences': [
