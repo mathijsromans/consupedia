@@ -23,7 +23,7 @@ class ProductService:
         jumbo_results = jumbo.search_product(search_name)
         ah_results = ah.search_product(search_name)
 
-        products = []
+        product_ids = []
         mapper = RetailerMapper()
         for product_dict in products_dict['products']:
             product, created = Product.objects.get_or_create(name=product_dict['name'])
@@ -33,9 +33,9 @@ class ProductService:
             ProductService.enrich_product_data(mapper, product, jumbo_results)
             ProductService.enrich_product_data(mapper, product, ah_results)
 
-            products.append(product)
+            product_ids.append(product.id)
 
-        return products
+        return Product.objects.filter(id__in=product_ids)
 
     @staticmethod
     def get_or_create_unknown_category():
