@@ -6,6 +6,7 @@ from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.core import serializers
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Product, Category
 from .management.commands.create_recipes import Command
@@ -24,7 +25,17 @@ class ProductsView(TemplateView):
         if self.request.method == 'GET': # If the form is submitted
             search_query = self.request.GET.get('search_box', None)
         context = super().get_context_data(**kwargs)
-        context['products'] = ProductService().get_all_products(search_query)
+        products_all = ProductService().get_all_products(search_query)
+        paginator = Paginator(products_all, 100)
+        page = self.request.GET.get('page')
+        try:
+            products = paginator.page(page)
+        except PageNotAnInteger:
+            products = paginator.page(1)
+        except EmptyPage:
+            products = paginator.page(paginator.num_pages)
+        context['products'] = products
+        context['n_products_all'] = products_all.count()
         return context
 
 class CategoriesView(TemplateView):
@@ -241,10 +252,10 @@ def set_user_preference_data(request):
     elif pref_to_change == 'personal_health':
         up.personal_health_weight = new_weight
     up.save()
-    return get_user_preference_data(request)
+    return get_user_preference_data(up)
 
 @login_required
-def get_user_preference_data(request):
+def get_user_preference_data(up):
     rel = up.get_rel_weights()
     response = json.dumps({'status': 'success',
                            'user_preferences': [

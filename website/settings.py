@@ -13,6 +13,7 @@ INSTALLED_APPS = [
     'product',
     'questionmark',
     'bootstrap3',
+    'bootstrap_pagination',
     'registration',
     'dbbackup',
     'django_cron',
