@@ -25,7 +25,15 @@ function sliderChanged(e) {
 }
 
 function updateUiWeights(preferences) {
-	var maxSize = 15;
+	var totalSize = 75;
+	var combinedRelWeight = 0;
+	
+	for(var i = 0; i < preferences.length; i++)
+	{
+		combinedRelWeight += preferences[i].rel_weight;
+	}
+	
+	var maxSize = totalSize / combinedRelWeight;
 	
 	for(var i = 0; i < preferences.length; i++)
 	{
