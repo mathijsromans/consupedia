@@ -1,7 +1,5 @@
 {% extends "website/base.html" %}
 
-{% load bootstrap3 %}
-
 {% load static %}
 
 {% block title %}Edit {{ userPreference }} {{ block.super }}{% endblock %}
@@ -20,8 +18,8 @@
 		<label for="price">Prijs</label>
 		<input type="range" name="price" min="0" max="100" value="{{ userPreference.price_weight }}">
 		
-		<label for="milieu">Milieu</label>
-		<input type="range" name="milieu" min="0" max="100" value="{{ userPreference.environment_weight }}">
+		<label for="environment">Milieu</label>
+		<input type="range" name="environment" min="0" max="100" value="{{ userPreference.environment_weight }}">
 
 		<label for="social">Sociaal</label>
 		<input type="range" name="social" min="0" max="100" value="{{ userPreference.social_weight }}">
@@ -30,42 +28,16 @@
 		<input type="range" name="animals" min="0" max="100" value="{{ userPreference.animals_weight }}">
 
 		<label for="personal_health">Gezondheid</label>
-		<input type="range" name="personal_health" min="0" max="100" value="{{ userPreference.personal_health_weight }}">
-
-		
+		<input type="range" name="personal_health" min="0" max="100" value="{{ userPreference.personal_health_weight }}">		
 	</section>
 	
-      <form action="" method="post">
-        {% csrf_token %}
-
-        <div class="row">
-          <div class="col-sm-6">		  
-            {% bootstrap_field form.price_weight %}
-          </div>
-
-          <div class="col-sm-6">
-            {% bootstrap_field form.environment_weight %}
-          </div>
-
-          <div class="col-sm-6">
-            {% bootstrap_field form.social_weight %}
-          </div>
-
-          <div class="col-sm-6">
-            {% bootstrap_field form.animals_weight %}
-          </div>
-
-          <div class="col-sm-6">
-            {% bootstrap_field form.personal_health_weight %}
-          </div>
-        </div>
-
-        {% buttons %}
-          <button type="submit" class="btn btn-primary">
-            Save
-          </button>
-        {% endbuttons %}
-      </form>
+	<section class="csp-settings-relview">
+		<div class="csp-relview csp-price"></div>
+		<div class="csp-relview csp-environment"></div>
+		<div class="csp-relview csp-social"></div>
+		<div class="csp-relview csp-animals"></div>
+		<div class="csp-relview csp-personal_health"></div>
+	</section>
 
     </div>
   </div>

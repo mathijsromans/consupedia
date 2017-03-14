@@ -25,10 +25,19 @@ function sliderChanged(e) {
 }
 
 function updateUiWeights(preferences) {
+	var maxSize = 15;
 	
-	for(var i = 1; i < preferences.length; i++)
+	for(var i = 0; i < preferences.length; i++)
 	{
 		console.log(preferences[i]);
+		var pref = preferences[i].preference;
+		var relWeight = preferences[i].rel_weight;
+		var weight = preferences[i].weight;
+		
+		var relSize = maxSize * relWeight;
+		
+		$('.csp-settings-relview .csp-' + pref).css({"width" : relSize + "vw", "height" : relSize + "vw"});
+		
 	}
 	
 }

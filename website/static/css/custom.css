@@ -73,6 +73,21 @@ body {
 	color:#CCC;
 }
 
+.csp-settings-relview > div  {
+	float:left;
+	margin:0;
+	height:8vw;
+	width:8vw;
+	border-radius:50%;
+	transition:width 1s, height 1s;
+}
+
+.csp-price {	background-color: gold;}
+.csp-environment {	background-color: green;}
+.csp-social {	background-color: pink;}
+.csp-animals {	background-color: brown;}
+.csp-personal_health {	background-color: blue;}
+
 .category {
     float:left;
 	border:1px solid #CCC;
