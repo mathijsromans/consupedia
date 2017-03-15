@@ -1,6 +1,7 @@
 from django.db import transaction
 
 import re
+import difflib
 from questionmark import api, jumbo, ah
 from .models import Product, Category, Score, Ingredient, Recipe
 from .mappers import QuestionmarkMapper, RetailerMapper
@@ -137,21 +138,22 @@ class RecipeService():
                                            preparation_time_in_min = preparation_time_in_min,
                                            preparation = preparation)
         for ing in ingredient_input:
-            if len(ing) != 3:
-                continue
-            quantity = 0
-            unit = Ingredient.NO_UNIT
-            category = ProductService.get_or_create_unknown_category()
-            products = ProductService().get_all_products(ing[2])
-            if products:
-                cat_dict = defaultdict(int)
-                for p in products:
-                    cat_dict[p.category] += 1
-                category = max(cat_dict.items(), key=(lambda a: a[1]))[0]
-                if not category:
-                    category = ProductService.get_or_create_unknown_category()
-            quantity, unit = RecipeService.get_quantity_and_unit( ing[0], ing[1])
-            print('Using ingredient ' + str(quantity) + ' ' + str(unit) + ' ' + str(category))
-            Ingredient.objects.create(quantity=quantity, unit=unit, category=category, recipe = new_recipe)
+            if len(ing) == 3:
+                ProductService().get_all_products(ing[2])
+        all_categories = Category.objects.all()
+        all_category_names = []
+        for c in all_categories:
+            all_category_names.append(c.name)
+        unknown_category = ProductService.get_or_create_unknown_category()
+        for ing in ingredient_input:
+            if len(ing) == 3:
+                quantity = 0
+                unit = Ingredient.NO_UNIT
+                print('searching ' + ing[2])
+                best_category_name = difflib.get_close_matches(ing[2], all_category_names, 1, 0.1)
+                print ('found ' + str(best_category_name))
+                category = all_categories[all_category_names.index(best_category_name[0])] if best_category_name else unknown_category
+                quantity, unit = RecipeService.get_quantity_and_unit( ing[0], ing[1])
+                Ingredient.objects.create(quantity=quantity, unit=unit, category=category, recipe = new_recipe)
         print('Done creating recipe')
         return new_recipe
