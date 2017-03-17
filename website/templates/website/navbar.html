@@ -13,11 +13,11 @@
       <div class="navbar-collapse collapse navbar-responsive-collapse">
         <ul class="nav navbar-nav">
 
-          <li><a href="{% url 'products' %}">Products</a></li>
-          <li><a href="{% url 'categories' %}">Categories</a></li>
-          <li><a href="{% url 'recipes' %}">Recipe</a></li>
+          <li><a href="{% url 'products' %}">Produkten</a></li>
+          <li><a href="{% url 'categories' %}">Categoriën</a></li>
+          <li><a href="{% url 'recipes' %}">Recepten</a></li>
           {% if user.is_authenticated %}
-          <li><a href="{% url 'user_prefs' %}">My Preferences</a></li>
+          <li><a href="{% url 'user_prefs' %}">Voorkeuren</a></li>
 		  {% endif %}
         </ul>
 

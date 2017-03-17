@@ -8,7 +8,7 @@
 {% block content %}
 
 
-<h3 class="view-title">Categories</h3>
+<h3 class="view-title">Categoriën</h3>
 
 {% for category in categories %}
 <p><a href="{% url 'category' category.id %}">{{ category.name }}</a></p>

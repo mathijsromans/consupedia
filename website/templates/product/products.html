@@ -9,13 +9,15 @@
 {% block content %}
 
 
-  <h3 class="view-title">Products</h3>
+  <h3 class="view-title">Produkten</h3>
 
+<div class="row">
 {% if user.is_authenticated %}
   <section class="csp-menu">
-    <a class="button primary" href="{% url 'product-add' %}">Nieuw</a>
+    <a class="button primary" href="{% url 'product-add' %}">Maak nieuw produkt</a>
   </section>
 {% endif %}
+</div>
 
 <div class="row">
 	<form type="get" action="." style="margin: 0">
@@ -23,7 +25,7 @@
 			<input class="form-control" id="search_box" type="text" name="search_box"  placeholder="Search..." >
 		</div>
 		<div class="col-sm-3">
-			<button class="btn btn-primary" id="search_submit" type="submit" >Submit</button>
+			<button class="btn btn-primary" id="search_submit" type="submit" >Zoek</button>
 		</div>
 	</form>
 </div>

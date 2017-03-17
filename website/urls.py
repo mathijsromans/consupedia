@@ -7,7 +7,6 @@ from django.views.generic import TemplateView
 import product.views
 
 from website.views import ContactView
-from website.views import UserPreferencesView
 from website.views import UserProfileView
 from website.views import MainView
 

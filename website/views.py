@@ -64,13 +64,3 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
 
     def get_success_url(self):
         return '/userprofile/' + str(self.request.user.id) + '/'
-
-class UserPreferencesView(TemplateView):
-    template_name = 'user/preference.html'
-
-    def get_context_data(self, **kwargs):
-        up = UserPreferences.objects.filter( user = self.request.user )
-        context = super().get_context_data(**kwargs)
-        test = UserPreferences()
-        context['user_preference'] = test
-        return context
