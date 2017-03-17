@@ -2,11 +2,7 @@
   <h3>{{ product.name }}</h3>
 </div>
 
-{% if product.thumb_url %}
-<img src="{{ product.thumb_url }}"/>
-{% else %}
-Geen plaatje beschikbaar
-{% endif %}
+{% include "product/product_picture.html" %}
 
 <div class="row" align="center">
   <table class="table table-striped">

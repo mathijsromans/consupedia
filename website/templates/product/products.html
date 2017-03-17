@@ -40,6 +40,9 @@
 
     <div class="csp-product csp-card">
         <h4><a href="{% url 'product' product.id %}">{{ product.name }}</a></h4>
+
+		{% include "product/product_picture.html" %}
+		
         <p>{{ product.price }} cent</p>
 		{% if product.category %}
 		<p>Category: <a href="{% url 'category' product.category.id %}">{{ product.category.name }}</a></p>
