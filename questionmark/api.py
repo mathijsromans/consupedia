@@ -13,7 +13,9 @@ def search_product(search_name):
     query, created = QuestionMarkQuery.objects.get_or_create(params_as_string = params_as_string)
     if created:
         response = requests.get(BASE_URL + 'products/', params)
-        print('New query: ' + response.url)
+        # print('New query: ' + response.url)
         query.json = json.dumps(response.json())
+        # with open('query_' + params_as_string + '.json', 'w') as f:
+        #     f.write(query.json)
         query.save()
     return json.loads(query.json)

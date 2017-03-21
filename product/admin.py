@@ -8,7 +8,7 @@ from django.contrib import admin
 
 class ProductAdmin(admin.ModelAdmin):
     model = Product
-    list_display = ('name', 'price', 'size', 'amount_in_gram', 'category', 'product_score')
+    list_display = ('name', 'version', 'questionmark_id', 'brand', 'price', 'quantity', 'unit', 'category', 'product_score')
 
 class RatingAdmin(admin.ModelAdmin):
     model = Rating

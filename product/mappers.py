@@ -1,7 +1,11 @@
-from .models import Product, Score, Category
+from .models import Product, Score, Category, ProductAmount, Brand
+import re
 
 class QuestionmarkMapper:
     def map_to_product(self, product, product_dict):
+        self.map_id(product, product_dict)
+        self.map_brand(product, product_dict)
+        self.extract_amount_from_name(product)
         self.map_scores(product, product_dict)
         self.map_usages(product, product_dict)
         self.map_urls(product, product_dict)
@@ -9,7 +13,26 @@ class QuestionmarkMapper:
         product.save()
         return product
 
-    def map_usages(self, product, product_dict):
+    @staticmethod
+    def map_id(product, product_dict):
+        qm_id = product_dict['id']
+        if id:
+            product.questionmark_id = qm_id
+
+    @staticmethod
+    def map_brand(product, product_dict):
+        if product_dict['brand'] and product_dict['brand']['name']:
+            brand, created = Brand.objects.get_or_create(name=product_dict['brand']['name'])
+            product.brand = brand
+
+    @staticmethod
+    def extract_amount_from_name(product):
+        amount = product.amount_from_name()
+        if amount:
+            product.set_amount(amount)
+
+    @staticmethod
+    def map_usages(product, product_dict):
         usages = product_dict["usages"]
 
         if usages:
@@ -17,14 +40,16 @@ class QuestionmarkMapper:
             category, created = Category.objects.get_or_create(name=newCategory['name'])
             product.category = category
 
-    def map_urls(self, product, product_dict):
+    @staticmethod
+    def map_urls(product, product_dict):
         if 'image_urls' in product_dict:
             urls = product_dict['image_urls']
             for url in urls:
                 if 'thumb' in url:
                     product.thumb_url = url['thumb']
 
-    def map_scores(self, product, product_dict):
+    @staticmethod
+    def map_scores(product, product_dict):
         theme_scores = product_dict["theme_scores"]
         personal_health_score = product_dict["personal_health_score"]
 
@@ -49,11 +74,4 @@ class QuestionmarkMapper:
 class RetailerMapper:
     def map_to_product(self, product, product_dict):
         product.price = int(product_dict['price'])
-        product.size = product_dict['size']
-        if product.size:
-            if product.size.endswith("g"):
-                grams = product.size[:-1].strip()
-                if grams.isnumeric():
-                    product.amount_in_gram = grams
-
         product.save()

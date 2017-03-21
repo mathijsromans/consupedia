@@ -3,7 +3,7 @@ from django.db import transaction
 import re
 import difflib
 from questionmark import api, jumbo, ah
-from .models import Product, Category, Score, Ingredient, Recipe
+from .models import Brand, Product, Category, Score, Ingredient, Recipe, ProductAmount
 from .mappers import QuestionmarkMapper, RetailerMapper
 from collections import defaultdict
 
@@ -48,18 +48,30 @@ class ProductService:
 
     @staticmethod
     def enrich_product_data(mapper, product, retailer_results):
+        # print ('SEARCHING FOR ' + product.get_full_name())
         for retailer_result in retailer_results:
-            if ProductService.matches_name(retailer_result['name'], product.name):
+            # print ('CHECKING ' + str(retailer_result))
+            if ProductService.match(retailer_result, product):
+                # print('FOUND!!! ' + str(retailer_result))
                 mapper.map_to_product(product, retailer_result)
 
 
     @staticmethod
-    def matches_name(retailer_name, name):
+    def match(retailer_result, product):
+        if ProductAmount.from_str(retailer_result['size']) != product.get_amount():
+            return False
+
+        retailer_name = retailer_result['name']
+        name = product.get_full_name()
+
         if retailer_name == name:
             return True
 
+        # print('RETAILER_NAME BEFORE: ' + retailer_name)
+        retailer_name = re.sub(' [0-9]+g', '', retailer_name)
         retailer_name = retailer_name.replace('\xad', '')
         retailer_name = retailer_name.replace(' ', '')
+        # print('RETAILER_NAME AFTER: ' + retailer_name)
 
         name = re.sub('\(.*\)', '' , name)
         name = name.replace(' ', '')
@@ -92,19 +104,6 @@ class ProductService:
 
 
 class RecipeService():
-
-    @staticmethod
-    def get_quantity_and_unit( quantity, unit_text ):
-        if unit_text == '-' or unit_text == 'blaadjes':
-            return quantity, Ingredient.NO_UNIT
-        if unit_text == 'g':
-            return quantity, Ingredient.GRAM
-        if unit_text == 'kg':
-            return 1000*quantity, Ingredient.GRAM
-        if unit_text == 'el':
-            return quantity, Ingredient.EL
-        print('UNKNOWN UNIT : ' + unit_text)
-        return quantity, Ingredient.NO_UNIT
 
     @staticmethod
     def create_recipe( name,
@@ -148,12 +147,12 @@ class RecipeService():
         for ing in ingredient_input:
             if len(ing) == 3:
                 quantity = 0
-                unit = Ingredient.NO_UNIT
-                print('searching ' + ing[2])
+                unit = ProductAmount.NO_UNIT
+                # print('searching ' + ing[2])
                 best_category_name = difflib.get_close_matches(ing[2], all_category_names, 1, 0.1)
-                print ('found ' + str(best_category_name))
+                # print ('found ' + str(best_category_name))
                 category = all_categories[all_category_names.index(best_category_name[0])] if best_category_name else unknown_category
-                quantity, unit = RecipeService.get_quantity_and_unit( ing[0], ing[1])
+                quantity, unit = ProductAmount.get_quantity_and_unit( ing[0], ing[1])
                 Ingredient.objects.create(quantity=quantity, unit=unit, category=category, recipe = new_recipe)
         print('Done creating recipe')
         return new_recipe
