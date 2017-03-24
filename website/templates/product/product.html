@@ -8,6 +8,7 @@
   <table class="table table-striped">
     <tr><td>Naam</td><td>{{ product.name }}</td></tr>
     <tr><td>ean code</td><td>{{ product.ean_code }}</td></tr>
+    <tr><td>Merk</td><td> {{ product.brand.name }}</td></tr>
     <tr><td>Prijs</td><td> {{ product.price }}</td></tr>
     <tr><td>Scores</td></tr>
     <tr><td>Milieu</td><td> {{ product.scores.environment }}</td></tr>

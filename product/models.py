@@ -20,6 +20,14 @@ class ProductAmount:
         self.quantity = quantity
         self.unit = unit
 
+    @staticmethod
+    def extract_size_substring(s):
+        re_amount = re.compile('[0-9,]+ *(?:g|ml|kg|gram|l|cl)', re.IGNORECASE)
+        sizes = re_amount.findall(s)
+        if sizes:
+            return sizes[-1]
+        return None
+
     @classmethod
     def from_str(cls, size):
         quantity = 0
@@ -72,7 +80,10 @@ class Score(models.Model):
     personal_health = models.IntegerField(null=True)
 
 class Brand(models.Model):
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=256)  # name according to Questionmark
+
+    def simple_name(self):
+        return  self.name.replace('Biologisch van', '')
 
     def __str__(self):
         return self.name
@@ -95,22 +106,18 @@ class Product(models.Model):
 
     def get_full_name(self):
         full_name = self.name
-        size = self.size_from_name()
+        size = ProductAmount.extract_size_substring(self.name)
         if size:
             full_name = full_name.replace(size, '')
-        if self.brand and not self.name.startswith(self.brand.name):
-            full_name = self.brand.name + ' ' + full_name
+        if self.brand:
+            simple_brand_name = self.brand.simple_name()
+            if not self.name.startswith(simple_brand_name):
+                full_name = simple_brand_name + ' ' + full_name
         full_name = re.sub('\(.*\)', '' , full_name)
         return full_name
 
-    def size_from_name(self):
-        sizes = re.findall('[0-9,]+ *(?:g|ml|kg|gram|L|l|cl)', self.name)
-        if sizes:
-            return sizes[-1]
-        return None
-
     def amount_from_name(self):
-        size = self.size_from_name()
+        size = ProductAmount.extract_size_substring(self.name)
         if size:
             return ProductAmount.from_str(size)
         return None

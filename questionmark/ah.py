@@ -27,7 +27,7 @@ def search_product(search_term):
         logger.exception(error)
         return results
     for item in items:
-        if '_embedded' in item:
+        if '_embedded' in item and 'product' in item['_embedded']:
             ah_product = item['_embedded']['product']
             results.append({ 
                 'name' : ah_product['description'], 

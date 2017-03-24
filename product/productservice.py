@@ -48,7 +48,7 @@ class ProductService:
 
     @staticmethod
     def enrich_product_data(mapper, product, retailer_results):
-        # print ('SEARCHING FOR ' + product.get_full_name())
+        # print ('SEARCHING FOR ' + product.name + ' -> ' + product.get_full_name())
         for retailer_result in retailer_results:
             # print ('CHECKING ' + str(retailer_result))
             if ProductService.match(retailer_result, product):
@@ -62,6 +62,9 @@ class ProductService:
             return False
 
         retailer_name = retailer_result['name']
+        size_sub = ProductAmount.extract_size_substring(retailer_name)
+        if size_sub:
+            retailer_name = retailer_name.replace(size_sub, '')
         name = product.get_full_name()
 
         if retailer_name == name:
@@ -76,7 +79,7 @@ class ProductService:
         name = re.sub('\(.*\)', '' , name)
         name = name.replace(' ', '')
 
-        if retailer_name == name:
+        if retailer_name.lower() == name.lower():
             return True
 
         brands = ['Hero', 'Jumbo', 'AH']

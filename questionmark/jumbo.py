@@ -3,7 +3,8 @@ import re
 import json
 from .models import JumboQuery
 
-regex_product = '<h3 data-jum-action.*quickView">(.*)</a></h3>\s.*\s.*\s.*\s.*\s.*\s.*\s.*\s.*jum-price-format">(.*)<sup>(.*)</sup>.*jum-pack-size">(.*)</span>';
+# note that (?s) sets the ". matches everything including newline" flag
+regex_product = '(?s)<h3 data-jum-action.*?quickView">(.*?)</a></h3>.*?jum-price-format">(.*?)<sup>(.*?)</sup>.*?jum-pack-size">(.*?)</span>';
 
 def search_product(search_term):
     MAX_PAGES = 10
