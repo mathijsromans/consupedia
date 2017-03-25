@@ -45,7 +45,7 @@ class ProductChooseAlgorithm:
         if Product.objects.all():
             productToReturn = Product.objects.all()[0]
             for product in Product.objects.all():
-                if(product.category == category or not category):
+                if product.category == category or not category:
                     result, test = ProductChooseAlgorithm.calculate_product_score(product, user_pref)
                     if result > maxScore:
                         maxScore = result

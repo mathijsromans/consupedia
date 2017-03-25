@@ -17,6 +17,7 @@ class Score(models.Model):
     animals = models.IntegerField(null=True)
     personal_health = models.IntegerField(null=True)
 
+
 class Brand(models.Model):
     name = models.CharField(max_length=256)  # name according to Questionmark
 
@@ -26,13 +27,21 @@ class Brand(models.Model):
     def __str__(self):
         return self.name
 
+
+class Shop(models.Model):
+    name = models.CharField(max_length=80)
+
+    def __str__(self):
+        return self.name
+
+
 class Product(models.Model):
     CURRENT_VERSION = 1
     name = models.CharField(max_length=256, null=True)  # name according to Questionmark
     questionmark_id = models.IntegerField(default=0)
     brand = models.ForeignKey(Brand, null=True)
     ean_code = models.CharField(max_length=25, null=True)
-    price = models.IntegerField(null=True)
+    prices = models.ManyToManyField(Shop, through='ProductPrice')
     quantity = models.IntegerField(default=0)
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
     category = models.ForeignKey(Category, null=True)
@@ -41,6 +50,14 @@ class Product(models.Model):
     version = models.IntegerField(default=CURRENT_VERSION)
     product_score = 0
     product_score_details = ''
+
+    @property
+    def price(self):
+        min_pp = None
+        for pp in self.productprice_set.all():
+            if not min_pp or pp.price < min_pp.price:
+                min_pp = pp
+        return min_pp
 
     def get_full_name(self):
         full_name = self.name
@@ -141,4 +158,13 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return str(self.quantity) + ' ' + str(self.unit) + ' ' + str(self.category)
+
+class ProductPrice(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
+    price = models.IntegerField()
+    datetime_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.price) + ' in ' + str(self.shop)
 

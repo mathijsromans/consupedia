@@ -68,9 +68,3 @@ class QuestionmarkMapper:
 
         if product.scores:
             product.scores.save()
-
-
-class RetailerMapper:
-    def map_to_product(self, product, product_dict):
-        product.price = int(product_dict['price'])
-        product.save()

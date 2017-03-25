@@ -1,7 +1,8 @@
 from django.db import transaction
+from django.core.exceptions import ObjectDoesNotExist
 from questionmark import api, jumbo, ah
-from .models import Product, Category, Ingredient, Recipe
-from .mappers import QuestionmarkMapper, RetailerMapper
+from .models import Product, Category, Ingredient, Recipe, ProductPrice, Shop
+from .mappers import QuestionmarkMapper
 from .amount import ProductAmount
 import re
 import difflib
@@ -22,17 +23,15 @@ class ProductService:
         products_dict = api.search_product(search_name)
         jumbo_results = jumbo.search_product(search_name)
         ah_results = ah.search_product(search_name)
+        jumbo_shop, created = Shop.objects.get_or_create(name='Jumbo')
+        ah_shop, created = Shop.objects.get_or_create(name='AH')
 
         product_ids = []
-        mapper = RetailerMapper()
         for product_dict in products_dict['products']:
             product, created = Product.objects.get_or_create(name=product_dict['name'])
             product = qm_mapper.map_to_product(product, product_dict)
-
-            # TODO: if both have a match, last price wins
-            ProductService.enrich_product_data(mapper, product, jumbo_results)
-            ProductService.enrich_product_data(mapper, product, ah_results)
-
+            ProductService.enrich_product_data(product, jumbo_results, jumbo_shop)
+            ProductService.enrich_product_data(product, ah_results, ah_shop)
             product_ids.append(product.id)
 
         return Product.objects.filter(id__in=product_ids)
@@ -46,14 +45,20 @@ class ProductService:
         return category
 
     @staticmethod
-    def enrich_product_data(mapper, product, retailer_results):
+    def enrich_product_data(product, retailer_results, shop):
         # print ('SEARCHING FOR ' + product.name + ' -> ' + product.get_full_name())
         for retailer_result in retailer_results:
             # print ('CHECKING ' + str(retailer_result))
             if ProductService.match(retailer_result, product):
                 # print('FOUND!!! ' + str(retailer_result))
-                mapper.map_to_product(product, retailer_result)
-
+                print(shop)
+                price = int(retailer_result['price'])
+                try:
+                    pp = ProductPrice.objects.get(product=product, shop=shop)
+                    pp.price = price
+                    pp.save()
+                except ObjectDoesNotExist:
+                    ProductPrice.objects.create(product=product, shop=shop, price=price)
 
     @staticmethod
     def match(retailer_result, product):
