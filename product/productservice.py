@@ -1,11 +1,10 @@
 from django.db import transaction
-
+from questionmark import api, jumbo, ah
+from .models import Product, Category, Ingredient, Recipe
+from .mappers import QuestionmarkMapper, RetailerMapper
+from .amount import ProductAmount
 import re
 import difflib
-from questionmark import api, jumbo, ah
-from .models import Brand, Product, Category, Score, Ingredient, Recipe, ProductAmount
-from .mappers import QuestionmarkMapper, RetailerMapper
-from collections import defaultdict
 
 class ProductService:
 
