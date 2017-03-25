@@ -1,43 +1,56 @@
-from product.models import Product, UserPreferences, Category
+from product.models import Product
 
-class ProductScoring:
-    def __init__(self, userweights, productScores):
-        self.userweights = userweights
-        self.productScores = productScores
-        
-    #returns the weighted sum over the user weights and the product scores    
-    def calculateResult(self):
-        result = 'DATA: '
-        counter = 0
-        sum = 0.0
-        nrOfScores = 4
-        sumOfUserWeights = 0.0
-        while (counter < nrOfScores ):
-            if(self.productScores[counter]):
-                sum += self.productScores[counter] * self.userweights[counter]
-                result += '(' + str(self.productScores[counter]) + ', '  + str(self.userweights[counter]) + ')'        
-            else:
-                sum += 4 * self.userweights[counter] #niet bekende score. Dan score 4, slechter dan gemiddelde.      
-                result += '(n/a (4, '+ str(self.userweights[counter]) +')'                      
-            sumOfUserWeights += self.userweights[counter]         
-            counter += 1
-            sumOfUserWeights = sumOfUserWeights or 1.0
-        return sum / sumOfUserWeights, result #Som normaliseren door te delen door aantal scores.
-            
+
+class ScoreResult:
+
+    def __init__(self):
+        self.score = []
+
+    def add_score(self, score, descr):
+        self.score.append((score, descr))
+
+    def total(self):
+        result = 0
+        for s in self.score:
+            result += s[0]
+        return result
+
+    def __str__(self):
+        result = ''
+        for s in self.score:
+            result += ' ' + s[1]
+        return result
+
+
+def score_product(userweights, product_scores):
+    result = ScoreResult()
+    counter = 0
+    while counter < len(product_scores):
+        if product_scores[counter]:
+            score = product_scores[counter] * userweights[counter]
+            descr = '({:.2f}, {:.2f}->{:.2f})'.format(product_scores[counter], userweights[counter], score)
+            result.add_score(score, descr)
+        else:
+            score = 4 * userweights[counter]  # niet bekende score. Dan score 4, slechter dan gemiddelde.
+            descr = '(n/a, {:.2f}->{:.2f})'.format(userweights[counter], score)
+            result.add_score(score, descr)
+        counter += 1
+    return result
+
+
 class ProductChooseAlgorithm:
     @staticmethod
     def calculate_product_score(product, user_pref):
-        if(product.scores):
-            #price_weight niet in userweights.
+        result = None
+        if product.price and product.scores:
             normalizedUserweights = user_pref.get_rel_weights()
-
-            # todo: take price into account
-            normalizedUserweights.pop(0)
-
-            productScores = [product.scores.environment, product.scores.social, product.scores.animals, product.scores.personal_health]
-            productScoring = ProductScoring(normalizedUserweights, productScores)
-            return productScoring.calculateResult() 
-        return 0, 'weetniet'
+            price_weight = normalizedUserweights.pop(0)
+            product_scores = [product.scores.environment, product.scores.social, product.scores.animals, product.scores.personal_health]
+            result = score_product(normalizedUserweights, product_scores)
+            score = -product.price.price * price_weight
+            descr = '(' +str(product.price) + ', {:.2f}->{:.2f})'.format(price_weight, score)
+            result.add_score(score, descr)
+        return result
         
     @staticmethod
     def maximize_product_scores(user_pref, category=None):
@@ -46,9 +59,9 @@ class ProductChooseAlgorithm:
             productToReturn = Product.objects.all()[0]
             for product in Product.objects.all():
                 if product.category == category or not category:
-                    result, test = ProductChooseAlgorithm.calculate_product_score(product, user_pref)
-                    if result > maxScore:
-                        maxScore = result
+                    result = ProductChooseAlgorithm.calculate_product_score(product, user_pref)
+                    if result and result.total() > maxScore:
+                        maxScore = result.total()
                         productToReturn = product
             return productToReturn
         return None

@@ -43,7 +43,11 @@
 
 		{% include "product/product_picture.html" %}
 
-        <p>{{ product.price }} cent</p>
+        <p>
+		{% if product.price %}
+		{{ product.price }}
+		{% endif %}
+		</p>
 		{% if product.category %}
 		<p>Category: <a href="{% url 'category' product.category.id %}">{{ product.category.name }}</a></p>
 		{% else %}

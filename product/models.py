@@ -4,6 +4,7 @@ from django.db.models import Avg
 from .amount import ProductAmount
 import re
 
+
 class Category(models.Model):
     name = models.CharField(max_length=256)
 
@@ -166,5 +167,5 @@ class ProductPrice(models.Model):
     datetime_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.price) + ' in ' + str(self.shop)
+        return '€{:03.2f}'.format(self.price/100.0) + ' bij ' + str(self.shop)
 

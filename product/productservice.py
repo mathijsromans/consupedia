@@ -46,11 +46,11 @@ class ProductService:
 
     @staticmethod
     def enrich_product_data(product, retailer_results, shop):
-        # print ('SEARCHING FOR ' + product.name + ' -> ' + product.get_full_name())
+        print ('SEARCHING FOR ' + product.name + ' -> ' + product.get_full_name())
         for retailer_result in retailer_results:
-            # print ('CHECKING ' + str(retailer_result))
+            print ('CHECKING ' + str(retailer_result))
             if ProductService.match(retailer_result, product):
-                # print('FOUND!!! ' + str(retailer_result))
+                print('FOUND!!! ' + str(retailer_result))
                 print(shop)
                 price = int(retailer_result['price'])
                 try:
@@ -78,10 +78,12 @@ class ProductService:
         retailer_name = re.sub(' [0-9]+g', '', retailer_name)
         retailer_name = retailer_name.replace('\xad', '')
         retailer_name = retailer_name.replace(' ', '')
+        retailer_name = retailer_name.replace('-', '')
         # print('RETAILER_NAME AFTER: ' + retailer_name)
 
         name = re.sub('\(.*\)', '' , name)
         name = name.replace(' ', '')
+        name = name.replace('-', '')
 
         if retailer_name.lower() == name.lower():
             return True

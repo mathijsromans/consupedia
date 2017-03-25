@@ -25,7 +25,10 @@ class MainView(TemplateView):
             #bereken voor alle producten het score veld.
             productList = Product.objects.all()
             for product in productList:
-                product.product_score, product.product_score_details = ProductChooseAlgorithm.calculate_product_score(product, up)
+                score = ProductChooseAlgorithm.calculate_product_score(product, up)
+                if score:
+                    product.product_score = score.total()
+                    product.product_score_details = str(score)
             productList = list(productList)
             productList.sort(key= lambda x: x.product_score, reverse=True)
             context['all_products'] = productList       

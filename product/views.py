@@ -117,7 +117,10 @@ class CategoryView(TemplateView):
             context['product'] = ProductChooseAlgorithm.maximize_product_scores(up, category)
             productList = Product.objects.filter(category=category)
             for product in productList:
-                product.product_score, product.product_score_details = ProductChooseAlgorithm.calculate_product_score(product, up)
+                score = ProductChooseAlgorithm.calculate_product_score(product, up)
+                if score:
+                    product.product_score = score.total()
+                    product.product_score_details = str(score)
             productList = list(productList)
             productList.sort(key= lambda x: x.product_score, reverse=True)
             context['all_products'] = productList
