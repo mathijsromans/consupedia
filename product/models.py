@@ -163,6 +163,7 @@ class Ingredient(models.Model):
 class ProductPrice(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
+    product_name = models.CharField(max_length=256)  # name according to shop
     price = models.IntegerField()
     datetime_created = models.DateTimeField(auto_now_add=True)
 

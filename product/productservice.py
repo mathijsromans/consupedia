@@ -53,12 +53,14 @@ class ProductService:
                 # print('FOUND!!! ' + str(retailer_result))
                 print(shop)
                 price = int(retailer_result['price'])
+                product_name = retailer_result['name']
                 try:
                     pp = ProductPrice.objects.get(product=product, shop=shop)
                     pp.price = price
+                    pp.product_name = product_name
                     pp.save()
                 except ObjectDoesNotExist:
-                    ProductPrice.objects.create(product=product, shop=shop, price=price)
+                    ProductPrice.objects.create(product=product, shop=shop, price=price, product_name=product_name)
 
     @staticmethod
     def match(retailer_result, product):

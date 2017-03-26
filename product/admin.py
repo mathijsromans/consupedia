@@ -34,6 +34,8 @@ class RecipeAdmin(admin.ModelAdmin):
         IngredientInline,
     ]
 
+class ProductPriceAdmin(admin.ModelAdmin):
+    readonly_fields = ('datetime_created',)
 
 admin.site.register(UserPreferences)
 admin.site.register(Category)
@@ -42,4 +44,4 @@ admin.site.register(Rating, RatingAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Ingredient)
 admin.site.register(Shop)
-admin.site.register(ProductPrice)
+admin.site.register(ProductPrice, ProductPriceAdmin)
