@@ -79,4 +79,3 @@ class ProductChooseAlgorithm:
             return productToReturn.name
         return None
 
-        

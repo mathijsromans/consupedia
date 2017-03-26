@@ -9,12 +9,30 @@
     <tr><td>Naam</td><td>{{ product.name }}</td></tr>
     <tr><td>ean code</td><td>{{ product.ean_code }}</td></tr>
     <tr><td>Merk</td><td> {{ product.brand.name }}</td></tr>
-    <tr><td>Prijs</td><td> {{ product.price }}</td></tr>
+    <tr><td>Beste prijs</td><td> {{ product.price }}</td></tr>
     <tr><td>Scores</td></tr>
     <tr><td>Milieu</td><td> {{ product.scores.environment }}</td></tr>
     <tr><td>Mensenrechten</td><td> {{ product.scores.social }}</td></tr>
     <tr><td>Dierenwelzijn</td><td> {{ product.scores.animals }}</td></tr>
     <tr><td>Gezondheid</td><td> {{ product.scores.personal_health }}</td></tr>
   </table>
+</div>
+
+<div class="row" align="center">
+  <h4>Prijzen bij alle winkels:</h4>
+</div>
+
+
+<div class="row">
+{% for pp in product.productprice_set.all %}
+    <div class="col-md-6">
+        <div class="well">
+            <h3>{{ pp }}</a></h3>
+        </div>
+    </div>
+    {% if forloop.counter|divisibleby:2 %}
+        <div class="clearfix"></div>
+    {% endif %}
+{% endfor %}
 </div>
 
