@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.core import serializers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Product, Category
 from .management.commands.create_recipes import Command
@@ -114,14 +115,17 @@ class CategoryView(TemplateView):
 
     def get_context_data(self, category_id, **kwargs):
         context = super().get_context_data(**kwargs)
-        category = Category.objects.get(id=category_id)
-        context['category'] = category
-        if(self.request and self.request.user and self.request.user.is_authenticated()):
-            up, created = UserPreferences.objects.get_or_create( user = self.request.user )
-            product_list = Product.objects.filter(category=category)
-            product_list = generate_sorted_list(product_list, up)
-            context['product'] = product_list[0] if product_list else None
-            context['all_products'] = product_list
+        try:
+            category = Category.objects.get(id=category_id)
+            context['category'] = category
+            if(self.request and self.request.user and self.request.user.is_authenticated()):
+                up, created = UserPreferences.objects.get_or_create( user = self.request.user )
+                product_list = Product.objects.filter(category=category)
+                product_list = generate_sorted_list(product_list, up)
+                context['product'] = product_list[0] if product_list else None
+                context['all_products'] = product_list
+        except ObjectDoesNotExist:
+            pass
         return context
 
 

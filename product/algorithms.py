@@ -19,6 +19,7 @@ class ScoreResult:
         result = ''
         for s in self.score:
             result += ' ' + s[1]
+        result += ' -> {:.2f}'.format(self.total())
         return result
 
 def set_score(product, user_preferences):
@@ -63,7 +64,9 @@ class ProductChooseAlgorithm:
             normalizedUserweights = user_pref.get_rel_weights()
             price_weight = normalizedUserweights.pop(0)
             result = score_product(normalizedUserweights, product_scores)
-            score = -product.price.price * price_weight
+            score = -1000*product.price.price * price_weight
+            if product.quantity:
+                score /= product.quantity
             descr = '(' +str(product.price) + ', {:.2f}->{:.2f})'.format(price_weight, score)
             result.add_score(score, descr)
         return result
