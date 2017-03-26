@@ -28,7 +28,7 @@ class ProductService:
 
         product_ids = []
         for product_dict in products_dict['products']:
-            product, created = Product.objects.get_or_create(name=product_dict['name'])
+            product, created = Product.objects.get_or_create(name=product_dict['name'], questionmark_id=product_dict['id'])
             product = qm_mapper.map_to_product(product, product_dict)
             ProductService.enrich_product_data(product, jumbo_results, jumbo_shop)
             ProductService.enrich_product_data(product, ah_results, ah_shop)
@@ -46,7 +46,7 @@ class ProductService:
 
     @staticmethod
     def enrich_product_data(product, retailer_results, shop):
-        # print ('SEARCHING FOR ' + product.name + ' -> ' + product.get_full_name())
+        # print ('SEARCHING FOR ' + product.name + ' (van ' + str(product.brand) + ') -> ' + product.get_full_name())
         for retailer_result in retailer_results:
             # print ('CHECKING ' + str(retailer_result))
             if ProductService.match(retailer_result, product):
@@ -81,11 +81,13 @@ class ProductService:
         retailer_name = retailer_name.replace('\xad', '')
         retailer_name = retailer_name.replace(' ', '')
         retailer_name = retailer_name.replace('-', '')
+        retailer_name = retailer_name.replace('\'', '')
         # print('RETAILER_NAME AFTER: ' + retailer_name)
 
         name = re.sub('\(.*\)', '' , name)
         name = name.replace(' ', '')
         name = name.replace('-', '')
+        name = name.replace('\'', '')
 
         if retailer_name.lower() == name.lower():
             return True

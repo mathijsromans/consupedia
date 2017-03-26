@@ -2,7 +2,6 @@ from .models import Score, Category, Brand
 
 class QuestionmarkMapper:
     def map_to_product(self, product, product_dict):
-        self.map_id(product, product_dict)
         self.map_brand(product, product_dict)
         self.extract_amount_from_name(product)
         self.map_scores(product, product_dict)
@@ -11,12 +10,6 @@ class QuestionmarkMapper:
 
         product.save()
         return product
-
-    @staticmethod
-    def map_id(product, product_dict):
-        qm_id = product_dict['id']
-        if id:
-            product.questionmark_id = qm_id
 
     @staticmethod
     def map_brand(product, product_dict):

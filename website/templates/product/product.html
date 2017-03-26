@@ -9,6 +9,7 @@
     <tr><td>Naam</td><td>{{ product.name }}</td></tr>
     <tr><td>Categorie</td><td><a href="{% url 'category' product.category.id %}">{{ product.category.name }}</a></td>
     <tr><td>ean code</td><td>{{ product.ean_code }}</td></tr>
+    <tr><td>Questionmark id</td><td>{{ product.questionmark_id }}</td></tr>
     <tr><td>Merk</td><td> {{ product.brand.name }}</td></tr>
     <tr><td>Beste prijs</td><td> {{ product.price }}</td></tr>
     <tr><td>Scores</td></tr>
