@@ -22,16 +22,7 @@
 {% for recipe in recipes %}
     <div class="col-md-6">
         <div class="well">
-            <h3><a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.name }}</a></h3>
-            <h4>{{ recipe.number_persons }} personen</h4>
-            <h4>{{ recipe.preparation_time_in_min }} minuten</h4>
-            {% for ingredient in recipe.ingredient_set.all %}
-                <a href="{% url 'category' ingredient.category.id %}">{{ ingredient }}</a><br/>
-            {% endfor %}
-            {% if recipe.source_if_not_user %}
-            <br/>
-            Bron: <a href="{{ recipe.source_if_not_user }}">{{ recipe.source_if_not_user }}</a><br/>
-            {% endif %}
+            {% include "recipe/recipe.html" %}
         </div>
     </div>
     {% if forloop.counter|divisibleby:2 %}

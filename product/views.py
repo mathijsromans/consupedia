@@ -4,17 +4,19 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
+from django.shortcuts import redirect
 
 from .models import Product, Category
 from .management.commands.create_recipes import Command
 from .models import Rating, Recipe
 from .models import UserPreferences
 from .productservice import ProductService, RecipeService
-from .forms import ProductForm, RecipeForm
+from .forms import ProductForm, RecipeForm, RecipeURLForm
 from .forms import UserPreferenceForm
 from .algorithms import set_score, generate_sorted_list
 from product.algorithms import ProductChooseAlgorithm
@@ -72,13 +74,34 @@ class RecipeDetailView(TemplateView):
 
 
 class RecipeAddView(FormView):
+    template_name = 'recipe/recipe_add.html'
+    form_class = RecipeURLForm
+    success_url = '/recipes/'
+
+    def get_initial(self, **kwargs):
+        return {'url': 'R-R399568'}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url'] = 'R-R399568'
+        return context
+
+    @transaction.atomic
+    def form_valid(self, form):
+        recipe = Command.create_recipe(form.cleaned_data['url'])
+        print('CREATED RECIPE ' + str(recipe))
+        recipe_id = recipe.id if recipe else 0
+        return redirect(reverse('recipe_detail', args=[recipe_id]))
+
+
+class RecipeEditView(FormView):
     template_name = 'recipe/recipe_edit.html'
     form_class = RecipeForm
     success_url = '/recipes/'
     recipe = None;
     
     def get_initial(self, **kwargs):
-        if ('recipe_id' in self.kwargs):
+        if 'recipe_id' in self.kwargs:
             recipe_id = self.kwargs['recipe_id']
             self.recipe = Recipe.objects.get(id=recipe_id )
             return {'name': self.recipe.name}
@@ -86,7 +109,7 @@ class RecipeAddView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if ('recipe_id' in self.kwargs):
+        if 'recipe_id' in self.kwargs:
             recipe_id = self.kwargs['recipe_id']
             self.recipe = Recipe.objects.get(id=recipe_id )
             context['recipe'] = self.recipe

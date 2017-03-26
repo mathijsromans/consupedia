@@ -24,7 +24,7 @@ def search_product(search_term):
     try:
         items = json_products['_embedded']['lanes'][6]['_embedded']['items']
     except Exception as error:
-        logger.exception(error)
+        # logger.exception(error)
         return results
     for item in items:
         if '_embedded' in item and 'product' in item['_embedded']:

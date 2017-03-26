@@ -51,7 +51,6 @@ class ProductService:
             # print ('CHECKING ' + str(retailer_result))
             if ProductService.match(retailer_result, product):
                 # print('FOUND!!! ' + str(retailer_result))
-                print(shop)
                 price = int(retailer_result['price'])
                 product_name = retailer_result['name']
                 try:
@@ -143,7 +142,7 @@ class RecipeService():
         if not ingredient_input:
             ingredient_input = test_ingredients
         print('Creating recipe with ingredients: ' + str(ingredient_input))
-        new_recipe = Recipe.objects.create(name = name,
+        new_recipe = Recipe.objects.create(name=name,
                                            author_if_user=author_if_user,
                                            source_if_not_user = source_if_not_user,
                                            number_persons = number_persons,
@@ -167,5 +166,5 @@ class RecipeService():
                 category = all_categories[all_category_names.index(best_category_name[0])] if best_category_name else unknown_category
                 quantity, unit = ProductAmount.get_quantity_and_unit( ing[0], ing[1])
                 Ingredient.objects.create(quantity=quantity, unit=unit, category=category, recipe = new_recipe)
-        print('Done creating recipe')
+        print('Done creating recipe ' + str(new_recipe))
         return new_recipe

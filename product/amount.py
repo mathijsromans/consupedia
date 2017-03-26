@@ -59,5 +59,5 @@ class ProductAmount:
             return 1000*quantity, ProductAmount.ML
         if unit_text == 'el':
             return quantity, ProductAmount.EL
-        print('UNKNOWN UNIT : ' + unit_text)
+        # print('UNKNOWN UNIT : ' + unit_text)
         return int(quantity), ProductAmount.NO_UNIT

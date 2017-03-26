@@ -67,7 +67,7 @@ def get_recipe_ingredients(page_html_text):
     for match in matches:
         name = ''
         unit = ''
-        quantiy = ''
+        quantiy = 0
         matches = regex_quantity.findall(match)
         if matches:
             quantiy = int(matches[0])

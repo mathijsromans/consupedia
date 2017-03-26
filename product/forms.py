@@ -20,6 +20,10 @@ class UserPreferenceForm(forms.Form):
     personal_health_weight = forms.IntegerField(label='Gezond')
 
 
+class RecipeURLForm(forms.Form):
+    url = forms.CharField(label='url', max_length=256)
+
+
 class RecipeForm(forms.Form):
     name = forms.CharField(label='Name', max_length=256)
  

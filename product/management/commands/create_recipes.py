@@ -18,7 +18,7 @@ class Command(BaseCommand):
     def create_recipe(recipe_id):
         try:
             recipe = allerhande_scraper.get_recipe(recipe_id)
-            RecipeService.create_recipe(
+            return RecipeService.create_recipe(
                 name=recipe['name'],
                 author_if_user=None,
                 source_if_not_user=recipe['url'],
