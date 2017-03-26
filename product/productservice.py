@@ -46,11 +46,11 @@ class ProductService:
 
     @staticmethod
     def enrich_product_data(product, retailer_results, shop):
-        print ('SEARCHING FOR ' + product.name + ' -> ' + product.get_full_name())
+        # print ('SEARCHING FOR ' + product.name + ' -> ' + product.get_full_name())
         for retailer_result in retailer_results:
-            print ('CHECKING ' + str(retailer_result))
+            # print ('CHECKING ' + str(retailer_result))
             if ProductService.match(retailer_result, product):
-                print('FOUND!!! ' + str(retailer_result))
+                # print('FOUND!!! ' + str(retailer_result))
                 print(shop)
                 price = int(retailer_result['price'])
                 try:

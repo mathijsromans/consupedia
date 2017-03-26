@@ -49,9 +49,9 @@
 		{% endif %}
 		</p>
 		{% if product.category %}
-		<p>Category: <a href="{% url 'category' product.category.id %}">{{ product.category.name }}</a></p>
+		<p>Categorie: <a href="{% url 'category' product.category.id %}">{{ product.category.name }}</a></p>
 		{% else %}
-		<p>Category: {{ product.category.name }}</p>
+		<p>Categorie: {{ product.category.name }}</p>
 		{% endif %}
 		{% if user.is_authenticated %}
 		{% get_product_rating product user as user_rating %}

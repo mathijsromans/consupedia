@@ -21,6 +21,20 @@ class ScoreResult:
             result += ' ' + s[1]
         return result
 
+def set_score(product, user_preferences):
+    score = ProductChooseAlgorithm.calculate_product_score(product, user_preferences)
+    if score:
+        product.product_score = score.total()
+        product.product_score_details = str(score)
+
+def generate_sorted_list(product_list, user_preferences):
+    for product in product_list:
+        set_score(product, user_preferences)
+    product_list = list(product_list)
+    product_list = [p for p in product_list if p.product_score]
+    product_list.sort(key= lambda x: x.product_score if x.product_score else -99999999, reverse=True)
+    return product_list
+
 
 def score_product(userweights, product_scores):
     result = ScoreResult()
@@ -42,10 +56,12 @@ class ProductChooseAlgorithm:
     @staticmethod
     def calculate_product_score(product, user_pref):
         result = None
-        if product.price and product.scores:
+        if product.price:
+            product_scores = [0, 0, 0, 0]
+            if product.scores:
+                product_scores = [product.scores.environment, product.scores.social, product.scores.animals, product.scores.personal_health]
             normalizedUserweights = user_pref.get_rel_weights()
             price_weight = normalizedUserweights.pop(0)
-            product_scores = [product.scores.environment, product.scores.social, product.scores.animals, product.scores.personal_health]
             result = score_product(normalizedUserweights, product_scores)
             score = -product.price.price * price_weight
             descr = '(' +str(product.price) + ', {:.2f}->{:.2f})'.format(price_weight, score)

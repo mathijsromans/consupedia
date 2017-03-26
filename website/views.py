@@ -8,6 +8,7 @@ from django.views.generic import TemplateView, UpdateView
 
 from product.models import UserPreferences
 from product.models import Product
+from product.algorithms import generate_sorted_list
 from website import settings
 
 logger = logging.getLogger(__name__)
@@ -21,17 +22,10 @@ class MainView(TemplateView):
         context = super().get_context_data(**kwargs)
         if(self.request and self.request.user and self.request.user.is_authenticated()):
             up, created = UserPreferences.objects.get_or_create( user = self.request.user )
-            context['recommended_product'] = ProductChooseAlgorithm.maximize_product_scores(up)
-            #bereken voor alle producten het score veld.
-            productList = Product.objects.all()
-            for product in productList:
-                score = ProductChooseAlgorithm.calculate_product_score(product, up)
-                if score:
-                    product.product_score = score.total()
-                    product.product_score_details = str(score)
-            productList = list(productList)
-            productList.sort(key= lambda x: x.product_score, reverse=True)
-            context['all_products'] = productList       
+            product_list = Product.objects.all()
+            product_list = generate_sorted_list(product_list, up)
+            context['recommended_product'] = product_list[0] if product_list else None
+            context['all_products'] = product_list
         return context
 
 class ContactView(TemplateView):

@@ -15,6 +15,7 @@ from .models import UserPreferences
 from .productservice import ProductService, RecipeService
 from .forms import ProductForm, RecipeForm
 from .forms import UserPreferenceForm
+from .algorithms import set_score, generate_sorted_list
 from product.algorithms import ProductChooseAlgorithm
 
 
@@ -101,7 +102,10 @@ class ProductView(TemplateView):
 
     def get_context_data(self, product_id, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['product'] = Product.objects.get(id=product_id)
+        product = Product.objects.get(id=product_id)
+        up, created = UserPreferences.objects.get_or_create( user = self.request.user )
+        set_score(product, up)
+        context['product'] = product
         return context
 
 
@@ -114,16 +118,10 @@ class CategoryView(TemplateView):
         context['category'] = category
         if(self.request and self.request.user and self.request.user.is_authenticated()):
             up, created = UserPreferences.objects.get_or_create( user = self.request.user )
-            context['product'] = ProductChooseAlgorithm.maximize_product_scores(up, category)
-            productList = Product.objects.filter(category=category)
-            for product in productList:
-                score = ProductChooseAlgorithm.calculate_product_score(product, up)
-                if score:
-                    product.product_score = score.total()
-                    product.product_score_details = str(score)
-            productList = list(productList)
-            productList.sort(key= lambda x: x.product_score, reverse=True)
-            context['all_products'] = productList
+            product_list = Product.objects.filter(category=category)
+            product_list = generate_sorted_list(product_list, up)
+            context['product'] = product_list[0] if product_list else None
+            context['all_products'] = product_list
         return context
 
 

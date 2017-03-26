@@ -10,7 +10,7 @@
     </div>
   </div>
 
-  {% if user.is_authenticated %}
+  {% if user.is_authenticated and recommended_product %}
   <div class="row">
     <div class="col-sm-12" align="left">      
       <p>Het product van de dag is: </p>
@@ -32,7 +32,7 @@
       <p>Ook interestante producten: </p>    
       <table>
       {% for e in all_products %}
-        <tr><td> {{ e.name }} </td><td> {{ e.price }} </td><td> {{ e.product_score }} </td> <td> {{ e.product_score_details }} </td></tr>
+        <tr><td> <a href="{% url 'product' e.id %}"> {{ e.name }} </a> </td><td> {{ e.price }} </td><td> {{ e.product_score }} </td> <td> {{ e.product_score_details }} </td></tr>
       {% endfor %}
       </table>	     
     </div>
