@@ -23,6 +23,8 @@ urlpatterns = [
     url(r'^product/(?P<product_id>[0-9]+)/$', product.views.ProductView.as_view(), name='product'),
     url(r'^product/rating/set/?', login_required(product.views.set_product_rating)),
 
+    url(r'^ingredient/edit/(?P<ingredient_id>[0-9]+)/$', product.views.IngredientEditView.as_view(), name='ingredient-edit'),
+
     url(r'^recipes/$', product.views.RecipesView.as_view(), name='recipes'),
     url(r'^recipe/(?P<recipe_id>[0-9]+)/$', product.views.RecipeDetailView.as_view(), name='recipe_detail'),
     url(r'^recipes/add$', product.views.RecipeAddView.as_view(), name='recipe-add'),

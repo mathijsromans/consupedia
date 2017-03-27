@@ -13,10 +13,10 @@ from django.shortcuts import redirect
 
 from .models import Product, Category
 from .management.commands.create_recipes import Command
-from .models import Rating, Recipe
+from .models import Rating, Recipe, Ingredient
 from .models import UserPreferences
 from .productservice import ProductService, RecipeService
-from .forms import ProductForm, RecipeForm, RecipeURLForm
+from .forms import ProductForm, RecipeForm, RecipeURLForm, IngredientForm
 from .forms import UserPreferenceForm
 from .algorithms import set_score, generate_sorted_list
 from product.algorithms import ProductChooseAlgorithm
@@ -188,6 +188,37 @@ class ProductEditView(FormView):
         context['product'] = self.product
         return context
 
+class IngredientEditView(FormView):
+    template_name = 'ingredient/ingredient_edit.html'
+    form_class = IngredientForm
+
+    @property
+    def success_url(self):
+        return '/recipe/' + str(self.ingredient.recipe.id)
+
+    @property
+    def ingredient(self):
+        return Ingredient.objects.get(id=self.kwargs['ingredient_id'])
+
+    def get_initial(self):
+        return {'quantity': self.ingredient.quantity,
+                'unit': self.ingredient.unit,
+                'category': self.ingredient.category}
+
+    @transaction.atomic
+    def form_valid(self, form):
+        ingredient = self.ingredient
+        ingredient.quantity = form.cleaned_data['quantity']
+        ingredient.unit = form.cleaned_data['unit']
+        ingredient.category = form.cleaned_data['category']
+        ingredient.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['ingredient'] = self.ingredient
+        return context
+
 class UserPreferenceEditView(FormView):
     template_name = 'user/user_preference_edit.html'
     form_class = UserPreferenceForm
@@ -230,7 +261,7 @@ class WhatToEatView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all()
+        context['categories'] = Category.objects.all().order_by('name')
         return context
 
 

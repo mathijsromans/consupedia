@@ -1,9 +1,16 @@
 <h3><a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.name }}</a></h3>
 <h4>{{ recipe.number_persons }} personen</h4>
 <h4>{{ recipe.preparation_time_in_min }} minuten</h4>
+
+<table>
 {% for ingredient in recipe.ingredient_set.all %}
-    <a href="{% url 'category' ingredient.category.id %}">{{ ingredient }}</a><br/>
+<tr>
+    <td><a href="{% url 'category' ingredient.category.id %}">{{ ingredient }}</a></td>
+    <td>[<a href="{% url 'ingredient-edit' ingredient.id %}">Verander</a>]</td>
+</tr>
 {% endfor %}
+</table>
+
 {% if recipe.source_if_not_user %}
 <br/>
 Bron: <a href="{{ recipe.source_if_not_user }}">{{ recipe.source_if_not_user }}</a><br/>

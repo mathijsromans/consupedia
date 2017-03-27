@@ -64,7 +64,7 @@ class ProductChooseAlgorithm:
             normalizedUserweights = user_pref.get_rel_weights()
             price_weight = normalizedUserweights.pop(0)
             result = score_product(normalizedUserweights, product_scores)
-            score = -1000*product.price.price * price_weight
+            score = -200*product.price.price * price_weight
             if product.quantity:
                 score /= product.quantity
             descr = '(' +str(product.price) + ', {:.2f}->{:.2f})'.format(price_weight, score)
