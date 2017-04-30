@@ -151,11 +151,30 @@ class Recipe(models.Model):
     def __str__(self):
         return 'Recept ' + self.name
 
+from .algorithms import recommended_products
+
 class Ingredient(models.Model):
     quantity = models.IntegerField()
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
     category = models.ForeignKey(Category)
     recipe = models.ForeignKey(Recipe)
+
+    def get_amount(self):
+        return ProductAmount(quantity=self.quantity, unit=self.unit)
+
+    def price(self, user_preference):
+        product_list = recommended_products(self.category, user_preference)
+        price = None
+        if product_list:
+            product = product_list[0]
+            price = product.price.price * ( self.get_amount() / product.get_amount() )
+        return price
+
+    def price_str(self, user_preference):
+        price = self.price(user_preference)
+        if not price:
+            return '?'
+        return '€ {:03.2f}'.format(price/100.0)
 
     def __str__(self):
         return str(self.quantity) + ' ' + str(self.unit) + ' ' + str(self.category)
@@ -168,5 +187,5 @@ class ProductPrice(models.Model):
     datetime_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return '€{:03.2f}'.format(self.price/100.0) + ' bij ' + str(self.shop)
+        return '€ {:03.2f}'.format(self.price/100.0) + ' bij ' + str(self.shop)
 

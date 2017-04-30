@@ -5,11 +5,13 @@ class ProductAmount:
     GRAM = 'g'
     ML = 'ml'
     EL = 'el'
+    TL = 'tl'
     UNIT_CHOICES = (
         (NO_UNIT, 'st.'),
         (GRAM, 'g'),
         (ML, 'ml'),
-        (EL, 'el')
+        (EL, 'el'),
+        (TL, 'tl')
     )
 
     def __init__(self, quantity, unit):
@@ -37,15 +39,35 @@ class ProductAmount:
             quantity, unit = ProductAmount.get_quantity_and_unit(float(numbers[0]), nonnumbers)
         return cls(quantity, unit)
 
+    @classmethod
+    def normalise(cls, amount):
+         quantity = amount.quantity
+         unit = amount.unit
+         if unit == ProductAmount.EL:
+             unit = ProductAmount.ML
+             quantity *= 15
+         elif unit == ProductAmount.TL:
+             unit = ProductAmount.ML
+             quantity *= 5
+         return cls(quantity, unit)
+
+
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
+
+    def __truediv__(self, other):
+        left = ProductAmount.normalise(self)
+        right = ProductAmount.normalise(other)
+        if left.unit != other.unit or right.quantity == 0:
+            return 0
+        return left.quantity / right.quantity
 
     def __str__(self):
         return str(self.quantity) + ' ' + self.unit
 
     @staticmethod
     def get_quantity_and_unit(quantity, unit_text):
-        if unit_text == '-' or unit_text == 'blaadjes' or unit_text == 'stuks':
+        if unit_text == '-' or unit_text == 'blaadjes' or unit_text == 'stuks' or unit_text == 'krop':
             return quantity, ProductAmount.NO_UNIT
         if unit_text == 'g' or unit_text == 'gr' or unit_text == 'gram':
             return quantity, ProductAmount.GRAM
@@ -57,7 +79,10 @@ class ProductAmount:
             return 10*quantity, ProductAmount.ML
         if unit_text == 'l' or unit_text == 'L' or unit_text == 'liter':
             return 1000*quantity, ProductAmount.ML
-        if unit_text == 'el':
+        if unit_text == 'el' or unit_text == 'eetlepels':
             return quantity, ProductAmount.EL
+        if unit_text == 'tl' or unit_text == 'theelepels':
+            return quantity, ProductAmount.TL
+
         # print('UNKNOWN UNIT : ' + unit_text)
         return int(quantity), ProductAmount.NO_UNIT

@@ -18,7 +18,7 @@ from .models import UserPreferences
 from .productservice import ProductService, RecipeService
 from .forms import ProductForm, RecipeForm, RecipeURLForm, IngredientForm
 from .forms import UserPreferenceForm
-from .algorithms import set_score, generate_sorted_list
+from .algorithms import set_score, recommended_products
 from product.algorithms import ProductChooseAlgorithm
 
 
@@ -69,7 +69,11 @@ class RecipeDetailView(TemplateView):
 
     def get_context_data(self, recipe_id, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['recipe'] = Recipe.objects.get(id=recipe_id)
+        recipe = Recipe.objects.get(id=recipe_id)
+        up, created = UserPreferences.objects.get_or_create( user = self.request.user )
+        ingredient_and_price_list = [(ingredient, ingredient.price_str(up)) for ingredient in recipe.ingredient_set.all() ]
+        context['recipe'] = recipe
+        context['ingredient_and_price_list'] = ingredient_and_price_list
         return context
 
 
@@ -141,10 +145,9 @@ class CategoryView(TemplateView):
         try:
             category = Category.objects.get(id=category_id)
             context['category'] = category
-            if(self.request and self.request.user and self.request.user.is_authenticated()):
-                up, created = UserPreferences.objects.get_or_create( user = self.request.user )
-                product_list = Product.objects.filter(category=category)
-                product_list = generate_sorted_list(product_list, up)
+            if self.request and self.request.user and self.request.user.is_authenticated():
+                up, created = UserPreferences.objects.get_or_create(user=self.request.user)
+                product_list = recommended_products(category, up)
                 context['product'] = product_list[0] if product_list else None
                 context['all_products'] = product_list
         except ObjectDoesNotExist:
