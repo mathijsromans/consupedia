@@ -122,7 +122,7 @@ class ProductService:
             for retailer in product_dict['retailers']:
                 if retailer['name'] == 'Jumbo':
                     contains = True
-                    break;
+                    break
         if product_dict['brand']:
             if product_dict['brand']['name'] == 'Jumbo':
                 contains = True
@@ -168,20 +168,20 @@ class RecipeService():
             if len(ing) == 3:
                 ProductService().get_all_products(ing[2])
         all_categories = Category.objects.all()
-        all_category_names = []
-        for c in all_categories:
-            all_category_names.append(c.name)
+        all_category_names = [name for c in all_categories for name in c.alt_names()]
         unknown_category = ProductService.get_or_create_unknown_category()
         for ing in ingredient_input:
-            if len(ing) == 3:
-                quantity = 0
-                unit = ProductAmount.NO_UNIT
-                # print('searching ' + ing[2])
-                best_category_name = difflib.get_close_matches(ing[2], all_category_names, 1, 0.1)
-                # print ('found ' + str(best_category_name))
-                category = all_categories[all_category_names.index(best_category_name[0])] if best_category_name else unknown_category
-                quantity, unit = ProductAmount.get_quantity_and_unit( ing[0], ing[1])
-                Ingredient.objects.create(quantity=quantity, unit=unit, category=category, recipe = new_recipe)
+            if len(ing) != 3:
+                continue
+            # print('searching ' + ing[2])
+            try:
+                best_category_name = difflib.get_close_matches(ing[2], all_category_names, 1, 0.1)[0]
+                category = next(c for c in all_categories if best_category_name in c.alt_names())
+            except StopIteration:
+                category = unknown_category
+            # print('found category ' + str(category))
+            quantity, unit = ProductAmount.get_quantity_and_unit( ing[0], ing[1])
+            Ingredient.objects.create(quantity=quantity, unit=unit, category=category, recipe = new_recipe)
         print('Done creating recipe ' + str(new_recipe))
         end = time.time()
         logger.info('END - time: ' + str(end - start))

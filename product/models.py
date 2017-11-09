@@ -11,6 +11,13 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def alt_names(self):
+        result = [self.name]
+        words = self.name.split(" ")
+        if len(words) > 1:
+            result.append(" ".join(reversed(words)).replace(",", ""))  # "tijm, gedroogd" -> "gedroogd tijm"
+        return result
+
 
 class Score(models.Model):
     environment = models.IntegerField(null=True)
@@ -23,7 +30,7 @@ class Brand(models.Model):
     name = models.CharField(max_length=256)  # name according to Questionmark
 
     def simple_name(self):
-        return  self.name.replace('Biologisch van', '')
+        return self.name.replace('Biologisch van', '')
 
     def __str__(self):
         return self.name
