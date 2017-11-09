@@ -1,6 +1,5 @@
 import requests
 import re
-from html.parser import HTMLParser
 
 regex_unit = re.compile('data-quantity-unit-singular="(.*?)"')
 regex_quantity = re.compile('data-quantity="(\d+)"')

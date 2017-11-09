@@ -17,8 +17,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         url = options['url'][0]
         recipe_ids = allerhande_scraper.get_recipe_ids_from_page(url)
-        for id in recipe_ids:
-            self.create_recipe(id)
+        for recipe_id in recipe_ids:
+            self.create_recipe(recipe_id)
 
     @staticmethod
     @transaction.atomic

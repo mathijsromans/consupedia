@@ -1,7 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Category
-from .amount import ProductAmount
+from product.models import Category
 
 def validate_price(value):
     if value < 0:

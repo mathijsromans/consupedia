@@ -1,4 +1,4 @@
-from .models import Score, Category, Brand
+from product.models import Score, Category, Brand
 
 class QuestionmarkMapper:
     def map_to_product(self, product, product_dict):

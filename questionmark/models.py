@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class QuestionMarkQuery(models.Model):
     params_as_string = models.CharField(max_length=256)
     json = models.TextField()

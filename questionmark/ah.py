@@ -1,8 +1,6 @@
 import logging
 import requests
-import re
 import json
-from html.parser import HTMLParser
 from .models import AHQuery
 
 logger = logging.getLogger(__name__)

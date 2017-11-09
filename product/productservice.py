@@ -1,11 +1,15 @@
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 from questionmark import api, jumbo, ah
-from .models import Product, Category, Ingredient, Recipe, ProductPrice, Shop
+from product.models import Product, Category, Ingredient, Recipe, ProductPrice, Shop
 from .mappers import QuestionmarkMapper
 from .amount import ProductAmount
 import re
+import logging
+import time
 import difflib
+
+logger = logging.getLogger(__name__)
 
 class ProductService:
 
@@ -18,21 +22,30 @@ class ProductService:
     @staticmethod
     @transaction.atomic
     def update_products_from_questionmarkapi(search_name):
+        logger.info('BEGIN')
+        start = time.time()
         qm_mapper = QuestionmarkMapper()
 
         products_dict = api.search_product(search_name)
+        logger.info('@a: ' + str(time.time() - start))
         jumbo_results = jumbo.search_product(search_name)
+        logger.info('@b: ' + str(time.time() - start))
         ah_results = ah.search_product(search_name)
+        logger.info('@c: ' + str(time.time() - start))
         jumbo_shop, created = Shop.objects.get_or_create(name='Jumbo')
+        logger.info('@d: ' + str(time.time() - start))
         ah_shop, created = Shop.objects.get_or_create(name='AH')
 
         product_ids = []
         for product_dict in products_dict['products']:
+            logger.info('@1 ' + str(time.time() - start) + ': ' + product_dict['name'])
             product, created = Product.objects.get_or_create(name=product_dict['name'], questionmark_id=product_dict['id'])
             product = qm_mapper.map_to_product(product, product_dict)
             ProductService.enrich_product_data(product, jumbo_results, jumbo_shop)
             ProductService.enrich_product_data(product, ah_results, ah_shop)
             product_ids.append(product.id)
+        end = time.time()
+        logger.info('END - time: ' + str(end - start))
 
         return Product.objects.filter(id__in=product_ids)
 
@@ -118,15 +131,17 @@ class ProductService:
 class RecipeService():
 
     @staticmethod
-    def create_recipe( name,
-                       author_if_user,
-                       source_if_not_user,
-                       number_persons,
-                       preparation_time_in_min,
-                       preparation,
-                       ingredient_input ):
+    def create_recipe(name,
+                      author_if_user,
+                      source_if_not_user,
+                      number_persons,
+                      preparation_time_in_min,
+                      preparation,
+                      ingredient_input):
+        logger.info('BEGIN')
+        start = time.time()
         test_ingredients = [
-            [4, '-', 'uien'],
+            [2, '-', 'uien'],
             [500, 'g', 'preien'],
             [40, 'g', 'boter'],
             [2, 'el', 'olijfolie'],
@@ -167,4 +182,6 @@ class RecipeService():
                 quantity, unit = ProductAmount.get_quantity_and_unit( ing[0], ing[1])
                 Ingredient.objects.create(quantity=quantity, unit=unit, category=category, recipe = new_recipe)
         print('Done creating recipe ' + str(new_recipe))
+        end = time.time()
+        logger.info('END - time: ' + str(end - start))
         return new_recipe

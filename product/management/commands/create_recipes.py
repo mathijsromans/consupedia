@@ -9,10 +9,12 @@ logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
 
+    def add_arguments(self, parser):
+        parser.add_argument('recipe_ids', nargs='+', default=['R-R399568', 'R-R543138', 'R-R1185720'], type=str)
+
     def handle(self, *args, **options):
-        recipe_ids = ['R-R399568', 'R-R543138', 'R-R1185720']
-        for id in recipe_ids:
-            self.create_recipe(id)
+        for recipe_id in options['recipe_ids']:
+            self.create_recipe(recipe_id)
 
     @staticmethod
     def create_recipe(recipe_id):
