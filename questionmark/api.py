@@ -6,7 +6,7 @@ import time
 
 logger = logging.getLogger(__name__)
 
-BASE_URL = 'https://api-c.thequestionmark.org/api/v1.1/'
+BASE_URL = 'https://api-c.thequestionmark.org/api/v1.2/'
 
 
 def search_product(search_name):
