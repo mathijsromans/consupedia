@@ -18,23 +18,4 @@ class Command(BaseCommand):
         url = options['url'][0]
         recipe_ids = allerhande_scraper.get_recipe_ids_from_page(url)
         for recipe_id in recipe_ids:
-            self.create_recipe(recipe_id)
-
-    @staticmethod
-    @transaction.atomic
-    def create_recipe(recipe_id):
-        try:
-            recipe = allerhande_scraper.get_recipe(recipe_id)
-            RecipeService.create_recipe(
-                name=recipe['name'],
-                author_if_user=None,
-                source_if_not_user=recipe['url'],
-                number_persons=recipe['number_persons'],
-                preparation_time_in_min=recipe['preparation_time_in_min'],
-                preparation='',
-                ingredient_input=recipe['ingredients']
-            )
-        except Exception as error:
-            logger.exception(error)
-            logger.error('error for recipe id: ' + str(recipe_id) + ', skip recipe!')
-
+            RecipeService.create_recipe_from_id(recipe_id)

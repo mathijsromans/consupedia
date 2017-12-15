@@ -4,6 +4,7 @@ from questionmark import api, jumbo, ah
 from product.models import Product, Category, Ingredient, Recipe, ProductPrice, Shop
 from .mappers import QuestionmarkMapper
 from .amount import ProductAmount
+from questionmark import allerhande_scraper
 import re
 import logging
 import time
@@ -130,6 +131,19 @@ class ProductService:
 
 
 class RecipeService():
+
+    @staticmethod
+    def create_recipe_from_id(recipe_id):
+        recipe = allerhande_scraper.get_recipe(recipe_id)
+        return RecipeService.create_recipe(
+            name=recipe['name'],
+            author_if_user=None,
+            source_if_not_user=recipe['url'],
+            number_persons=recipe['number_persons'],
+            preparation_time_in_min=recipe['preparation_time_in_min'],
+            preparation='',
+            ingredient_input=recipe['ingredients']
+        )
 
     @staticmethod
     def create_recipe(name,
