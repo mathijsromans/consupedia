@@ -1,13 +1,12 @@
 from django.test import TestCase
 
-from questionmark import api
-from questionmark import allerhande_scraper
+from api import questionmark, allerhande_scraper
 
 
 class TestQuestionApi(TestCase):
 
     def test_asserts(self):
-        api.search_product('pindakaas')
+        questionmark.search_product('pindakaas')
 
 
 class TestAllerHandeScraper(TestCase):

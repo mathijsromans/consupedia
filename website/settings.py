@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INSTALLED_APPS = [
     'website',
     'product',
-    'questionmark',
+    'api',
     'bootstrap3',
     'bootstrap_pagination',
     'registration',

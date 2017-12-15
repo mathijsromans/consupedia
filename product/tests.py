@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from questionmark import allerhande_scraper
+from api import allerhande_scraper
 
 from .productservice import RecipeService
 

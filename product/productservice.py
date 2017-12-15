@@ -1,10 +1,9 @@
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
-from questionmark import api, jumbo, ah
+from api import questionmark, jumbo, ah, allerhande_scraper
 from product.models import Product, Category, Ingredient, Recipe, ProductPrice, Shop
 from .mappers import QuestionmarkMapper
 from .amount import ProductAmount
-from questionmark import allerhande_scraper
 import re
 import logging
 import time
@@ -28,7 +27,7 @@ class ProductService:
         start = time.time()
         qm_mapper = QuestionmarkMapper()
 
-        products_dict = api.search_product(search_name)
+        products_dict = questionmark.search_product(search_name)
         logger.info('@a: ' + str(time.time() - start))
         jumbo_results = jumbo.search_product(search_name)
         logger.info('@b: ' + str(time.time() - start))

@@ -1,4 +1,4 @@
-from questionmark.models import QuestionMarkQuery, JumboQuery, AHQuery
+from api.models import QuestionMarkQuery, JumboQuery, AHQuery
 from django.contrib import admin
 
 admin.site.register(QuestionMarkQuery)

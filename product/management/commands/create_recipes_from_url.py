@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 
 from product.productservice import RecipeService
-from questionmark import allerhande_scraper
+from api import allerhande_scraper
 
 logger = logging.getLogger(__name__)
 
