@@ -18,12 +18,12 @@ class ProductService:
     @staticmethod
     def get_all_products(search_query):
         if search_query:
-            return ProductService.update_products_from_questionmarkapi(search_query)
+            return ProductService.update_products(search_query)
         return Product.objects.all()
 
     @staticmethod
     @transaction.atomic
-    def update_products_from_questionmarkapi(search_name):
+    def update_products(search_name):
         logger.info('BEGIN')
         start = time.time()
         qm_mapper = QuestionmarkMapper()
