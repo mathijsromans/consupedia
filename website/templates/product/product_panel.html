@@ -2,36 +2,39 @@
 
 <div class="panel">
 
-	<div class="panel-heading">
-    <h5><a href="{% url 'product' product.id %}">{{ product.name }}</a></h5>
-  </div>
+  <div class="panel-heading">
+    <span class="h5"><a href="{% url 'product' product.id %}">{{ product.name }}</a></span>
+    {% if not is_anonymous_user %}
+      {% get_product_rating product user as user_rating %}
+    {% endif %}
 
-  <div class="panel-body">
-		<div align="center">
-			{% include "product/product_picture.html" %}
-		</div>
-
-		{% if product.price %}
-    	<p>{{ product.price }}</p>
-		{% endif %}
+    <section class="csp-rater" data-global-rating="{{ product.get_average_rating }}" data-user-rating="{{ user_rating }}" data-product-id="{{ product.id }}">
+      <div class="csp-global-rating">
+      <i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
+      </div>
+      <div class="csp-user-rating">
+      <i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
+      </div>
+    </section>
 
     {% if product.ingredient %}
-			<p>Categorie: <a href="{% url 'ingredient' product.ingredient.id %}">{{ product.ingredient.name }}</a></p>
-		{% endif %}
-
-		{% if not is_anonymous_user %}
-			{% get_product_rating product user as user_rating %}
-		{% endif %}
-		
-		<section class="csp-rater" data-global-rating="{{ product.get_average_rating }}" data-user-rating="{{ user_rating }}" data-product-id="{{ product.id }}">
-			<div class="csp-global-rating">
-			<i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
-			</div>
-			<div class="csp-user-rating">
-			<i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
-			</div>
-		</section>
+      <a href="{% url 'ingredient' product.ingredient.id %}">{{ product.ingredient.name }}</a>
+    {% endif %}
   </div>
+
+  {% if product.thumb_url or product.price %}
+  <div class="panel-body">
+    <div align="center">
+      {% if product.thumb_url %}
+      <img src="{{ product.thumb_url }}"/>
+      {% endif %}
+    </div>
+
+    {% if product.price %}
+      {{ product.price }}
+    {% endif %}
+  </div>
+  {% endif %}
 
 </div>
 
