@@ -346,13 +346,17 @@ def get_user_preference_data(up):
 @login_required
 def get_recipes_for_user(request):
 
+    up = UserPreferenceEditView.get_my_preference_by_request(request)
     #Find all recipes
     recipes = Recipe.objects.all()
-    #Order recipes based on userpreference
-    #userPreference = self.get_my_preference()
+    #Order recipes based on userpreference    
+    testList = sorted(recipes, key = lambda x: x.calcualteTotalScore(up))
 
     #Return first 6 results.
-    list_result = [entry for entry in recipes.values()]
+    list_result = [{'name': entry.name, 
+                    'number_persons': entry.number_persons,
+                    'preparation_time_in_min': entry.preparation_time_in_min,
+                    'content': entry.number_persons} for entry in testList]
     
     response = json.dumps({'status': 'success',
                            'recipes': list_result })                                      

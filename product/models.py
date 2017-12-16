@@ -155,12 +155,6 @@ class Recipe(models.Model):
     preparation_time_in_min = models.IntegerField(default=0)
     preparation = models.TextField()
 
-    #otal_price_weight = calculateTotalPriceWeight(self)
-    #otal_environment_weight = calculateTotalEnvironmentWeight(self)
-    #otal_social_weight = calculateTotalSocialWeight(self)
-    #total_animals_weight = calculateTotalAnimalsWeight(self)
-    #total_personal_health_weight = calculateTotalPersonalHealthWeight(self)
-
     def __str__(self):
         return 'Recept ' + self.name
 
@@ -179,8 +173,17 @@ class Recipe(models.Model):
     def calculateTotalPersonalHealthWeight(self):
         return 0.5
 
-    def calcualteTotalScore(self, user_preference):
-        return 0.6
+    def calcualteTotalScore(self, up):
+        total_price_weight = self.calculateTotalPriceWeight() * up.price_weight
+        total_environment_weight = self.calculateTotalEnvironmentWeight() * up.environment_weight
+        total_social_weight = self.calculateTotalSocialWeight() * up.social_weight
+        total_animals_weight = self.calculateTotalAnimalsWeight() * up.animals_weight
+        total_personal_health_weight = self.calculateTotalPersonalHealthWeight() * up.personal_health_weight
+        return total_price_weight + \
+            total_environment_weight + \
+            total_social_weight + \
+            total_animals_weight + \
+            total_personal_health_weight
 
 
 from .algorithms import recommended_products
