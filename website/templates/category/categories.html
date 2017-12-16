@@ -8,7 +8,7 @@
 {% block content %}
 
 
-<h3 class="view-title">Categoriën</h3>
+<h3 class="view-title">Ingrediënten</h3>
 
 {% for ingredient in ingredients %}
 <p><a href="{% url 'ingredient' ingredient.id %}">{{ ingredient.name }}</a></p>
