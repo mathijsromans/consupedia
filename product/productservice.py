@@ -13,25 +13,22 @@ logger = logging.getLogger(__name__)
 
 
 class ProductService:
-
     @staticmethod
-    def get_all_products(search_query):
-        if search_query:
-            return ProductService.update_products(search_query)
+    def get_all_products():
         return Product.objects.all()
 
     @staticmethod
     @transaction.atomic
-    def update_products(search_name):
-        logger.info('BEGIN')
+    def update_products(ingredient):
+        logger.info('BEGIN: Updating products for ingredient: ' + ingredient)
         start = time.time()
         qm_mapper = QuestionmarkMapper()
 
-        products_dict = questionmark.search_product(search_name)
+        products_dict = questionmark.search_product(ingredient)
         logger.info('@a: ' + str(time.time() - start))
-        jumbo_results = jumbo.search_product(search_name)
+        jumbo_results = jumbo.search_product(ingredient)
         logger.info('@b: ' + str(time.time() - start))
-        ah_results = ah.search_product(search_name)
+        ah_results = ah.search_product(ingredient)
         logger.info('@c: ' + str(time.time() - start))
         jumbo_shop, created = Shop.objects.get_or_create(name='Jumbo')
         logger.info('@d: ' + str(time.time() - start))
@@ -45,6 +42,7 @@ class ProductService:
             ProductService.enrich_product_data(product, jumbo_results, jumbo_shop)
             ProductService.enrich_product_data(product, ah_results, ah_shop)
             product_ids.append(product.id)
+        
         end = time.time()
         logger.info('END - time: ' + str(end - start))
 
@@ -132,7 +130,7 @@ class ProductService:
 class RecipeService():
 
     @staticmethod
-    def create_recipe_from_id(recipe_id):
+    def create_recipe_from_ah_id(recipe_id):
         recipe = allerhande_scraper.get_recipe(recipe_id)
         return RecipeService.create_recipe(
             name=recipe['name'],
@@ -141,7 +139,7 @@ class RecipeService():
             number_persons=recipe['number_persons'],
             preparation_time_in_min=recipe['preparation_time_in_min'],
             preparation='',
-            ingredient_input=recipe['ingredients']
+            recipe_items=recipe['recipe_items']
         )
 
     @staticmethod
@@ -151,51 +149,43 @@ class RecipeService():
                       number_persons,
                       preparation_time_in_min,
                       preparation,
-                      ingredient_input):
-        logger.info('BEGIN')
-        start = time.time()
-        test_ingredients = [
-            [2, '-', 'uien'],
-            [500, 'g', 'preien'],
-            [40, 'g', 'boter'],
-            [2, 'el', 'olijfolie'],
-            [1, 'el', 'gedroogde tijm'],
-            [2, 'blaadjes', 'laurierblaadjes'],
-            [198, 'g', 'corned beef'],
-            [2, 'kg', 'gezeefde tomaten'],
-            [1, 'kg', 'half-om-halfgehakt']]
-
+                      recipe_items):
         if Recipe.objects.filter(name=name).first():
             # recipe already exists
             return
-        if not ingredient_input:
-            ingredient_input = test_ingredients
-        print('Creating recipe with ingredients: ' + str(ingredient_input))
+
+        logger.info('BEGIN: Creating recipe with recipe items: ' + str(recipe_items))
+        start = time.time()
+
         new_recipe = Recipe.objects.create(name=name,
                                            author_if_user=author_if_user,
                                            source_if_not_user = source_if_not_user,
                                            number_persons = number_persons,
                                            preparation_time_in_min = preparation_time_in_min,
                                            preparation = preparation)
-        for ing in ingredient_input:
-            if len(ing) == 3:
-                ProductService().get_all_products(ing[2])
         all_ingredients = Ingredient.objects.all()
         all_ingredient_names = [name for c in all_ingredients for name in c.alt_names()]
         unknown_ingredient = ProductService.get_or_create_unknown_ingredient()
-        for ing in ingredient_input:
-            if len(ing) != 3:
+
+        for recipe_item in recipe_items:
+            if len(recipe_item) != 3:
                 continue
-            # print('searching ' + ing[2])
+            recipe_item_quantity = recipe_item[0]
+            recipe_item_unit = recipe_item[1]
+            recipe_item_ingredient = recipe_item[2]
+            ProductService().update_products(recipe_item_ingredient)
+            
             try:
-                best_ingredient_name = difflib.get_close_matches(ing[2], all_ingredient_names, 1, 0.1)[0]
+                best_ingredient_name = difflib.get_close_matches(recipe_item_ingredient, all_ingredient_names, 1, 0.1)[0]
                 ingredient = next(c for c in all_ingredients if best_ingredient_name in c.alt_names())
             except StopIteration:
+                logger.info('No match found for ingredient: ' + (recipe_item_ingredient));
                 ingredient = unknown_ingredient
-            # print('found category ' + str(category))
-            quantity, unit = ProductAmount.get_quantity_and_unit( ing[0], ing[1])
+
+            quantity, unit = ProductAmount.get_quantity_and_unit( recipe_item_quantity, recipe_item_unit)
             RecipeItem.objects.create(quantity=quantity, unit=unit, ingredient=ingredient, recipe = new_recipe)
-        print('Done creating recipe ' + str(new_recipe))
+        
         end = time.time()
-        logger.info('END - time: ' + str(end - start))
+        logger.info('END: (time: ' + str(end - start) + ') Done creating recipe ' + str(new_recipe))
+        
         return new_recipe

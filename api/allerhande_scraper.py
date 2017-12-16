@@ -3,9 +3,9 @@ import re
 
 regex_unit = re.compile('data-quantity-unit-singular="(.*?)"')
 regex_quantity = re.compile('data-quantity="(\d+)"')
-regex_ingredient_name = re.compile('data-description-singular="(.*?)"')
-regex_ingredients_list = re.compile('<ul class="list shopping ingredient-selector-list">(.*?)</ul>', re.DOTALL)
-regex_ingredient_item = re.compile('<li itemprop="ingredients">(.*?)</li>', re.DOTALL)
+regex_ingredient = re.compile('data-description-singular="(.*?)"')
+regex_recipe_item_list = re.compile('<ul class="list shopping ingredient-selector-list">(.*?)</ul>', re.DOTALL)
+regex_recipe_item = re.compile('<li itemprop="ingredients">(.*?)</li>', re.DOTALL)
 regex_preparation_time = re.compile('<div class="icon icon-time"></div>(\d+).*?</li>', re.DOTALL)
 regex_name = re.compile('<meta property="twitter:title" content="(.*?)">', re.DOTALL)
 regex_number_persons = re.compile('<div class="icon icon-people"></div><span>.*?(\d+).*?</span></li>', re.DOTALL)
@@ -34,14 +34,14 @@ def get_recipe_page_html(recipe_id):
 
 def get_recipe(recipe_id):
     text, url = get_recipe_page_html(recipe_id)
-    ingredients = get_recipe_ingredients(text)
+    recipe_items = get_recipe_items(text)
     preparation_time_in_min = get_preparation_time_min(text)
     number_persons = get_number_persons(text)
     name = get_name(text)
     recipe = {
         'name': name,
         'url': url,
-        'ingredients': ingredients,
+        'recipe_items': recipe_items,
         'preparation_time_in_min': preparation_time_in_min,
         'number_persons': number_persons
     }
@@ -58,11 +58,11 @@ def get_number_persons(page_html_text):
     return int(matches[0])
 
 
-def get_recipe_ingredients(page_html_text):
-    matches = regex_ingredients_list.findall(page_html_text)
-    ingredient_list = matches[0]
-    matches = regex_ingredient_item.findall(ingredient_list)
-    ingredients = []
+def get_recipe_items(page_html_text):
+    matches = regex_recipe_item_list.findall(page_html_text)
+    recipe_item_list = matches[0]
+    matches = regex_recipe_item.findall(recipe_item_list)
+    recipe_items = []
     for match in matches:
         name = ''
         unit = ''
@@ -70,14 +70,14 @@ def get_recipe_ingredients(page_html_text):
         matches = regex_quantity.findall(match)
         if matches:
             quantiy = int(matches[0])
-        matches = regex_ingredient_name.findall(match)
+        matches = regex_ingredient.findall(match)
         if matches:
             name = matches[0]
         matches = regex_unit.findall(match)
         if matches:
             unit = matches[0]
-        ingredients.append([quantiy, unit, name])
-    return ingredients
+        recipe_items.append([quantiy, unit, name])
+    return recipe_items
 
 
 def get_preparation_time_min(page_html_text):

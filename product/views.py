@@ -58,7 +58,7 @@ class RecipesView(TemplateView):
         context = super().get_context_data(**kwargs)
         recipes = Recipe.objects.all()
         if not recipes:
-            RecipeService.create_recipe_from_id('R-R399568')   # create a default recipe so there is something to show
+            RecipeService.create_recipe_from_ah_id('R-R1189729')   # create a default recipe so there is something to show
             recipes = Recipe.objects.all()
         context['recipes'] = recipes
         return context
@@ -92,7 +92,7 @@ class RecipeAddView(FormView):
 
     @transaction.atomic
     def form_valid(self, form):
-        recipe = RecipeService.create_recipe_from_id(form.cleaned_data['url'])
+        recipe = RecipeService.create_recipe_from_ah_id(form.cleaned_data['url'])
         print('CREATED RECIPE ' + str(recipe))
         recipe_id = recipe.id if recipe else 0
         return redirect(reverse('recipe_detail', args=[recipe_id]))

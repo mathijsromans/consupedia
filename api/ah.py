@@ -17,12 +17,11 @@ def search_product(search_term):
 
     json_products =  json.loads(query.json)  
 
-
     results = []
     try:
         items = json_products['_embedded']['lanes'][6]['_embedded']['items']
     except Exception as error:
-        # logger.exception(error)
+        logger.exception(error)
         return results
     for item in items:
         if '_embedded' in item and 'product' in item['_embedded']:
@@ -32,4 +31,5 @@ def search_product(search_term):
                 'price': str(ah_product['priceLabel']['now']).replace('.', ''), 
                 'size': ah_product['unitSize']
             })
+
     return results
