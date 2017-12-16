@@ -1,4 +1,4 @@
-from product.models import Score, Category, Brand
+from product.models import Score, Ingredient, Brand
 
 class QuestionmarkMapper:
     def map_to_product(self, product, product_dict):
@@ -28,9 +28,9 @@ class QuestionmarkMapper:
         usages = product_dict["usages"]
 
         if usages:
-            newCategory = usages[-1]
-            category, created = Category.objects.get_or_create(name=newCategory['name'])
-            product.category = category
+            new_ingredient = usages[-1]
+            ingredient, created = Ingredient.objects.get_or_create(name=new_ingredient['name'])
+            product.ingredient = ingredient
 
     @staticmethod
     def map_urls(product, product_dict):

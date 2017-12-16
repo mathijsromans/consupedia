@@ -5,7 +5,7 @@ from .amount import ProductAmount
 import re
 
 
-class Category(models.Model):
+class Ingredient(models.Model):
     name = models.CharField(max_length=256)
 
     def __str__(self):
@@ -52,7 +52,7 @@ class Product(models.Model):
     prices = models.ManyToManyField(Shop, through='ProductPrice')
     quantity = models.IntegerField(default=0)
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
-    category = models.ForeignKey(Category, null=True)
+    ingredient = models.ForeignKey(Ingredient, null=True)
     scores = models.OneToOneField(Score, null=True)
     thumb_url = models.CharField(max_length=256, null=True)
     version = models.IntegerField(default=CURRENT_VERSION)
@@ -163,14 +163,14 @@ from .algorithms import recommended_products
 class RecipeItem(models.Model):
     quantity = models.IntegerField()
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
-    category = models.ForeignKey(Category)
+    ingredient = models.ForeignKey(Ingredient)
     recipe = models.ForeignKey(Recipe)
 
     def get_amount(self):
         return ProductAmount(quantity=self.quantity, unit=self.unit)
 
     def price(self, user_preference):
-        product_list = recommended_products(self.category, user_preference)
+        product_list = recommended_products(self.ingredient, user_preference)
         price = None
         if product_list:
             product = product_list[0]
@@ -184,7 +184,7 @@ class RecipeItem(models.Model):
         return '€ {:03.2f}'.format(price/100.0)
 
     def __str__(self):
-        return str(self.quantity) + ' ' + str(self.unit) + ' ' + str(self.category)
+        return str(self.quantity) + ' ' + str(self.unit) + ' ' + str(self.ingredient)
 
 class ProductPrice(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

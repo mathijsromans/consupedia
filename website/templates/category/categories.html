@@ -10,8 +10,8 @@
 
 <h3 class="view-title">Categoriën</h3>
 
-{% for category in categories %}
-<p><a href="{% url 'category' category.id %}">{{ category.name }}</a></p>
+{% for ingredient in ingredients %}
+<p><a href="{% url 'ingredient' ingredient.id %}">{{ ingredient.name }}</a></p>
 {% endfor %}
 
 {% endblock %}

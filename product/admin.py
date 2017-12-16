@@ -1,4 +1,4 @@
-from product.models import UserPreferences, Category
+from product.models import UserPreferences, Ingredient
 from product.models import Rating
 from product.models import Recipe
 from product.models import Shop
@@ -14,7 +14,7 @@ class ProductPriceInline(admin.TabularInline):
 
 class ProductAdmin(admin.ModelAdmin):
     model = Product
-    list_display = ('name', 'version', 'questionmark_id', 'brand', 'price', 'quantity', 'unit', 'category', 'product_score')
+    list_display = ('name', 'version', 'questionmark_id', 'brand', 'price', 'quantity', 'unit', 'ingredient', 'product_score')
     inlines = [
         ProductPriceInline,
     ]
@@ -38,7 +38,7 @@ class ProductPriceAdmin(admin.ModelAdmin):
     readonly_fields = ('datetime_created',)
 
 admin.site.register(UserPreferences)
-admin.site.register(Category)
+admin.site.register(Ingredient)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Rating, RatingAdmin)
 admin.site.register(Recipe, RecipeAdmin)

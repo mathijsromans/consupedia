@@ -30,8 +30,8 @@ urlpatterns = [
     url(r'^recipes/add$', product.views.RecipeAddView.as_view(), name='recipe-add'),
     url(r'^recipes/edit/(?P<recipe_id>[0-9]+)/$', product.views.RecipeEditView.as_view(), name='recipe-edit'),
 
-    url(r'^categories/$', product.views.CategoriesView.as_view(), name='categories'),
-    url(r'^category/(?P<category_id>[0-9]+)/$', product.views.CategoryView.as_view(), name='category'),
+    url(r'^ingredients/$', product.views.IngredientsView.as_view(), name='ingredients'),
+    url(r'^ingredient/(?P<ingredient_id>[0-9]+)/$', product.views.IngredientView.as_view(), name='ingredient'),
 
     url(r'^user_preferences/$', product.views.UserPreferenceEditView.as_view(), name='user_prefs'),
     url(r'^user_preference/set/?', login_required(product.views.set_user_preference_data)),

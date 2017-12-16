@@ -6,7 +6,7 @@
 
 {% if product %}
 <div class="row" align="center">
-  <h3>Categorie: {{ category.name }}</h3>
+  <h3>Categorie: {{ ingredient.name }}</h3>
   <p>Het product van de dag is <a href="{% url 'product' product.id %}">{{ product.name }}</a>!!!!!!! </p>
 
   {% include "product/product.html" %}

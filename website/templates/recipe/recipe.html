@@ -5,7 +5,7 @@
 <table>
 {% for recipe_item, price in ingredient_and_price_list %}
 <tr>
-    <td><a href="{% url 'category' recipe_item.category.id %}">{{ recipe_item }}</a></td>
+    <td><a href="{% url 'ingredient' recipe_item.ingredient.id %}">{{ recipe_item }}</a></td>
     <td>{{ price }}</td>
     <td>[<a href="{% url 'ingredient-edit' recipe_item.id %}">Verander</a>]</td>
 </tr>

@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from product.models import Category
+from product.models import Ingredient
 
 def validate_price(value):
     if value < 0:
@@ -15,7 +15,7 @@ class ProductForm(forms.Form):
 class IngredientForm(forms.Form):
     quantity = forms.IntegerField(label='quantity')
     unit = forms.CharField(label='unit', max_length=5)
-    category = forms.ModelChoiceField(label='category', queryset=Category.objects.all().order_by('name'))
+    ingredient = forms.ModelChoiceField(label='ingredient', queryset=Ingredient.objects.all().order_by('name'))
     # category = forms.ModelChoiceField(label='category', queryset=Category.objects.all().sort(key=lambda c: c.name))
 
 

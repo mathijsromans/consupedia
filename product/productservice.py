@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 from api import questionmark, jumbo, ah, allerhande_scraper
-from product.models import Product, Category, RecipeItem, Recipe, ProductPrice, Shop
+from product.models import Product, Ingredient, RecipeItem, Recipe, ProductPrice, Shop
 from .mappers import QuestionmarkMapper
 from .amount import ProductAmount
 import re
@@ -51,12 +51,12 @@ class ProductService:
         return Product.objects.filter(id__in=product_ids)
 
     @staticmethod
-    def get_or_create_unknown_category():
-        category, created = Category.objects.get_or_create(name='Unknown category')
+    def get_or_create_unknown_ingredient():
+        ingredient, created = Ingredient.objects.get_or_create(name='Unknown ingredient')
         if created:
             product, created = Product.objects.get_or_create(name='Unknown product')
-            product.category = category
-        return category
+            product.ingredient = ingredient
+        return ingredient
 
     @staticmethod
     def enrich_product_data(product, retailer_results, shop):
@@ -180,21 +180,21 @@ class RecipeService():
         for ing in ingredient_input:
             if len(ing) == 3:
                 ProductService().get_all_products(ing[2])
-        all_categories = Category.objects.all()
-        all_category_names = [name for c in all_categories for name in c.alt_names()]
-        unknown_category = ProductService.get_or_create_unknown_category()
+        all_ingredients = Ingredient.objects.all()
+        all_ingredient_names = [name for c in all_ingredients for name in c.alt_names()]
+        unknown_ingredient = ProductService.get_or_create_unknown_ingredient()
         for ing in ingredient_input:
             if len(ing) != 3:
                 continue
             # print('searching ' + ing[2])
             try:
-                best_category_name = difflib.get_close_matches(ing[2], all_category_names, 1, 0.1)[0]
-                category = next(c for c in all_categories if best_category_name in c.alt_names())
+                best_ingredient_name = difflib.get_close_matches(ing[2], all_ingredient_names, 1, 0.1)[0]
+                ingredient = next(c for c in all_ingredients if best_ingredient_name in c.alt_names())
             except StopIteration:
-                category = unknown_category
+                ingredient = unknown_ingredient
             # print('found category ' + str(category))
             quantity, unit = ProductAmount.get_quantity_and_unit( ing[0], ing[1])
-            RecipeItem.objects.create(quantity=quantity, unit=unit, category=category, recipe = new_recipe)
+            RecipeItem.objects.create(quantity=quantity, unit=unit, ingredient=ingredient, recipe = new_recipe)
         print('Done creating recipe ' + str(new_recipe))
         end = time.time()
         logger.info('END - time: ' + str(end - start))

@@ -48,10 +48,10 @@
 		{{ product.price }}
 		{% endif %}
 		</p>
-		{% if product.category %}
-		<p>Categorie: <a href="{% url 'category' product.category.id %}">{{ product.category.name }}</a></p>
+		{% if product.ingredient %}
+		<p>Categorie: <a href="{% url 'ingredient' product.ingredient.id %}">{{ product.ingredient.name }}</a></p>
 		{% else %}
-		<p>Categorie: {{ product.category.name }}</p>
+		<p>Categorie: {{ product.ingredient.name }}</p>
 		{% endif %}
 		{% if user.is_authenticated %}
 		{% get_product_rating product user as user_rating %}

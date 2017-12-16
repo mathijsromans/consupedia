@@ -11,7 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 
-from .models import Product, Category
+from .models import Product, Ingredient
 from .management.commands.create_recipes import Command
 from .models import Rating, Recipe, RecipeItem
 from .models import UserPreferences
@@ -42,12 +42,12 @@ class ProductsView(TemplateView):
         context['n_products_all'] = products_all.count()
         return context
 
-class CategoriesView(TemplateView):
+class IngredientsView(TemplateView):
     template_name = 'category/categories.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all()
+        context['ingredients'] = Ingredient.objects.all()
         return context
 
 
@@ -137,17 +137,17 @@ class ProductView(TemplateView):
         return context
 
 
-class CategoryView(TemplateView):
+class IngredientView(TemplateView):
     template_name = 'category/category.html'
 
-    def get_context_data(self, category_id, **kwargs):
+    def get_context_data(self, ingredient_id, **kwargs):
         context = super().get_context_data(**kwargs)
         try:
-            category = Category.objects.get(id=category_id)
-            context['category'] = category
+            ingredient = Ingredient.objects.get(id=ingredient_id)
+            context['ingredient'] = ingredient
             if self.request and self.request.user and self.request.user.is_authenticated():
                 up, created = UserPreferences.objects.get_or_create(user=self.request.user)
-                product_list = recommended_products(category, up)
+                product_list = recommended_products(ingredient, up)
                 context['product'] = product_list[0] if product_list else None
                 context['all_products'] = product_list
         except ObjectDoesNotExist:
@@ -206,14 +206,14 @@ class IngredientEditView(FormView):
     def get_initial(self):
         return {'quantity': self.recipe_item.quantity,
                 'unit': self.recipe_item.unit,
-                'category': self.recipe_item.category}
+                'ingredient': self.recipe_item.ingredient}
 
     @transaction.atomic
     def form_valid(self, form):
         recipe_item = self.recipe_item
         recipe_item.quantity = form.cleaned_data['quantity']
         recipe_item.unit = form.cleaned_data['unit']
-        recipe_item.category = form.cleaned_data['category']
+        recipe_item.ingredient = form.cleaned_data['ingredient']
         recipe_item.save()
         return super().form_valid(form)
 
@@ -264,7 +264,7 @@ class WhatToEatView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all().order_by('name')
+        context['categories'] = Ingredient.objects.all().order_by('name')
         return context
 
 
@@ -282,7 +282,7 @@ def set_product_rating(request):
     return HttpResponse(response, content_type='application/json')
     
 def get_what_to_eat_result(request):
-    category = Category.objects.get(id=request.POST['category_id'])   
+    ingredient = Ingredient.objects.get(id=request.POST['ingredient_id'])
     up = UserPreferences()
     #todo get user preferences from post request.
     up.price_weight = 5
@@ -290,7 +290,7 @@ def get_what_to_eat_result(request):
     up.social_weight = 5
     up.animals_weight = 5
     up.personal_health_weight = 5
-    result = ProductChooseAlgorithm.maximize_product_scores(up, category)
+    result = ProductChooseAlgorithm.maximize_product_scores(up, ingredient)
     scores = result.scores
   
     data = serializers.serialize('json', [result, scores, ])
