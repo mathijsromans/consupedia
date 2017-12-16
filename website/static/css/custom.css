@@ -104,6 +104,17 @@ body {
 	border:1px solid #333;
 }
 
+.welcome-text {
+  font-weight: 500;
+  padding-top:50px;
+}
+.welcome-text__sub {
+  font-weight: 200;
+  font-size: 24px;
+  padding: 0px 100px;
+  margin: 0px;
+}
+
 .block_header {
     float: left;
     width: 50%;
