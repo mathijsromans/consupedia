@@ -58,7 +58,7 @@ class RecipesView(TemplateView):
         context = super().get_context_data(**kwargs)
         recipes = Recipe.objects.all()
         if not recipes:
-            RecipeService.create_recipe('R-R399568')   # create a default recipe so there is something to show
+            RecipeService.create_recipe_from_id('R-R399568')   # create a default recipe so there is something to show
             recipes = Recipe.objects.all()
         context['recipes'] = recipes
         return context
