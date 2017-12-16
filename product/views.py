@@ -92,7 +92,7 @@ class RecipeAddView(FormView):
 
     @transaction.atomic
     def form_valid(self, form):
-        recipe = RecipeService.create_recipe(form.cleaned_data['url'])
+        recipe = RecipeService.create_recipe_from_id(form.cleaned_data['url'])
         print('CREATED RECIPE ' + str(recipe))
         recipe_id = recipe.id if recipe else 0
         return redirect(reverse('recipe_detail', args=[recipe_id]))
