@@ -1,46 +1,45 @@
-<div class="row" align="center">
-  <h3>{{ product.name }}</h3>
-</div>
-
-{% include "product/product_picture.html" %}
 
 <div class="row" align="center">
-  <table class="table table-striped">
-    <tr><td>Naam</td><td>{{ product.name }}</td></tr>
-    <tr><td>Categorie</td><td><a href="{% url 'ingredient' product.ingredient.id %}">{{ product.ingredient.name }}</a></td>
-    <tr><td>ean code</td><td>{{ product.ean_code }}</td></tr>
-    <tr><td>Questionmark id</td><td>{{ product.questionmark_id }}</td></tr>
-    <tr><td>Merk</td><td> {{ product.brand.name }}</td></tr>
-    <tr><td>Beste prijs</td><td> {{ product.price }}</td></tr>
-    <tr><td>Scores</td></tr>
-    <tr><td>Milieu</td><td> {{ product.scores.environment }}</td></tr>
-    <tr><td>Mensenrechten</td><td> {{ product.scores.social }}</td></tr>
-    <tr><td>Dierenwelzijn</td><td> {{ product.scores.animals }}</td></tr>
-    <tr><td>Gezondheid</td><td> {{ product.scores.personal_health }}</td></tr>
-  </table>
+  <div class="col-md-6 col-md-offset-3">
+    <div class="panel">
+      <div class="panel-heading">
+        <h3 class="nopadding">{{ product.name }}</h3>
+      </div>
+      <div class="panel-body">
+        {% include "product/product_picture.html" %}
+      </div>
+      <table class="table table-striped">
+        <tr><th>Naam</th><td>{{ product.name }}</td></tr>
+        <tr><th>Categorie</th><td><a href="{% url 'ingredient' product.ingredient.id %}">{{ product.ingredient.name }}</a></td>
+        <tr><th>Merk</th><td> {{ product.brand.name }}</td></tr>
+        <tr><th>Beste prijs</th><td> {{ product.price }}</td></tr>
+        {% if product.ean_code %}<tr><th>EAN code</th><td>{{ product.ean_code }}</td></tr>{% endif %}
+      </table>
+        <h5>Scores</h5>
+      <table class="table table-striped">
+        <tr><th>Milieu</th><td>{{ product.scores.environment }}</td></tr>
+        <tr><th>Mensenrechten</th><td>{{ product.scores.social }}</td></tr>
+        <tr><th>Dierenwelzijn</th><td>{{ product.scores.animals }}</td></tr>
+        <tr><th>Gezondheid</th><td>{{ product.scores.personal_health }}</td></tr>
+      </table>
+    </div>
+  </div>
 </div>
 
 <div class="row" align="center">
-  <h4>Prijzen bij alle winkels:</h4>
+  <h4>Prijzen</h4>
 </div>
-
 
 <div class="row">
-{% for pp in product.productprice_set.all %}
-    <div class="col-md-6">
-        <div class="well">
-            <h3>{{ pp }}</a></h3>
-        </div>
+  {% for pp in product.productprice_set.all %}
+  <div class="col-md-6">
+    <div class="well">
+      <h3>{{ pp }}</a></h3>
     </div>
-    {% if forloop.counter|divisibleby:2 %}
-        <div class="clearfix"></div>
-    {% endif %}
-{% endfor %}
+  </div>
+  {% if forloop.counter|divisibleby:2 %}
+  <div class="clearfix"></div>
+  {% endif %}
+  {% endfor %}
 </div>
-
-<div class="row" align="center">
-  <h3>Scoreberekening:</h3>
-  <h4>{{ product.product_score_details }}</h4>
-</div>
-
 

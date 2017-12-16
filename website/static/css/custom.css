@@ -20,6 +20,11 @@ body {
    height: 60px;
 }
 
+.nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
+
 .csp-card {
 	float:left;
 	border:1px solid #CCC;

@@ -115,11 +115,11 @@ class Product(models.Model):
 
 class UserPreferences(models.Model):
     user = models.OneToOneField(User, unique=True)
-    price_weight = models.IntegerField(default=0)
-    environment_weight = models.IntegerField(default=0)
-    social_weight = models.IntegerField(default=0)
-    animals_weight = models.IntegerField(default=0)
-    personal_health_weight = models.IntegerField(default=0)
+    price_weight = models.IntegerField(default=50)
+    environment_weight = models.IntegerField(default=50)
+    social_weight = models.IntegerField(default=50)
+    animals_weight = models.IntegerField(default=50)
+    personal_health_weight = models.IntegerField(default=50)
 
     def get_rel_weights(self):
         #normaliseren van de gebruikersgewichten.
