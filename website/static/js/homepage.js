@@ -22,9 +22,13 @@ function showRecipes(recipeList) {
 	recipeList.forEach(function(recipe){
 		var name = recipe.name;
 		var content = recipe.content;
+		var time = recipe.time;
+		var persons = recipe.persons;
 		var div = '<div class="panel panel-primary recipe-item">' 
-		+ '<div class="panel-heading"><h3 class="panel-title">' 
-		+ name + '</h3></div><div class="panel-body">'+ content +'</div></div>';
+		+ '<div class="panel-heading"><h3 class="panel-title">' + name + '</h3></div>'
+		+ '<div class="panel-body">'+ content +'</div>' 
+		+ '<div class="panel-footer">duur:'+ time +' personen: '+persons+'</div>'
+		+ '</div>';
 
 		$("#recipes-list").append(div);
 	});

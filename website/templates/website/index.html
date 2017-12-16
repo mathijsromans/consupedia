@@ -13,7 +13,7 @@
   </div>
   <div class="row">
     <div class="col-sm-12" align="center">
-        <h3 class="welcome-text__sub">We willen u graag helpen om een bewuste keuze te maken bij het samenstellen van uw volgende maaltijd. Om een duidelijk beeld van uw voorkeuren te krijgen vragen we u de volgende gegevens in te vullen.</h2>
+        <h3 class="welcome-text__sub">We helpen u graag bij het maken van bewuste keuzes over eten. Consupedia kan op basis van uw voorkeuren bepalen welke ingredienten en recepten bij u passen. U kan eerst aangeven hoe belangerijk u <strong>Prijs, Mileu, Sociaal, Dierenwelzijn en Gezondheid </strong>vind. Daarna krijgt u een advies voor recepten die het best bij u passen.</h2>
     </div>
   </div>
 
@@ -23,7 +23,7 @@
 
   <div class="row">
     <div class="col-sm-12" align="center">
-        <h3 class="welcome-text__sub">Met uw voorkeuren kunnen we nu het beste recept wat past gaan uitzoeken.</h2>
+        <h3 class="welcome-text__sub">Met uw voorkeuren kunnen we nu de beste recepten bepalen.</h2>
     </div>
     <div class="col-sm-12" align="center">      
         <button id="get-recipes" class="btn btn-primary" style="margin-bottom:30px;">Haal recepten op</button>
@@ -34,42 +34,6 @@
   </div>
 
   <script src="{% static 'js/homepage.js' %}" type="text/javascript"></script>
-
-  {% if recommended_product %}
-  <div class="row">
-    <div class="col-sm-12" align="left">      
-      <p>Het product van de dag is: </p>
-      <div class="csp-product csp-card csp-card-big">
-        <h4><a href="{% url 'product' recommended_product.id %}">{{ recommended_product.name }}</a></h4>
-        <div>
-            {% if recommended_product.thumb_url %}
-            <img src="{{ recommended_product.thumb_url }}"/>
-            {% endif %}     
-            {% if recommended_product.price %} 
-            <span>{{ recommended_product.price }}</span>
-            {% endif %} 
-        </div>
-      </div>
-    </div>
-  </div>
-  {% endif %}
-
-  <div class="row">
-    <div class="col-sm-12" align="left">
-      <p>Ook interessante producten: </p>
-      <table>
-      {% for e in all_products %}
-        <tr><td> <a href="{% url 'product' e.id %}"> {{ e.name }} </a> </td><td> {{ e.price }} </td> <td> {{ e.product_score_details }} </td></tr>
-      {% endfor %}
-      </table>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-sm-12" align="left">
-      <p>Geen producten gevonden</p>
-    </div>
-  </div>
 
 </div>
 {% endblock %}

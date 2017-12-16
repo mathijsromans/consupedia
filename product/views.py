@@ -347,11 +347,11 @@ def get_recipes_for_user(request):
 
     response = json.dumps({'status': 'success',
                            'recipes': [
-                               { "name": "Salami soep", "content": "test1" },
-                               { "name": "Kaas risoto", "content": "test12" },
-                               { "name": "Paddestoelen bbq", "content": "test13" },
-                               { "name": "Appelsap en groentes variate", "content": "test14" },
-                               { "name": "Spinazie met boon", "content": "test15" },
-                               { "name": "Keukenkruiden cola taart", "content": "test16" }
+                               { "name": "Salami soep", "content": "test1" , "time": "45", "persons": "1"},
+                               { "name": "Kaas risoto", "content": "test12" ,"time": "45", "persons": "1"},
+                               { "name": "Paddestoelen bbq", "content": "test13", "time": "45", "persons": "1"},
+                               { "name": "Appelsap en groentes variate", "content": "test14" ,"time": "45", "persons": "1"},
+                               { "name": "Spinazie met boon", "content": "test15" ,"time": "45", "persons": "1"},
+                               { "name": "Keukenkruiden cola taart", "content": "test16" ,"time": "45", "persons": "1"}
                                ]})                                                              
     return HttpResponse(response, content_type='application/json')
