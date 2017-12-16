@@ -114,7 +114,7 @@ class Product(models.Model):
 
 
 class UserPreferences(models.Model):
-    user = models.ForeignKey(User)
+    user = models.OneToOneField(User, unique=True)
     price_weight = models.IntegerField(default=0)
     environment_weight = models.IntegerField(default=0)
     social_weight = models.IntegerField(default=0)

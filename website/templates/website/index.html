@@ -10,7 +10,7 @@
     </div>
   </div>
 
-  {% if user.is_authenticated and recommended_product %}
+  {% if recommended_product %}
   <div class="row">
     <div class="col-sm-12" align="left">      
       <p>Het product van de dag is: </p>
@@ -26,7 +26,9 @@
         </div>
       </div>
     </div>
-  </div>  
+  </div>
+  {% endif %}
+
   <div class="row">
     <div class="col-sm-12" align="left">
       <p>Ook interessante producten: </p>
@@ -34,25 +36,15 @@
       {% for e in all_products %}
         <tr><td> <a href="{% url 'product' e.id %}"> {{ e.name }} </a> </td><td> {{ e.price }} </td> <td> {{ e.product_score_details }} </td></tr>
       {% endfor %}
-      </table>	     
+      </table>
     </div>
   </div>
-  {% else %}
+
   <div class="row">
     <div class="col-sm-12" align="left">
-      <div class="block_header">
-        <div class="block_child">          
-          <a href="{% url 'what_to_eat' %}">Wat eten we vanavond?</a>
-        </div>          
-      </div>
-      <div class="block_header block_header_grey">
-        <div class="block_child">          
-          <a href="#">Je moet inloggen om je aanbevolen product te zien</a>
-        </div>          
-      </div>      
+      <p>Geen producten gevonden</p>
     </div>
   </div>
-  {% endif %}     
 
 </div>
 {% endblock %}

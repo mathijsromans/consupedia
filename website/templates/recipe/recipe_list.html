@@ -11,7 +11,7 @@
 <h3 class="view-title">Recepten</h3>
 
 <div class="row">
-{% if user.is_authenticated %}
+{% if not is_anonymous_user %}
   <section class="csp-menu">
     <a class="button primary" href="{% url 'recipe-add' %}">Maak nieuw recept</a>
   </section>

@@ -12,7 +12,7 @@
 <h3 class="view-title">Produkten</h3>
 
 <div class="row">
-{% if user.is_authenticated %}
+{% if not is_anonymous_user %}
   <section class="csp-menu">
     <a class="button primary" href="{% url 'product-add' %}">Maak nieuw produkt</a>
   </section>
@@ -53,7 +53,7 @@
 		{% else %}
 		<p>Categorie: {{ product.ingredient.name }}</p>
 		{% endif %}
-		{% if user.is_authenticated %}
+		{% if not is_anonymous_user %}
 		{% get_product_rating product user as user_rating %}
 		{% endif %}
 		<section class="csp-rater" data-global-rating="{{ product.get_average_rating }}" data-user-rating="{{ user_rating }}" data-product-id="{{ product.id }}">
@@ -64,7 +64,7 @@
 			<i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
 			</div>
 		</section>
-		{% if user.is_authenticated %}
+		{% if not is_anonymous_user %}
 		<div>
 			<a class='csp-edit csp-btn' href="{% url 'product-edit' product.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
 		</div>

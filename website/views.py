@@ -1,8 +1,10 @@
 import logging
+import uuid
 from product.algorithms import ProductChooseAlgorithm
 
 from django.core.exceptions import PermissionDenied
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
+from django.contrib.auth import authenticate, login
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import TemplateView, UpdateView
 
@@ -13,20 +15,44 @@ from website import settings
 
 logger = logging.getLogger(__name__)
 
+
 # This class defines a view for a certain URL
 class MainView(TemplateView):
     template_name = 'website/index.html' # the template that will be used to render the page (in this case website/templates/website/index.html)
 
+    @staticmethod
+    def get_anonymous_group():
+        group, created = Group.objects.get_or_create(name="anonymous")
+        return group
+
+    @staticmethod
+    def create_anonymous_user(request):
+        username = uuid.uuid4().hex[:10]
+        email = username + '@anonymous.com'
+        user = User.objects.create(username=username, email=email)
+        password = uuid.uuid4().hex
+        user.set_password(password)
+        user.save()
+        user = authenticate(username=username, password=password)
+        login(request, user)
+        group = MainView.get_anonymous_group()
+        user.groups.add(group)
+        return user
+
     # Specifies variables that can be used in the template
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if(self.request and self.request.user and self.request.user.is_authenticated()):
-            up, created = UserPreferences.objects.get_or_create( user = self.request.user )
-            product_list = Product.objects.all()
-            product_list = generate_sorted_list(product_list, up)
-            context['recommended_product'] = product_list[0] if product_list else None
-            context['all_products'] = product_list
+        if not self.request.user.is_authenticated():
+            user = self.create_anonymous_user(self.request)
+        else:
+            user = self.request.user
+        up, created = UserPreferences.objects.get_or_create(user=user)
+        product_list = Product.objects.all()
+        # product_list = generate_sorted_list(product_list, up)
+        context['recommended_product'] = product_list[0] if product_list else None
+        context['all_products'] = product_list
         return context
+
 
 class ContactView(TemplateView):
     template_name = 'website/contact.html'
