@@ -28,8 +28,7 @@ class ProductsView(TemplateView):
     def get_context_data(self, **kwargs):
         search_query = self.request.GET.get('search_box', None)
         if search_query:
-            ingredient, created = Ingredient.objects.get_or_create(name=search_query)
-            products_all = ProductService.search_products(ingredient)
+            products_all = ProductService.search_products(search_query)
         else:
             products_all = ProductService.get_all_products()
         paginator = Paginator(products_all, 100)
@@ -49,6 +48,10 @@ class IngredientsView(TemplateView):
     template_name = 'category/categories.html'
 
     def get_context_data(self, **kwargs):
+        create_query = self.request.GET.get('create_box', None)
+        if create_query:
+            ingredient, created = Ingredient.objects.get_or_create(name=create_query)
+            ProductService.update_products(ingredient)
         context = super().get_context_data(**kwargs)
         context['ingredients'] = Ingredient.objects.all().order_by('name')
         return context

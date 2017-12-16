@@ -11,6 +11,19 @@
 <h3 class="view-title">Ingrediënten</h3>
 
 <div class="row">
+  <form type="get" action="." style="margin: 0">
+    <div class="col-sm-3">
+      <input class="form-control" id="create_box" type="text" name="create_box" placeholder="Ingredient...">
+    </div>
+    <div class="col-sm-3">
+      <button class="btn btn-primary" id="search_submit" type="submit">Maak nieuw</button>
+    </div>
+  </form>
+</div>
+
+<hr/>
+
+<div class="row">
   {% for ingredient in ingredients %}
   <div class="col-sm-6 col-md-4 col-lg-3">
     {% include "ingredient/ingredient_panel.html" %}
