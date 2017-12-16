@@ -51,6 +51,7 @@ class MainView(TemplateView):
         # product_list = generate_sorted_list(product_list, up)
         context['recommended_product'] = product_list[0] if product_list else None
         context['all_products'] = product_list
+        context['userPreference'] = up
         return context
 
 

@@ -10,30 +10,6 @@
   <h3>Voorkeuren voor {{ userPreference.user.username }}</h3>
 </div>
 
-	<section class="csp-setting-sliders">
-		<label for="price">Prijs</label>
-		<input type="range" name="price" min="0" max="100" value="{{ userPreference.price_weight }}">
-		
-		<label for="environment">Milieu</label>
-		<input type="range" name="environment" min="0" max="100" value="{{ userPreference.environment_weight }}">
+{% include "user/user_preference_edit_block.html" %}
 
-		<label for="social">Sociaal</label>
-		<input type="range" name="social" min="0" max="100" value="{{ userPreference.social_weight }}">
-
-		<label for="animals">Dierenwelzijn</label>
-		<input type="range" name="animals" min="0" max="100" value="{{ userPreference.animals_weight }}">
-
-		<label for="personal_health">Gezondheid</label>
-		<input type="range" name="personal_health" min="0" max="100" value="{{ userPreference.personal_health_weight }}">		
-	</section>
-	
-	<section class="csp-settings-relview">
-		<div class="csp-relview csp-price"></div>
-		<div class="csp-relview csp-environment"></div>
-		<div class="csp-relview csp-social"></div>
-		<div class="csp-relview csp-animals"></div>
-		<div class="csp-relview csp-personal_health"></div>
-	</section>
-
-<script src="{% static 'js/user_preferences.js' %}" type="text/javascript"></script>
 {% endblock %}
