@@ -7,15 +7,16 @@
 
 {% block content %}
 
-
-<h3 class="view-title">Recepten</h3>
-
 <div class="row">
-{% if not is_anonymous_user %}
-  <section class="csp-menu">`
-    <a class="button primary" href="{% url 'recipe-add' %}">Maak nieuw recept</a>
-  </section>
-{% endif %}
+  <div class="col-md-6">
+    <h3 class="view-title">Recepten</h3>
+  </div>
+  <div class="col-md-6" align="right">
+  {% if not is_anonymous_user %}
+    <div class="vertical-spacer-10"></div>
+    <a class="btn btn-primary" href="{% url 'recipe-add' %}">Nieuw recept</a>
+  {% endif %}
+  </div>
 </div>
 
 <div class="row">
