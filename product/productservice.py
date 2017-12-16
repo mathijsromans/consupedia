@@ -44,6 +44,8 @@ class ProductService:
 
         product_ids = []
         for product_dict in products_dict['products']:
+            if not product_dict['name'].lower().startswith(ingredient.name + ' '):
+                continue  # Boterhamworst is not a type of boter
             # logger.info('@1 ' + str(time.time() - start) + ': ' + product_dict['name'])
             product, created = Product.objects.get_or_create(name=product_dict['name'], questionmark_id=product_dict['id'])
             product.ingredient = ingredient
