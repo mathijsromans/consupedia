@@ -31,8 +31,12 @@ class ProductAmount:
     def from_str(cls, size):
         quantity = 0
         unit = ProductAmount.NO_UNIT
-
+        
+        ### remove the circa, ca.
         size = size.replace(',', '.')
+        size = size.replace('ca', '')
+        size = size.replace('ca.', '')
+        size = size.replace('circa', '')
         numbers = re.findall(r'[-+]?\d*\.\d+|\d+', size)
         if numbers:
             nonnumbers = re.sub('[0-9\. ]', '', size)
@@ -66,14 +70,18 @@ class ProductAmount:
         return str(self.quantity) + ' ' + self.unit
 
 
-#### hier rekenen we alle typen units om naar grammen
+#### convert types of units to grams
     @staticmethod
     def get_quantity_and_unit(quantity, unit_text):
+#### remove the first x from unitname
+        if unit_text[0:2] == 'xg' or unit_text[0:2] == 'Xg':
+            unit_text = unit_text[1:]
+
         if unit_text == '-' or unit_text == 'blaadjes' or unit_text == 'stuks' or unit_text == 'krop':
             return quantity, ProductAmount.NO_UNIT
         if unit_text == 'g' or unit_text == 'gr' or unit_text == 'gram':
             return quantity, ProductAmount.GRAM
-        if unit_text == 'kg':
+        if unit_text == 'kg' or unit_text == 'kilo':
             return 1000*quantity, ProductAmount.GRAM
         if unit_text == 'ml':
             return quantity, ProductAmount.ML
@@ -93,12 +101,17 @@ class ProductAmount:
             return 80*quantity, ProductAmount.GRAM    
         if unit_text == 'blok' or unit_text == 'blokje':
             return 10*quantity, ProductAmount.GRAM    
-        #gok: blik is 400 gram en een blikje 100 gram
+    # this is a guess: a 'blik' is 400 gram and a 'blikje' is 100 gram
         if unit_text == 'blik':
             return 400*quantity, ProductAmount.GRAM    
         if unit_text == 'blikje':
             return 100*quantity, ProductAmount.GRAM    
-
-
-        print('UNKNOWN UNIT : ' + unit_text)
+        if unit_text == 'teen' or unit_text == 'teentje' or unit_text == 'tenen' or unit_text == 'teentjes':
+            return 10*quantity, ProductAmount.GRAM
+        if unit_text == '':
+            return quantity,''
+        print('QUANTITY: ' + str(quantity) + ', UNKNOWN UNIT: ' + unit_text)
+        
         return int(quantity), ProductAmount.NO_UNIT
+
+
