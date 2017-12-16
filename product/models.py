@@ -158,8 +158,14 @@ class Recipe(models.Model):
     def __str__(self):
         return 'Recept ' + self.name
 
-    def calculateTotalPriceWeight(self):
-        return 0.5
+    def calculateTotalPriceWeight(self, up):
+        total = 0
+        for recipe_item in self.recipeitem_set.all():
+            price = recipe_item.price(up)
+            if not price:
+                price = 0.5  # should be error, really
+            total += price
+        return total
 
     def calculateTotalEnvironmentWeight(self):
         return 0.5
@@ -174,7 +180,7 @@ class Recipe(models.Model):
         return 0.5
 
     def calcualteTotalScore(self, up):
-        total_price_weight = self.calculateTotalPriceWeight() * up.price_weight
+        total_price_weight = self.calculateTotalPriceWeight(up) * up.price_weight
         total_environment_weight = self.calculateTotalEnvironmentWeight() * up.environment_weight
         total_social_weight = self.calculateTotalSocialWeight() * up.social_weight
         total_animals_weight = self.calculateTotalAnimalsWeight() * up.animals_weight
