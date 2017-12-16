@@ -35,18 +35,18 @@ class TestAllerHandeScraper(TestCase):
 
     def test_get_recipe_ingredient(self):
         content, url = allerhande_scraper.get_recipe_page_html(self.recipe_id)
-        ingredients = allerhande_scraper.get_recipe_ingredients(content)
-        self.assertEqual(ingredients[0][0], 4)
-        self.assertEqual(ingredients[0][1], '')
-        self.assertEqual(ingredients[0][2], 'ui')
-        self.assertEqual(ingredients[-1][0], 1)
-        self.assertEqual(ingredients[-1][1], 'kg')
-        self.assertEqual(ingredients[-1][2], 'half-om-halfgehakt')
+        recipe_items = allerhande_scraper.get_recipe_items(content)
+        self.assertEqual(recipe_items[0][0], 4)
+        self.assertEqual(recipe_items[0][1], '')
+        self.assertEqual(recipe_items[0][2], 'ui')
+        self.assertEqual(recipe_items[-1][0], 1)
+        self.assertEqual(recipe_items[-1][1], 'kg')
+        self.assertEqual(recipe_items[-1][2], 'half-om-halfgehakt')
 
     def test_get_recipe(self):
         recipe = allerhande_scraper.get_recipe(self.recipe_id)
         self.assertEqual(recipe['url'], 'https://www.ah.nl/allerhande/recept/R-R399568')
-        self.assertEqual(len(recipe['ingredients']), 9)
+        self.assertEqual(len(recipe['recipe_items']), 9)
         self.assertEqual(recipe['preparation_time_in_min'], 45)
         self.assertEqual(recipe['number_persons'], 10)
 

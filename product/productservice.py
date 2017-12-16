@@ -163,9 +163,10 @@ class RecipeService():
                                            number_persons = number_persons,
                                            preparation_time_in_min = preparation_time_in_min,
                                            preparation = preparation)
+
+        unknown_ingredient = ProductService.get_or_create_unknown_ingredient()
         all_ingredients = Ingredient.objects.all()
         all_ingredient_names = [name for c in all_ingredients for name in c.alt_names()]
-        unknown_ingredient = ProductService.get_or_create_unknown_ingredient()
 
         for recipe_item in recipe_items:
             if len(recipe_item) != 3:
@@ -174,7 +175,7 @@ class RecipeService():
             recipe_item_unit = recipe_item[1]
             recipe_item_ingredient = recipe_item[2]
             ProductService().update_products(recipe_item_ingredient)
-            
+
             try:
                 best_ingredient_name = difflib.get_close_matches(recipe_item_ingredient, all_ingredient_names, 1, 0.1)[0]
                 ingredient = next(c for c in all_ingredients if best_ingredient_name in c.alt_names())
