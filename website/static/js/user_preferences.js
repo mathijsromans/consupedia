@@ -2,11 +2,8 @@ $('.csp-setting-sliders input').change(sliderChanged);
 
 function sliderChanged(e) {
 	var pref = e.target.name;
-	var newWeight = e.target.value;
-	
-	console.log(pref);
-	console.log(newWeight);
-	
+	var newWeight = e.target.value;	
+
 	$.post(
 	    "/user_preference/set/",
 	    {
@@ -41,11 +38,12 @@ function updateUiWeights(preferences) {
 		var pref = preferences[i].preference;
 		var relWeight = preferences[i].rel_weight;
 		var weight = preferences[i].weight;
+		console.log(weight);
 		
 		var relSize = maxSize * relWeight;
 		
 		$('.csp-settings-relview .csp-' + pref).css({"width" : relSize + "vw", "height" : relSize + "vw"});
-		
+		$('.csp-setting-sliders .csp-' + pref +'-value').text(weight + "%");
 	}
 	
 }

@@ -3,7 +3,13 @@ html, body {
 }
 
 body {
-  padding-top: 60px;
+  padding-top: 65px;
+}
+
+.vertical-spacer-10 {
+    padding: 0;
+    margin: 0;
+    height: 10px;
 }
 
 .vertical-spacer-20 {
@@ -18,6 +24,11 @@ body {
    background-size: 280px 60px;
    width: 280px;
    height: 60px;
+}
+
+.nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
 }
 
 .csp-card {
@@ -82,6 +93,17 @@ body {
 	transition:width 1s, height 1s;
 }
 
+.csp-setting-sliders input[type="range"]
+{
+  width: 50%;
+  margin-top: 10px;
+}
+
+.csp-setting-sliders label {
+  font-weight: 500;
+  font-size: 20px;
+}
+
 .csp-price {	background-color: gold;}
 .csp-environment {	background-color: green;}
 .csp-social {	background-color: pink;}
@@ -112,7 +134,7 @@ body {
   font-weight: 200;
   font-size: 24px;
   padding: 0px 100px;
-  margin: 0px;
+  margin: 0px 0px 40px 0px;
 }
 
 .block_header {
@@ -171,4 +193,29 @@ body {
 .block_header:focus .block_child {
   transform: scale(1);
   transition: all .5s;
+}
+
+.step-background-gray {
+  padding: 30px 0px;
+  background:#EAEAEA;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.recipe-list
+{
+  display: inline-block;
+}
+
+.recipe-item
+{
+  float: left;
+  width: 29%;
+  margin: 20px;
+  padding: 20px;  
+  cursor: pointer;
+}
+.recipe-item:hover
+{
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }

@@ -9,12 +9,12 @@
 {% block content %}
 
 
-<h3 class="view-title">Produkten</h3>
+<h3 class="view-title">Producten</h3>
 
 <div class="row">
 {% if not is_anonymous_user %}
   <section class="csp-menu">
-    <a class="button primary" href="{% url 'product-add' %}">Maak nieuw produkt</a>
+    <a class="button primary" href="{% url 'product-add' %}">Maak nieuw product</a>
   </section>
 {% endif %}
 </div>
@@ -37,39 +37,19 @@
 <div class="row">
 
   {% for product in products %}
-
-    <div class="csp-product csp-card">
-        <h4><a href="{% url 'product' product.id %}">{{ product.name }}</a></h4>
-
-		{% include "product/product_picture.html" %}
-
-        <p>
-		{% if product.price %}
-		{{ product.price }}
-		{% endif %}
-		</p>
-		{% if product.ingredient %}
-		<p>Categorie: <a href="{% url 'ingredient' product.ingredient.id %}">{{ product.ingredient.name }}</a></p>
-		{% else %}
-		<p>Categorie: {{ product.ingredient.name }}</p>
-		{% endif %}
-		{% if not is_anonymous_user %}
-		{% get_product_rating product user as user_rating %}
-		{% endif %}
-		<section class="csp-rater" data-global-rating="{{ product.get_average_rating }}" data-user-rating="{{ user_rating }}" data-product-id="{{ product.id }}">
-			<div class="csp-global-rating">
-			<i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
-			</div>
-			<div class="csp-user-rating">
-			<i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
-			</div>
-		</section>
-		{% if not is_anonymous_user %}
-		<div>
-			<a class='csp-edit csp-btn' href="{% url 'product-edit' product.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
+	  <div class="col-sm-6 col-md-4 col-lg-3">
+	  	{% include "product/product_panel.html" %}
 		</div>
+
+	  {% if forloop.counter|divisibleby:2 %}
+			<div class="clearfix visible-sm"></div>
 		{% endif %}
-    </div>
+	  {% if forloop.counter|divisibleby:3 %}
+			<div class="clearfix visible-md"></div>
+		{% endif %}
+	  {% if forloop.counter|divisibleby:4 %}
+			<div class="clearfix visible-lg"></div>
+		{% endif %}
 
   {% endfor %}
 

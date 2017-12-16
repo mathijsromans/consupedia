@@ -4,16 +4,17 @@
 
 {% block content %}
 
-{% if not is_anonymous_user %}
-  <section class="csp-menu">
-    <a class="button primary" href="{% url 'recipe-edit' recipe.id %}">Edit</a>
-  </section>
-{% endif %}
+<div class="vertical-spacer-20"></div>
 
-<div class="row" align="center">
-
-{% include "recipe/recipe.html" %}
-
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    {% include "recipe/recipe_detail_panel.html" %}
+    {% if not is_anonymous_user %}
+      <span class="pull-right">
+        <a class="btn btn-primary" href="{% url 'recipe-edit' recipe.id %}">Edit</a>
+      </span>
+    {% endif %}
+  </div>
 </div>
 
 

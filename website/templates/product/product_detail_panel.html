@@ -1,0 +1,51 @@
+
+<div class="row" align="center">
+  <div class="col-md-6 col-md-offset-3">
+    <div class="panel">
+      <div class="panel-heading">
+        <h3 class="nopadding">{{ product.name }}</h3>
+      </div>
+      <div class="panel-body">
+        {% include "product/product_picture.html" %}
+      </div>
+      <table class="table table-striped">
+        <tr><th>Naam</th><td>{{ product.name }}</td></tr>
+        <tr><th>Categorie</th><td><a href="{% url 'ingredient' product.ingredient.id %}">{{ product.ingredient.name }}</a></td>
+        <tr><th>Merk</th><td> {{ product.brand.name }}</td></tr>
+        <tr><th>Beste prijs</th><td> {{ product.price }}</td></tr>
+        {% if product.ean_code %}<tr><th>EAN code</th><td>{{ product.ean_code }}</td></tr>{% endif %}
+      </table>
+        <h5>Scores</h5>
+      <table class="table table-striped">
+        <tr><th>Milieu</th><td>{{ product.scores.environment }}</td></tr>
+        <tr><th>Mensenrechten</th><td>{{ product.scores.social }}</td></tr>
+        <tr><th>Dierenwelzijn</th><td>{{ product.scores.animals }}</td></tr>
+        <tr><th>Gezondheid</th><td>{{ product.scores.personal_health }}</td></tr>
+      </table>
+    </div>
+
+    {% if not is_anonymous_user %}
+    <div align="right">
+      <a class='btn btn-primary' href="{% url 'product-edit' product.id %}">Edit</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="row" align="center">
+  <h4>Prijzen</h4>
+</div>
+
+<div class="row">
+  {% for pp in product.productprice_set.all %}
+  <div class="col-md-6">
+    <div class="well">
+      <h4>{{ pp }}</h4>
+    </div>
+  </div>
+  {% if forloop.counter|divisibleby:2 %}
+  <div class="clearfix"></div>
+  {% endif %}
+  {% endfor %}
+</div>
+

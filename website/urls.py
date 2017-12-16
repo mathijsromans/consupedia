@@ -42,6 +42,8 @@ urlpatterns = [
 
     url(r'^accounts/', include('registration.backends.simple.urls')),  # the django-registration module
 
+    url(r'^recipes/get_for_user', login_required(product.views.get_recipes_for_user)),
+
     url(r'^admin/', admin.site.urls),
 ]
 
