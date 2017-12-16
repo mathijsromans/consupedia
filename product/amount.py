@@ -74,7 +74,9 @@ class ProductAmount:
     @staticmethod
     def get_quantity_and_unit(quantity, unit_text):
 #### remove the first x from unitname
-        if unit_text[0:2] == 'xg' or unit_text[0:2] == 'Xg':
+        unit_text = unit_text.lower()
+
+        if unit_text[0:1] == 'x':
             unit_text = unit_text[1:]
 
         if unit_text == '-' or unit_text == 'blaadjes' or unit_text == 'stuks' or unit_text == 'krop' or unit_text == 'blaadje':
