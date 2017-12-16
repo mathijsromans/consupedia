@@ -28,7 +28,10 @@
 
       <table class="table table-striped">
         {% for product in ingredient.product_set.all %}
-        <tr><td> <a href="{% url 'product' product.id %}"> {{ product.name }} </a> </td><td> {{ product.price }} </td></tr>
+          <tr>
+            <td><a href="{% url 'product' product.id %}">{{ product.name }}</a></td>
+            <td>{{ product.price }}</td>
+          </tr>
         {% endfor %}
       </table>
 
