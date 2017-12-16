@@ -2,6 +2,7 @@ import logging
 import requests
 import json
 from .models import AHQuery
+from api import cache
 
 logger = logging.getLogger(__name__)
 
@@ -11,8 +12,8 @@ def search_product(search_term):
     if created:
         URL = 'https://www.ah.nl/service/rest/delegate?url=/zoeken?rq='
         fake_headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
-        response = requests.get(URL + search_term, headers = fake_headers)
-        query.json = json.dumps(response.json())
+        result = cache.query(URL + search_term, params={}, headers=fake_headers, result_type=cache.ResultType.JSON)
+        query.json = json.dumps(result)
         query.save()
 
     json_products =  json.loads(query.json)  

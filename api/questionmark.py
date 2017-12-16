@@ -28,7 +28,7 @@ def search_by_string(params):
     params_as_string = json.dumps(params)
     query, created = QuestionMarkQuery.objects.get_or_create(params_as_string=params_as_string)
     if created:
-        query.json = json.dumps(cache.query(BASE_URL + 'products/', params=params, headers={}))
+        query.json = json.dumps(cache.query(BASE_URL + 'products/', params=params, headers={}, result_type=cache.ResultType.JSON))
         # with open('query_' + params_as_string + '.json', 'w') as f:
         #     f.write(query.json)
         query.save()

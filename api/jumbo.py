@@ -3,6 +3,7 @@ import re
 from .models import JumboQuery
 import logging
 import time
+from api import cache
 
 logger = logging.getLogger(__name__)
 
@@ -39,8 +40,8 @@ def get_search_result(search_term, page_number):
     query, created = JumboQuery.objects.get_or_create(q_product_name = search_term + str(page_number))
     if created:
         start = time.time()
-        response = requests.get("https://www.jumbo.com/producten", params)
-        query.html = response.text
+        query.html = cache.query("https://www.jumbo.com/producten", params=params, headers={}, result_type=cache.ResultType.HTML)
+
         query.save()
         end = time.time()
         logger.info('ACTUAL JUMBO QUERY: END - time: ' + str(end - start))
@@ -48,6 +49,8 @@ def get_search_result(search_term, page_number):
 
     # print(query.html)
     regex = re.compile(regex_product)
+    # print(query.html)
+    # print(type(query.html))
     matches = regex.findall(query.html)
 
     # print('MATCHES ' + str(matches))
