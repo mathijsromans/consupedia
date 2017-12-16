@@ -82,6 +82,17 @@ body {
 	transition:width 1s, height 1s;
 }
 
+.csp-setting-sliders input[type="range"]
+{
+  width: 50%;
+  margin-top: 10px;
+}
+
+.csp-setting-sliders label {
+  font-weight: 500;
+  font-size: 20px;
+}
+
 .csp-price {	background-color: gold;}
 .csp-environment {	background-color: green;}
 .csp-social {	background-color: pink;}
@@ -112,7 +123,7 @@ body {
   font-weight: 200;
   font-size: 24px;
   padding: 0px 100px;
-  margin: 0px;
+  margin: 0px 0px 40px 0px;
 }
 
 .block_header {
@@ -171,4 +182,10 @@ body {
 .block_header:focus .block_child {
   transform: scale(1);
   transition: all .5s;
+}
+
+.step-background-gray {
+  padding: 30px 0px;
+  background:#EAEAEA;
+  width: 100%;
 }

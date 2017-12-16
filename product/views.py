@@ -322,18 +322,18 @@ def get_user_preference_data(up):
     response = json.dumps({'status': 'success',
                            'user_preferences': [
                                { "preference": "price",
-                                 "weight:": up.price_weight,
+                                 "weight": up.price_weight,
                                  "rel_weight": rel[0] },
                                { "preference": "environment",
-                                 "weight:": up.environment_weight,
+                                 "weight": up.environment_weight,
                                  "rel_weight": rel[1] },
                                { "preference": "social",
-                                 "weight:": up.social_weight,
+                                 "weight": up.social_weight,
                                  "rel_weight": rel[2] },
                                { "preference": "animals",
-                                 "weight:": up.animals_weight,
+                                 "weight": up.animals_weight,
                                  "rel_weight": rel[3] },
                                { "preference": "personal_health",
-                                 "weight:": up.personal_health_weight,
+                                 "weight": up.personal_health_weight,
                                  "rel_weight": rel[4] } ] })
     return HttpResponse(response, content_type='application/json')

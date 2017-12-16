@@ -1,28 +1,31 @@
 {% load static %}
 
-<section class="csp-setting-sliders">
-	<label for="price">Prijs</label>
-	<input type="range" name="price" min="0" max="100" value="{{ userPreference.price_weight }}">
-	
-	<label for="environment">Milieu</label>
-	<input type="range" name="environment" min="0" max="100" value="{{ userPreference.environment_weight }}">
-
-	<label for="social">Sociaal</label>
-	<input type="range" name="social" min="0" max="100" value="{{ userPreference.social_weight }}">
-
-	<label for="animals">Dierenwelzijn</label>
-	<input type="range" name="animals" min="0" max="100" value="{{ userPreference.animals_weight }}">
-
-	<label for="personal_health">Gezondheid</label>
-	<input type="range" name="personal_health" min="0" max="100" value="{{ userPreference.personal_health_weight }}">		
-</section>
-
-<section class="csp-settings-relview">
-	<div class="csp-relview csp-price"></div>
-	<div class="csp-relview csp-environment"></div>
-	<div class="csp-relview csp-social"></div>
-	<div class="csp-relview csp-animals"></div>
-	<div class="csp-relview csp-personal_health"></div>
+<section class="csp-setting-sliders container">
+	<div class="row"> 
+		<label class="col-md-2" for="price">Prijs</label>
+		<input class="col-md-2" type="range" name="price" min="0" max="100" value="{{ userPreference.price_weight }}">
+		<div class="col-md-2 csp-price-value">{{ userPreference.price_weight }}%</div>
+	</div>
+	<div class="row">
+		<label class="col-md-2" for="environment">Milieu</label>
+		<input class="col-md-2" type="range" name="environment" min="0" max="100" value="{{ userPreference.environment_weight }}">
+		<div class="col-md-2 csp-environment-value">{{ userPreference.environment_weight }}%</div>
+ 	</div>
+	<div class="row">
+		<label class="col-md-2" for="social">Sociaal</label>
+		<input class="col-md-2" type="range" name="social" min="0" max="100" value="{{ userPreference.social_weight }}">
+		<div class="col-md-2 csp-social-value">{{ userPreference.social_weight }}%</div>
+	</div>
+	<div class="row">
+		<label class="col-md-2" for="animals">Dierenwelzijn</label>
+		<input class="col-md-2" type="range" name="animals" min="0" max="100" value="{{ userPreference.animals_weight }}">
+		<div class="col-md-2 csp-animals-value">{{ userPreference.animals_weight }}%</div>
+	</div>
+	<div class="row">
+		<label class="col-md-2" for="personal_health">Gezondheid</label>
+		<input class="col-md-2" type="range" name="personal_health" min="0" max="100" value="{{ userPreference.personal_health_weight }}">	
+		<div class="col-md-2 csp-personal_health-value">{{ userPreference.personal_health_weight }}%</div>	
+	</div>	
 </section>
 
 <script src="{% static 'js/user_preferences.js' %}" type="text/javascript"></script>
