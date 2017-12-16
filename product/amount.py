@@ -77,7 +77,7 @@ class ProductAmount:
         if unit_text[0:2] == 'xg' or unit_text[0:2] == 'Xg':
             unit_text = unit_text[1:]
 
-        if unit_text == '-' or unit_text == 'blaadjes' or unit_text == 'stuks' or unit_text == 'krop':
+        if unit_text == '-' or unit_text == 'blaadjes' or unit_text == 'stuks' or unit_text == 'krop' or unit_text == 'blaadje':
             return quantity, ProductAmount.NO_UNIT
         if unit_text == 'g' or unit_text == 'gr' or unit_text == 'gram':
             return quantity, ProductAmount.GRAM
