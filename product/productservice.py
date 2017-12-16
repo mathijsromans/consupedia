@@ -44,8 +44,6 @@ class ProductService:
 
         product_ids = []
         for product_dict in products_dict['products']:
-            if not product_dict['name'].lower().startswith(ingredient.name + ' '):
-                continue  # Boterhamworst is not a type of boter
             # logger.info('@1 ' + str(time.time() - start) + ': ' + product_dict['name'])
             product, created = Product.objects.get_or_create(name=product_dict['name'], questionmark_id=product_dict['id'])
             product.ingredient = ingredient
@@ -76,14 +74,8 @@ class ProductService:
                 logging.info('FOUND!!! ' + str(retailer_result))
                 price = int(retailer_result['price'])
                 product_name = retailer_result['name']
-                try:
-                    pp = ProductPrice.objects.get(product=product, shop=shop)
-                    pp.price = price
-                    pp.product_name = product_name
-                    pp.save()
-                except ObjectDoesNotExist:
-                    logger.exception('Product should exist already, but was not found: ' + product.name)
-                    ProductPrice.objects.create(product=product, shop=shop, price=price, product_name=product_name)
+                pp, created = ProductPrice.objects.get_or_create(product=product, shop=shop, defaults={'price': price, 'product_name': product_name})
+                pp.save()
 
     @staticmethod
     def match(retailer_result, product):
