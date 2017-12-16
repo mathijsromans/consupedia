@@ -33,6 +33,17 @@ class TestAmount(TestCase):
         self.assertEqual(ProductAmount.get_quantity_and_unit(200, 'gram'), (200, 'g'))
         self.assertEqual(ProductAmount.get_quantity_and_unit(0.2, 'kg'), (200, 'g'))
 
+        self.assertEqual(ProductAmount.get_quantity_and_unit(0.5, 'pond'),(250, 'g'))
+        self.assertEqual(ProductAmount.get_quantity_and_unit(1, 'pondje'),(500, 'g'))        
+        self.assertEqual(ProductAmount.get_quantity_and_unit(0.2, 'ons'), (20, 'g'))
+        self.assertEqual(ProductAmount.get_quantity_and_unit(1.0, 'onsje'), (100, 'g'))
+        self.assertEqual(ProductAmount.get_quantity_and_unit(0.5, 'snee'), (40, 'g'))
+        self.assertEqual(ProductAmount.get_quantity_and_unit(1.0, 'sneetje'), (80, 'g'))
+        self.assertEqual(ProductAmount.get_quantity_and_unit(1.0, 'blok'), (10, 'g'))
+        self.assertEqual(ProductAmount.get_quantity_and_unit(0.5, 'blokje'), (5, 'g'))
+        self.assertEqual(ProductAmount.get_quantity_and_unit(1, 'blik'), (400, 'g'))
+        self.assertEqual(ProductAmount.get_quantity_and_unit(1, 'blikje'), (100, 'g'))
+
         self.assertEqual(ProductAmount.get_quantity_and_unit(200, 'ml'), (200, 'ml'))
         self.assertEqual(ProductAmount.get_quantity_and_unit(20, 'cl'), (200, 'ml'))
         self.assertEqual(ProductAmount.get_quantity_and_unit(0.2, 'l'), (200, 'ml'))

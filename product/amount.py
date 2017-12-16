@@ -65,6 +65,8 @@ class ProductAmount:
     def __str__(self):
         return str(self.quantity) + ' ' + self.unit
 
+
+#### hier rekenen we alle typen units om naar grammen
     @staticmethod
     def get_quantity_and_unit(quantity, unit_text):
         if unit_text == '-' or unit_text == 'blaadjes' or unit_text == 'stuks' or unit_text == 'krop':
@@ -83,6 +85,20 @@ class ProductAmount:
             return quantity, ProductAmount.EL
         if unit_text == 'tl' or unit_text == 'theelepels':
             return quantity, ProductAmount.TL
+        if unit_text == 'pondje' or unit_text == 'pond':
+            return 500*quantity, ProductAmount.GRAM
+        if unit_text == 'ons' or unit_text == 'onsje':
+            return 100*quantity, ProductAmount.GRAM
+        if unit_text == 'snee' or unit_text == 'sneetje':
+            return 80*quantity, ProductAmount.GRAM    
+        if unit_text == 'blok' or unit_text == 'blokje':
+            return 10*quantity, ProductAmount.GRAM    
+        #gok: blik is 400 gram en een blikje 100 gram
+        if unit_text == 'blik':
+            return 400*quantity, ProductAmount.GRAM    
+        if unit_text == 'blikje':
+            return 100*quantity, ProductAmount.GRAM    
 
-        # print('UNKNOWN UNIT : ' + unit_text)
+
+        print('UNKNOWN UNIT : ' + unit_text)
         return int(quantity), ProductAmount.NO_UNIT
