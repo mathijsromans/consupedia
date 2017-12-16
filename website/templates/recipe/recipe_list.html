@@ -12,23 +12,21 @@
 
 <div class="row">
 {% if not is_anonymous_user %}
-  <section class="csp-menu">
+  <section class="csp-menu">`
     <a class="button primary" href="{% url 'recipe-add' %}">Maak nieuw recept</a>
   </section>
 {% endif %}
 </div>
 
 <div class="row">
-{% for recipe in recipes %}
-    <div class="col-md-6">
-        <div class="well">
-            {% include "recipe/recipe.html" %}
-        </div>
-    </div>
-    {% if forloop.counter|divisibleby:2 %}
-        <div class="clearfix"></div>
-    {% endif %}
-{% endfor %}
+  {% for recipe in recipes %}
+  <div class="col-md-6">
+    {% include "recipe/recipe_panel.html" %}
+  </div>
+  {% if forloop.counter|divisibleby:2 %}
+  <div class="clearfix"></div>
+  {% endif %}
+  {% endfor %}
 </div>
 
 {% endblock %}

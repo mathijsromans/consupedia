@@ -1,0 +1,19 @@
+
+<div class="panel">
+  <div class="panel-heading" align="center">
+    <h5><a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.name }}</a></h5>
+  </div>
+
+  {% if recipe.source_if_not_user %}
+  <div class="panel-footer">
+    <div class="row">
+      <div class="col-xs-6" align="left">
+        <span><i class="fa fa-clock-o"></i> {{ recipe.preparation_time_in_min }} min</span>
+      </div>
+      <div class="col-xs-6" align="right">
+        <span><i class="fa fa-user"></i> {{ recipe.number_persons }}</span>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>

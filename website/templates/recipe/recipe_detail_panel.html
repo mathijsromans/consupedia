@@ -1,0 +1,29 @@
+
+<div class="panel">
+  <div class="panel-heading" >
+    <span align="center">
+      <h5><a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.name }}</a></h5>
+    </span>
+    <h6><i class="fa fa-clock-o"></i> {{ recipe.preparation_time_in_min }} min</h6>
+    <h6><i class="fa fa-user"></i> {{ recipe.number_persons }}</h6>
+  </div>
+
+  {% if ingredient_and_price_list %}
+  <table class="table table-striped">
+    {% for recipe_item, price in ingredient_and_price_list %}
+    <tr>
+      <th>{{ recipe_item.quantity }} {{ recipe_item.unit }}</th>
+      <td><a href="{% url 'ingredient' recipe_item.ingredient.id %}">{{ recipe_item.ingredient }}</a></td>
+      <td>{{ price }}</td>
+      <td align="right"><a href="{% url 'ingredient-edit' recipe_item.id %}"><i class="fa fa-pencil"></i></a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+
+  {% if recipe.source_if_not_user %}
+  <div class="panel-footer">
+    Bron: <a href="{{ recipe.source_if_not_user }}">{{ recipe.source_if_not_user }}</a><br/>
+  </div>
+  {% endif %}
+</div>
