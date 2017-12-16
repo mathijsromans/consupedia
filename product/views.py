@@ -28,7 +28,8 @@ class ProductsView(TemplateView):
     def get_context_data(self, **kwargs):
         search_query = self.request.GET.get('search_box', None)
         if search_query:
-            products_all = ProductService.search_or_update_products(search_query)
+            ingredient, created = Ingredient.objects.get_or_create(name=search_query)
+            products_all = ProductService.search_products(ingredient)
         else:
             products_all = ProductService.get_all_products()
         paginator = Paginator(products_all, 100)

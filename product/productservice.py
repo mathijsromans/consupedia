@@ -18,12 +18,8 @@ class ProductService:
         return Product.objects.all()
 
     @staticmethod
-    def search_or_update_products(search_query):
-        products_all = Product.objects.filter(name__icontains=search_query)
-        if not products_all.exists():
-            ingredient, created = Ingredient.objects.get_or_create(name=search_query)
-            products_all = ProductService.update_products(ingredient)
-        return products_all
+    def search_products(search_query):
+        return Product.objects.filter(name__icontains=search_query)
 
     @staticmethod
     @transaction.atomic
