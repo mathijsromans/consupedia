@@ -178,7 +178,7 @@ LOGGING = {
             'propagate': True,
             'level': 'DEBUG',
         },
-        'questionmark': {
+        'api': {
             'handlers': ['file_debug', 'file_error', 'console'],
             'propagate': True,
             'level': 'DEBUG',

@@ -27,7 +27,6 @@ def search_product(search_term):
         else:
             break
 
-    # print ('RESULTS ' + json.dumps(results, indent='  '))
     return results
 
 
@@ -46,13 +45,7 @@ def get_search_result(search_term, page_number):
         end = time.time()
         logger.info('ACTUAL JUMBO QUERY: END - time: ' + str(end - start))
 
-
-    # print(query.html)
     regex = re.compile(regex_product)
-    # print(query.html)
-    # print(type(query.html))
     matches = regex.findall(query.html)
-
-    # print('MATCHES ' + str(matches))
 
     return matches

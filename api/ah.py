@@ -22,14 +22,16 @@ def search_product(search_term):
     try:
         items = json_products['_embedded']['lanes'][6]['_embedded']['items']
     except Exception as error:
-        logger.exception(error)
+        # This is nto a real error, just the quickest way to see if there are items
+        logger.info(error)
         return results
     for item in items:
         if '_embedded' in item and 'product' in item['_embedded']:
             ah_product = item['_embedded']['product']
+            price = str(ah_product['priceLabel']['now']).replace('.', '');
             results.append({ 
                 'name' : ah_product['description'], 
-                'price': str(ah_product['priceLabel']['now']).replace('.', ''), 
+                'price': price, 
                 'size': ah_product['unitSize']
             })
 

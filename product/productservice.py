@@ -80,11 +80,13 @@ class ProductService:
                     pp.product_name = product_name
                     pp.save()
                 except ObjectDoesNotExist:
+                    logger.exception('Product should exist already, but was not found: ' + product.name)
                     ProductPrice.objects.create(product=product, shop=shop, price=price, product_name=product_name)
 
     @staticmethod
     def match(retailer_result, product):
-        if ProductAmount.from_str(retailer_result['size']) != product.get_amount():
+        retailer_size = ProductAmount.from_str(retailer_result['size']);
+        if retailer_size != product.get_amount():
             return False
 
         retailer_name = retailer_result['name']
