@@ -23,6 +23,12 @@
         <tr><th>Gezondheid</th><td>{{ product.scores.personal_health }}</td></tr>
       </table>
     </div>
+
+    {% if not is_anonymous_user %}
+    <div align="right">
+      <a class='btn btn-primary' href="{% url 'product-edit' product.id %}">Edit</a>
+    </div>
+    {% endif %}
   </div>
 </div>
 

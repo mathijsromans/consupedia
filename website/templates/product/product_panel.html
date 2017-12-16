@@ -1,0 +1,39 @@
+{% load consupedia %}
+
+<div class="panel">
+
+	<div class="panel-heading">
+    <h5><a href="{% url 'product' product.id %}">{{ product.name }}</a></h5>
+  </div>
+
+  <div class="panel-body">
+		<div align="center">
+			{% include "product/product_picture.html" %}
+		</div>
+
+		{% if product.price %}
+    	<p>{{ product.price }}</p>
+		{% endif %}
+
+    {% if product.ingredient %}
+			<p>Categorie: <a href="{% url 'ingredient' product.ingredient.id %}">{{ product.ingredient.name }}</a></p>
+		{% endif %}
+
+		{% if not is_anonymous_user %}
+			{% get_product_rating product user as user_rating %}
+		{% endif %}
+		
+		<section class="csp-rater" data-global-rating="{{ product.get_average_rating }}" data-user-rating="{{ user_rating }}" data-product-id="{{ product.id }}">
+			<div class="csp-global-rating">
+			<i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
+			</div>
+			<div class="csp-user-rating">
+			<i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
+			</div>
+		</section>
+  </div>
+
+</div>
+
+
+
