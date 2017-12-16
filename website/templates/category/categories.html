@@ -10,8 +10,22 @@
 
 <h3 class="view-title">Ingrediënten</h3>
 
-{% for ingredient in ingredients %}
-<p><a href="{% url 'ingredient' ingredient.id %}">{{ ingredient.name }}</a></p>
-{% endfor %}
+<div class="row">
+  {% for ingredient in ingredients %}
+  <div class="col-sm-6 col-md-4 col-lg-3">
+    {% include "ingredient/ingredient_panel.html" %}
+  </div>
+
+  {% if forloop.counter|divisibleby:2 %}
+    <div class="clearfix visible-sm"></div>
+    {% endif %}
+    {% if forloop.counter|divisibleby:3 %}
+    <div class="clearfix visible-md"></div>
+    {% endif %}
+    {% if forloop.counter|divisibleby:4 %}
+    <div class="clearfix visible-lg"></div>
+    {% endif %}
+  {% endfor %}
+</div>
 
 {% endblock %}

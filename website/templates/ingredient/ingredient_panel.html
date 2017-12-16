@@ -1,0 +1,13 @@
+<div class="panel">
+
+  <div class="panel-heading">
+    <h5>
+      <a href="{% url 'ingredient' ingredient.id %}">{{ ingredient.name }}</a>
+    </h5>
+  </div>
+
+  <div class="panel-footer">
+    {{ ingredient.product_set.count }} producten
+  </div>
+
+</div>
