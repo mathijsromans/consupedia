@@ -158,33 +158,66 @@ class Recipe(models.Model):
     def __str__(self):
         return 'Recept ' + self.name
 
+    def recommended_scores(self, up):
+        result = []
+        for recipe_item in self.recipeitem_set.all():
+            product = recipe_item.recommended_product(up)
+            if product and product.scores:
+                result.append(product.scores)
+        return result
+
     def calculateTotalPriceWeight(self, up):
         total = 0
         for recipe_item in self.recipeitem_set.all():
-            price = recipe_item.price(up)
-            if not price:
-                price = 0.5  # should be error, really
-            total += price
+            total += recipe_item.price_estimate(up)
         return total
 
-    def calculateTotalEnvironmentWeight(self):
-        return 0.5
+    def calculateTotalEnvironmentWeight(self, up):
+        sum = 0
+        n = 1
+        rec_scores = self.recommended_scores(up)
+        for scores in rec_scores:
+            if scores.environment:
+                sum += scores.environment
+                n += 1
+        return sum / n
 
-    def calculateTotalSocialWeight(self):
-        return 0.5
+    def calculateTotalSocialWeight(self, up):
+        sum = 0
+        n = 1
+        rec_scores = self.recommended_scores(up)
+        for scores in rec_scores:
+            if scores.social:
+                sum += scores.social
+                n += 1
+        return sum / n
 
-    def calculateTotalAnimalsWeight(self):
-        return 0.5
+    def calculateTotalAnimalsWeight(self, up):
+        sum = 0
+        n = 1
+        rec_scores = self.recommended_scores(up)
+        for scores in rec_scores:
+            if scores.animals:
+                sum += scores.animals
+                n += 1
+        return sum / n
 
-    def calculateTotalPersonalHealthWeight(self):
-        return 0.5
+    def calculateTotalPersonalHealthWeight(self, up):
+        sum = 0
+        n = 1
+        rec_scores = self.recommended_scores(up)
+        for scores in rec_scores:
+            if scores.personal_health:
+                sum += scores.personal_health
+                n += 1
+        return sum / n
 
     def calcualteTotalScore(self, up):
         total_price_weight = self.calculateTotalPriceWeight(up) * up.price_weight
-        total_environment_weight = self.calculateTotalEnvironmentWeight() * up.environment_weight
-        total_social_weight = self.calculateTotalSocialWeight() * up.social_weight
-        total_animals_weight = self.calculateTotalAnimalsWeight() * up.animals_weight
-        total_personal_health_weight = self.calculateTotalPersonalHealthWeight() * up.personal_health_weight
+        total_environment_weight = self.calculateTotalEnvironmentWeight(up) * up.environment_weight
+        total_social_weight = self.calculateTotalSocialWeight(up) * up.social_weight
+        total_animals_weight = self.calculateTotalAnimalsWeight(up) * up.animals_weight
+        total_personal_health_weight = self.calculateTotalPersonalHealthWeight(up) * up.personal_health_weight
         return total_price_weight + \
             total_environment_weight + \
             total_social_weight + \
@@ -203,13 +236,23 @@ class RecipeItem(models.Model):
     def get_amount(self):
         return ProductAmount(quantity=self.quantity, unit=self.unit)
 
-    def price(self, user_preference):
+    def recommended_product(self, user_preference):
         product_list = recommended_products(self.ingredient, user_preference)
-        price = None
         if product_list:
-            product = product_list[0]
-            price = product.price.price * ( self.get_amount() / product.get_amount() )
-        return price
+            return product_list[0]
+        return None
+
+    def price(self, user_preference):
+        product = self.recommended_product(user_preference)
+        if product:
+            return product.price.price * ( self.get_amount() / product.get_amount() )
+        return None
+
+    def price_estimate(self, user_preference):
+        price = self.price(user_preference)
+        if price:
+            return price
+        return 0.5  # should be error, really
 
     def price_str(self, user_preference):
         price = self.price(user_preference)
