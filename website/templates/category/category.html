@@ -5,24 +5,27 @@
 {% block content %}
 
 {% if product %}
-<div class="row" align="center">
-  <h3>Categorie: {{ ingredient.name }}</h3>
-  <p>Het product van de dag is <a href="{% url 'product' product.id %}">{{ product.name }}</a>!!!!!!! </p>
+<div class="row" align="left">
+  <h3>{{ ingredient.name }}</h3>
+  <hr/>
+</div>
 
+<div class="row" align="center">
+  <h4>Aanbevolen {{ ingredient.name | lower }}</h4>
   {% include "product/product.html" %}
 </div>
 {% endif %}
 
 <div class="row">
-    <div class="col-sm-12" align="left">
-      <p>Ook interessante producten: </p>
-      <table>
+  <div class="col-sm-12" align="center">
+    <h3>Vergelijkbare producten</h3>
+    <table class="table table-striped">
       {% for e in all_products %}
-        <tr><td> <a href="{% url 'product' e.id %}"> {{ e.name }} </a> </td><td> {{ e.price }} </td> <td> {{ e.product_score_details }} </td></tr>
+      <tr><td> <a href="{% url 'product' e.id %}"> {{ e.name }} </a> </td><td> {{ e.price }} </td></tr>
       {% endfor %}
-      </table>
-    </div>
+    </table>
   </div>
+</div>
 
 
 
