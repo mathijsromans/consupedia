@@ -148,11 +148,10 @@ class IngredientView(TemplateView):
         try:
             ingredient = Ingredient.objects.get(id=ingredient_id)
             context['ingredient'] = ingredient
-            if self.request and self.request.user and self.request.user.is_authenticated():
+            if self.request.user.is_authenticated():
                 up, created = UserPreferences.objects.get_or_create(user=self.request.user)
                 product_list = recommended_products(ingredient, up)
                 context['product'] = product_list[0] if product_list else None
-                context['all_products'] = product_list
         except ObjectDoesNotExist:
             pass
         return context
