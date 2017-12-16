@@ -160,7 +160,7 @@ class Recipe(models.Model):
 
 from .algorithms import recommended_products
 
-class Ingredient(models.Model):
+class RecipeItem(models.Model):
     quantity = models.IntegerField()
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
     category = models.ForeignKey(Category)

@@ -13,7 +13,7 @@ from django.shortcuts import redirect
 
 from .models import Product, Category
 from .management.commands.create_recipes import Command
-from .models import Rating, Recipe, Ingredient
+from .models import Rating, Recipe, RecipeItem
 from .models import UserPreferences
 from .productservice import ProductService, RecipeService
 from .forms import ProductForm, RecipeForm, RecipeURLForm, IngredientForm
@@ -71,7 +71,7 @@ class RecipeDetailView(TemplateView):
         context = super().get_context_data(**kwargs)
         recipe = Recipe.objects.get(id=recipe_id)
         up, created = UserPreferences.objects.get_or_create( user = self.request.user )
-        ingredient_and_price_list = [(ingredient, ingredient.price_str(up)) for ingredient in recipe.ingredient_set.all() ]
+        ingredient_and_price_list = [(recipe_item, recipe_item.price_str(up)) for recipe_item in recipe.recipeitem_set.all() ]
         context['recipe'] = recipe
         context['ingredient_and_price_list'] = ingredient_and_price_list
         return context
@@ -197,29 +197,29 @@ class IngredientEditView(FormView):
 
     @property
     def success_url(self):
-        return '/recipe/' + str(self.ingredient.recipe.id)
+        return '/recipe/' + str(self.recipe_item.recipe.id)
 
     @property
-    def ingredient(self):
-        return Ingredient.objects.get(id=self.kwargs['ingredient_id'])
+    def recipe_item(self):
+        return RecipeItem.objects.get(id=self.kwargs['ingredient_id'])
 
     def get_initial(self):
-        return {'quantity': self.ingredient.quantity,
-                'unit': self.ingredient.unit,
-                'category': self.ingredient.category}
+        return {'quantity': self.recipe_item.quantity,
+                'unit': self.recipe_item.unit,
+                'category': self.recipe_item.category}
 
     @transaction.atomic
     def form_valid(self, form):
-        ingredient = self.ingredient
-        ingredient.quantity = form.cleaned_data['quantity']
-        ingredient.unit = form.cleaned_data['unit']
-        ingredient.category = form.cleaned_data['category']
-        ingredient.save()
+        recipe_item = self.recipe_item
+        recipe_item.quantity = form.cleaned_data['quantity']
+        recipe_item.unit = form.cleaned_data['unit']
+        recipe_item.category = form.cleaned_data['category']
+        recipe_item.save()
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['ingredient'] = self.ingredient
+        context['recipe_item'] = self.recipe_item
         return context
 
 class UserPreferenceEditView(FormView):

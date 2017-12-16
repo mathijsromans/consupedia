@@ -3,7 +3,7 @@ from product.models import Rating
 from product.models import Recipe
 from product.models import Shop
 from product.models import ProductPrice
-from product.models import Ingredient
+from product.models import RecipeItem
 from product.models import Product
 from django.contrib import admin
 
@@ -25,13 +25,13 @@ class RatingAdmin(admin.ModelAdmin):
     list_display = ('user', 'product', 'rating')
 
 
-class IngredientInline(admin.TabularInline):
-    model = Ingredient
+class RecipeItemInline(admin.TabularInline):
+    model = RecipeItem
 
 
 class RecipeAdmin(admin.ModelAdmin):
     inlines = [
-        IngredientInline,
+        RecipeItemInline,
     ]
 
 class ProductPriceAdmin(admin.ModelAdmin):
@@ -42,6 +42,6 @@ admin.site.register(Category)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Rating, RatingAdmin)
 admin.site.register(Recipe, RecipeAdmin)
-admin.site.register(Ingredient)
+admin.site.register(RecipeItem)
 admin.site.register(Shop)
 admin.site.register(ProductPrice, ProductPriceAdmin)
