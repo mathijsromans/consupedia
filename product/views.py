@@ -26,10 +26,11 @@ class ProductsView(TemplateView):
     template_name = 'product/products.html'
 
     def get_context_data(self, **kwargs):
-        if self.request.method == 'GET': # If the form is submitted
-            search_query = self.request.GET.get('search_box', None)
-        context = super().get_context_data(**kwargs)
-        products_all = ProductService().get_all_products(search_query)
+        search_query = self.request.GET.get('search_box', None)
+        if search_query:
+            products_all = ProductService.search_or_update_products(search_query)
+        else:
+            products_all = ProductService.get_all_products()
         paginator = Paginator(products_all, 100)
         page = self.request.GET.get('page')
         try:
@@ -38,6 +39,7 @@ class ProductsView(TemplateView):
             products = paginator.page(1)
         except EmptyPage:
             products = paginator.page(paginator.num_pages)
+        context = super().get_context_data(**kwargs)
         context['products'] = products
         context['n_products_all'] = products_all.count()
         return context

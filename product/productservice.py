@@ -18,6 +18,13 @@ class ProductService:
         return Product.objects.all()
 
     @staticmethod
+    def search_or_update_products(search_query):
+        products_all = Product.objects.filter(name__icontains=search_query)
+        if not products_all.exists():
+            products_all = ProductService.update_products(search_query)
+        return products_all
+
+    @staticmethod
     @transaction.atomic
     def update_products(ingredient):
         logger.info('BEGIN: Updating products for ingredient: ' + ingredient)
