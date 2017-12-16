@@ -71,7 +71,7 @@ class ProductService:
         for retailer_result in retailer_results:
             # print ('CHECKING ' + str(retailer_result))
             if ProductService.match(retailer_result, product):
-                print('FOUND!!! ' + str(retailer_result))
+                logging.info('FOUND!!! ' + str(retailer_result))
                 price = int(retailer_result['price'])
                 product_name = retailer_result['name']
                 try:
