@@ -49,7 +49,7 @@ class IngredientsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['ingredients'] = Ingredient.objects.all()
+        context['ingredients'] = Ingredient.objects.all().order_by('name')
         return context
 
 
@@ -104,7 +104,7 @@ class RecipeEditView(FormView):
     template_name = 'recipe/recipe_edit.html'
     form_class = RecipeForm
     success_url = '/recipes/'
-    recipe = None;
+    recipe = None
     
     def get_initial(self, **kwargs):
         if 'recipe_id' in self.kwargs:
