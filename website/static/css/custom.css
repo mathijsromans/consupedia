@@ -199,4 +199,23 @@ body {
   padding: 30px 0px;
   background:#EAEAEA;
   width: 100%;
+  margin-bottom: 40px;
+}
+
+.recipe-list
+{
+  display: inline-block;
+}
+
+.recipe-item
+{
+  float: left;
+  width: 29%;
+  margin: 20px;
+  padding: 20px;  
+  cursor: pointer;
+}
+.recipe-item:hover
+{
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }

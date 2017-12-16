@@ -2,11 +2,8 @@ $('.csp-setting-sliders input').change(sliderChanged);
 
 function sliderChanged(e) {
 	var pref = e.target.name;
-	var newWeight = e.target.value;
-	
-	//console.log(pref);
-	//console.log(newWeight);
-	
+	var newWeight = e.target.value;	
+
 	$.post(
 	    "/user_preference/set/",
 	    {

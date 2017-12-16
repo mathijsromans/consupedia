@@ -339,3 +339,19 @@ def get_user_preference_data(up):
                                  "weight": up.personal_health_weight,
                                  "rel_weight": rel[4] } ] })
     return HttpResponse(response, content_type='application/json')
+
+@login_required
+def get_recipes_for_user(request):
+
+    #todo
+
+    response = json.dumps({'status': 'success',
+                           'recipes': [
+                               { "name": "Salami soep", "content": "test1" },
+                               { "name": "Kaas risoto", "content": "test12" },
+                               { "name": "Paddestoelen bbq", "content": "test13" },
+                               { "name": "Appelsap en groentes variate", "content": "test14" },
+                               { "name": "Spinazie met boon", "content": "test15" },
+                               { "name": "Keukenkruiden cola taart", "content": "test16" }
+                               ]})                                                              
+    return HttpResponse(response, content_type='application/json')
