@@ -343,15 +343,14 @@ def get_user_preference_data(up):
 @login_required
 def get_recipes_for_user(request):
 
-    #todo
+    #Find all recipes
+    recipes = Recipe.objects.all()
+    #Order recipes based on userpreference
+    #userPreference = self.get_my_preference()
 
+    #Return first 6 results.
+    list_result = [entry for entry in recipes.values()]
+    
     response = json.dumps({'status': 'success',
-                           'recipes': [
-                               { "name": "Salami soep", "content": "test1" , "time": "45", "persons": "1"},
-                               { "name": "Kaas risoto", "content": "test12" ,"time": "45", "persons": "1"},
-                               { "name": "Paddestoelen bbq", "content": "test13", "time": "45", "persons": "1"},
-                               { "name": "Appelsap en groentes variate", "content": "test14" ,"time": "45", "persons": "1"},
-                               { "name": "Spinazie met boon", "content": "test15" ,"time": "45", "persons": "1"},
-                               { "name": "Keukenkruiden cola taart", "content": "test16" ,"time": "45", "persons": "1"}
-                               ]})                                                              
+                           'recipes': list_result })                                      
     return HttpResponse(response, content_type='application/json')

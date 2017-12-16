@@ -22,8 +22,8 @@ function showRecipes(recipeList) {
 	recipeList.forEach(function(recipe){
 		var name = recipe.name;
 		var content = recipe.content;
-		var time = recipe.time;
-		var persons = recipe.persons;
+		var time = recipe.preparation_time_in_min;
+		var persons = recipe.number_persons;
 		var div = '<div class="panel panel-primary recipe-item">' 
 		+ '<div class="panel-heading"><h3 class="panel-title">' + name + '</h3></div>'
 		+ '<div class="panel-body">'+ content +'</div>' 
