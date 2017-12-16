@@ -5,7 +5,6 @@ class QuestionmarkMapper:
         self.map_brand(product, product_dict)
         self.extract_amount_from_name(product)
         self.map_scores(product, product_dict)
-        self.map_usages(product, product_dict)
         self.map_urls(product, product_dict)
 
         product.save()
@@ -22,15 +21,6 @@ class QuestionmarkMapper:
         amount = product.amount_from_name()
         if amount:
             product.set_amount(amount)
-
-    @staticmethod
-    def map_usages(product, product_dict):
-        usages = product_dict["usages"]
-
-        if usages:
-            new_ingredient = usages[-1]
-            ingredient, created = Ingredient.objects.get_or_create(name=new_ingredient['name'])
-            product.ingredient = ingredient
 
     @staticmethod
     def map_urls(product, product_dict):

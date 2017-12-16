@@ -21,37 +21,39 @@ class ProductService:
     def search_or_update_products(search_query):
         products_all = Product.objects.filter(name__icontains=search_query)
         if not products_all.exists():
-            products_all = ProductService.update_products(search_query)
+            ingredient, created = Ingredient.objects.get_or_create(name=search_query)
+            products_all = ProductService.update_products(ingredient)
         return products_all
 
     @staticmethod
     @transaction.atomic
     def update_products(ingredient):
-        logger.info('BEGIN: Updating products for ingredient: ' + ingredient)
-        start = time.time()
+        # logger.info('BEGIN: Updating products for ingredient: ' + str(ingredient))
+        # start = time.time()
         qm_mapper = QuestionmarkMapper()
 
-        products_dict = questionmark.search_product(ingredient)
-        logger.info('@a: ' + str(time.time() - start))
-        jumbo_results = jumbo.search_product(ingredient)
-        logger.info('@b: ' + str(time.time() - start))
-        ah_results = ah.search_product(ingredient)
-        logger.info('@c: ' + str(time.time() - start))
+        products_dict = questionmark.search_product(ingredient.name)
+        # logger.info('@a: ' + str(time.time() - start))
+        jumbo_results = jumbo.search_product(ingredient.name)
+        # logger.info('@b: ' + str(time.time() - start))
+        ah_results = ah.search_product(ingredient.name)
+        # logger.info('@c: ' + str(time.time() - start))
         jumbo_shop, created = Shop.objects.get_or_create(name='Jumbo')
-        logger.info('@d: ' + str(time.time() - start))
+        # logger.info('@d: ' + str(time.time() - start))
         ah_shop, created = Shop.objects.get_or_create(name='AH')
 
         product_ids = []
         for product_dict in products_dict['products']:
-            logger.info('@1 ' + str(time.time() - start) + ': ' + product_dict['name'])
+            # logger.info('@1 ' + str(time.time() - start) + ': ' + product_dict['name'])
             product, created = Product.objects.get_or_create(name=product_dict['name'], questionmark_id=product_dict['id'])
+            product.ingredient = ingredient
             product = qm_mapper.map_to_product(product, product_dict)
             ProductService.enrich_product_data(product, jumbo_results, jumbo_shop)
             ProductService.enrich_product_data(product, ah_results, ah_shop)
             product_ids.append(product.id)
         
-        end = time.time()
-        logger.info('END - time: ' + str(end - start))
+        # end = time.time()
+        # logger.info('END - time: ' + str(end - start))
 
         return Product.objects.filter(id__in=product_ids)
 
@@ -69,7 +71,7 @@ class ProductService:
         for retailer_result in retailer_results:
             # print ('CHECKING ' + str(retailer_result))
             if ProductService.match(retailer_result, product):
-                # print('FOUND!!! ' + str(retailer_result))
+                print('FOUND!!! ' + str(retailer_result))
                 price = int(retailer_result['price'])
                 product_name = retailer_result['name']
                 try:
@@ -171,25 +173,14 @@ class RecipeService():
                                            preparation_time_in_min = preparation_time_in_min,
                                            preparation = preparation)
 
-        unknown_ingredient = ProductService.get_or_create_unknown_ingredient()
-        all_ingredients = Ingredient.objects.all()
-        all_ingredient_names = [name for c in all_ingredients for name in c.alt_names()]
-
         for recipe_item in recipe_items:
             if len(recipe_item) != 3:
                 continue
             recipe_item_quantity = recipe_item[0]
             recipe_item_unit = recipe_item[1]
             recipe_item_ingredient = recipe_item[2]
-            ProductService().update_products(recipe_item_ingredient)
-
-            try:
-                best_ingredient_name = difflib.get_close_matches(recipe_item_ingredient, all_ingredient_names, 1, 0.1)[0]
-                ingredient = next(c for c in all_ingredients if best_ingredient_name in c.alt_names())
-            except StopIteration:
-                logger.info('No match found for ingredient: ' + (recipe_item_ingredient));
-                ingredient = unknown_ingredient
-
+            ingredient, created = Ingredient.objects.get_or_create(name=recipe_item_ingredient)
+            ProductService().update_products(ingredient)
             quantity, unit = ProductAmount.get_quantity_and_unit( recipe_item_quantity, recipe_item_unit)
             RecipeItem.objects.create(quantity=quantity, unit=unit, ingredient=ingredient, recipe = new_recipe)
         
