@@ -81,9 +81,6 @@ class RecipesView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         recipes = Recipe.objects.all()
-        if not recipes:
-            RecipeService.create_recipe_from_ah_id('R-R1189729')   # create a default recipe so there is something to show
-            recipes = Recipe.objects.all()
         context['recipes'] = recipes
         return context
 
@@ -388,7 +385,7 @@ def get_recipes_for_user(request):
     #Find all recipes
     recipes = Recipe.objects.all()
     #Order recipes based on userpreference    
-    tupelDictionary = [(entry.calcualteTotalScore(up), entry) for entry in recipes]
+    tupelDictionary = [(entry.calculateTotalScore(up), entry) for entry in recipes]
     tupelDictionary.sort(key=lambda tup: tup[0])
     sortedList = [entry for sortKey, entry in tupelDictionary]
 

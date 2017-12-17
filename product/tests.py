@@ -7,7 +7,7 @@ from .amount import ProductAmount
 
 
 class TestCreateRecipe(TestCase):
-    recipe_id = 'R-R399568'
+    recipe_id = 'R-R459706'  # black-bean-tofu-met-chinese-rijst
 
     def test_create_recipe(self):
         recipe = allerhande_scraper.get_recipe(self.recipe_id)
