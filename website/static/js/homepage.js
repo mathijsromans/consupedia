@@ -4,6 +4,7 @@ $('.loader').hide();
 function getRecipes(e) {
 	var pref = e.target.name;
 	$('.loader').show();
+	console.log(new Date().getTime() + " Start get-recipes")
 
 	$.post(
 	    "/recipes/get_for_user",
@@ -13,6 +14,7 @@ function getRecipes(e) {
 			{
 				showRecipes(data.recipes);
 				$('.loader').hide();
+				console.log(new Date().getTime() + " end get-recipes")
 			}
 	    },
 	    "json"

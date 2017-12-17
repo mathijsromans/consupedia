@@ -371,7 +371,9 @@ def get_recipes_for_user(request):
     #Find all recipes
     recipes = Recipe.objects.all()
     #Order recipes based on userpreference    
-    testList = sorted(recipes, key = lambda x: x.calcualteTotalScore(up))
+    tupelDictionary = [(entry.calcualteTotalScore(up), entry) for entry in recipes]
+    tupelDictionary.sort(key=lambda tup: tup[0])
+    sortedList = [entry for sortKey, entry in tupelDictionary]
 
     #Return first 6 results.
     list_result = [{'name': entry.name, 
@@ -379,7 +381,7 @@ def get_recipes_for_user(request):
                     'preparation_time_in_min': entry.preparation_time_in_min,
                     'content': entry.number_persons,
                     'id': entry.id,
-                    'picture_url': entry.picture_url} for entry in testList]
+                    'picture_url': entry.picture_url} for entry in sortedList]
     
     response = json.dumps({'status': 'success',
                            'recipes': list_result })                                      
