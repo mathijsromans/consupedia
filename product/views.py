@@ -11,7 +11,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
-
 from .models import Product, Ingredient
 from .management.commands.create_recipes import Command
 from .models import Rating, Recipe, RecipeItem
@@ -85,6 +84,34 @@ class RecipesView(TemplateView):
         return context
 
 
+def calculateTotalScores(recipe, up):
+    print('SCORING')
+    for recipe_item in recipe.recipeitem_set.all():
+        product = recipe_item.recommended_product(up)
+        if product:
+            scores = ProductChooseAlgorithm.calculate_product_score(product, up)
+            print(scores)
+    total_price_weight = recipe.calculateTotalPriceWeight(up) * up.price_weight
+    total_environment_weight = -recipe.calculateTotalEnvironmentWeight(up) * up.environment_weight
+    total_social_weight = -recipe.calculateTotalSocialWeight(up) * up.social_weight
+    total_animals_weight = -recipe.calculateTotalAnimalsWeight(up) * up.animals_weight
+    total_personal_health_weight = -recipe.calculateTotalPersonalHealthWeight(up) * up.personal_health_weight
+    return {'total_price_weight': total_price_weight,
+            'total_environment_weight':total_environment_weight,
+            'total_social_weight': total_social_weight,
+            'total_animals_weight': total_animals_weight,
+            'total_personal_health_weight': total_personal_health_weight}
+
+
+def calculateTotalScore(recipe, up):
+    scores = calculateTotalScores(recipe, up)
+    return scores['total_price_weight'] + \
+        scores['total_environment_weight'] + \
+        scores['total_social_weight'] + \
+        scores['total_animals_weight'] + \
+        scores['total_personal_health_weight']
+
+
 class RecipeDetailView(TemplateView):
     template_name = 'recipe/recipe_show.html'
 
@@ -95,14 +122,14 @@ class RecipeDetailView(TemplateView):
         ingredient_and_price_list = [(recipe_item, recipe_item.price_str(up)) for recipe_item in recipe.recipeitem_set.all() ]
         context['recipe'] = recipe
         context['ingredient_and_price_list'] = ingredient_and_price_list
-        totalScores = recipe.calculateTotalScores(up)
+        totalScores = calculateTotalScores(recipe, up)
         score_text = "Prijs: " + format(totalScores['total_price_weight'], '.2f') + ", "
         score_text += "Mileu: " + format(totalScores['total_environment_weight'], '.2f') + ", "
         score_text += "Sociaal: " + format(totalScores['total_social_weight'], '.2f') + ", "
         score_text += "Dierenwelzijn: " + format(totalScores['total_animals_weight'], '.2f') + ", "
         score_text += "Gezondheid: " + format(totalScores['total_personal_health_weight'], '.2f')
         context['recipe_score_text'] = score_text
-        context['recipe_total_score_text'] = format(recipe.calculateTotalScore(up), '.2f')
+        context['recipe_total_score_text'] = format(calculateTotalScore(recipe, up), '.2f')
         return context
 
 
@@ -394,7 +421,7 @@ def get_recipes_for_user(request):
     #Find all recipes
     recipes = Recipe.objects.all()
     #Order recipes based on userpreference    
-    tupelDictionary = [(entry.calculateTotalScore(up), entry) for entry in recipes]
+    tupelDictionary = [(calculateTotalScore(entry, up), entry) for entry in recipes]
     tupelDictionary.sort(key=lambda tup: tup[0])
     sortedList = [entry for sortKey, entry in tupelDictionary]
 

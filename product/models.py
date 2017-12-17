@@ -213,26 +213,6 @@ class Recipe(models.Model):
                 n += 1
         return sum / n
 
-    def calculateTotalScores(self, up):
-        total_price_weight = self.calculateTotalPriceWeight(up) * up.price_weight
-        total_environment_weight = -self.calculateTotalEnvironmentWeight(up) * up.environment_weight
-        total_social_weight = -self.calculateTotalSocialWeight(up) * up.social_weight
-        total_animals_weight = -self.calculateTotalAnimalsWeight(up) * up.animals_weight
-        total_personal_health_weight = -self.calculateTotalPersonalHealthWeight(up) * up.personal_health_weight
-        return {'total_price_weight': total_price_weight,
-                'total_environment_weight':total_environment_weight,
-                'total_social_weight': total_social_weight,
-                'total_animals_weight': total_animals_weight,
-                'total_personal_health_weight': total_personal_health_weight}
-
-    def calculateTotalScore(self, up):
-        scores = self.calculateTotalScores(up)
-        return scores['total_price_weight'] + \
-            scores['total_environment_weight'] + \
-            scores['total_social_weight'] + \
-            scores['total_animals_weight'] + \
-            scores['total_personal_health_weight']
-
 
 from .algorithms import recommended_products
 
