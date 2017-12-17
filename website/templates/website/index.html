@@ -1,6 +1,6 @@
 {% extends "website/base.html" %}
 
-{% block title %}Homepage {{ block.super }}{% endblock %}
+{% block title %}Home {{ block.super }}{% endblock %}
 
 {% load static %}
 
@@ -8,12 +8,12 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-12" align="center">
-      <h2 class="welcome-text">Welkom bij Consupedia<sub>beta</sub></h2>
+      <h2 class="welcome-text">Welkom bij Consupedia</h2>
     </div>
   </div>
   <div class="row">
     <div class="col-sm-12" align="center">
-        <h3 class="welcome-text__sub"> Welkom bij Consupedia, de site die weet wat jij graag eet! <br><strong>Prijs, Mileu, Sociaal, Dierenwelzijn of Gezondheid?</strong> <br>Geef met de schuifjes aan wat jij belangrijk vindt en je krijgt een lijst van recepten die het best bij je passen.<br><h6>Inloggen niet nodig</h6><br></h2>        
+        <h3 class="welcome-text__sub"> Welkom bij Consupedia, de site die weet wat jij graag eet! <br><strong>Prijs, Mileu, Sociaal, Dierenwelzijn of Gezondheid?</strong> <br>Geef met de schuifjes aan wat jij belangrijk vindt en je krijgt een lijst van recepten die het best bij je passen.{% if is_anonymous_user %}<br><h6>Inloggen niet nodig</h6><br>{% endif %}</h2>
     </div>
   </div>
 
