@@ -1,9 +1,11 @@
-html, body {
-  overflow-x: hidden;
+html {
+    position: relative;
+    min-height:100%;
 }
 
 body {
-  padding-top: 65px;
+    padding-top: 65px;
+    margin-bottom: 60px;
 }
 
 .vertical-spacer-10 {
