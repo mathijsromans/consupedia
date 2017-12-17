@@ -35,6 +35,19 @@ body {
    margin: 0 !important;
 }
 
+
+.footer {
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-top-color: #e0e0e0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    min-height: 40px;
+    height: auto;
+    background-color: #f9f9f9;
+}
+
 .csp-card {
 	float:left;
 	border:1px solid #CCC;
