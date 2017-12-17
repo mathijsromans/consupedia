@@ -22,8 +22,12 @@ body {
 {
    background: url("ConsupediaLogo.png");
    background-size: 30px 60px;
-   width: 30px;
+   background-repeat: no-repeat;
+   width: 150px;
    height: 60px;
+   padding-left: 30px;
+   font-size: 20px;
+   font-weight: 500;
 }
 
 .nopadding {

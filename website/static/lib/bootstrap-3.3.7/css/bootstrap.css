@@ -1100,7 +1100,7 @@ textarea {
   font-size: inherit;
   line-height: inherit;
 }
-a {
+a {d
   color: #0D7A07;
   text-decoration: none;
 }
@@ -4328,9 +4328,11 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   margin: 10.25px -15px;
 }
 .navbar-nav > li > a {
-  padding-top: 10px;
+  padding-top: 12px;
   padding-bottom: 10px;
   line-height: 23px;
+  font-size: 18px;
+  font-weight: 500;
 }
 @media (max-width: 767px) {
   .navbar-nav .open .dropdown-menu {
@@ -4364,8 +4366,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
     float: left;
   }
   .navbar-nav > li > a {
-    padding-top: 20.5px;
-    padding-bottom: 20.5px;
+    padding-top: 21px;
+    padding-bottom: 20px;
   }
 }
 .navbar-form {
