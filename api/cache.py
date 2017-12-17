@@ -14,15 +14,15 @@ TESTING_FROM_CMD_LINE = sys.argv[1:2] == ['test']
 logger = logging.getLogger(__name__)
 
 def do_query(url, params, headers, result_type):
-    logger.info('BEGIN query')
+    # logger.info('BEGIN query')
     log_start = time.time()
-    logger.info('Query url=' + url)
-    logger.info('Query params=' + str(params))
+    # logger.info('Query url=' + url)
+    # logger.info('Query params=' + str(params))
     # logger.info('Query headers=' + headers_str)
     response = requests.get(url, params, headers=headers)
-    logger.info(response.url)
+    # logger.info(response.url)
     log_end = time.time()
-    logger.info('END query; time=' + str(log_end - log_start))
+    # logger.info('END query; time=' + str(log_end - log_start))
     if result_type == ResultType.JSON:
         return response.json()
     else:

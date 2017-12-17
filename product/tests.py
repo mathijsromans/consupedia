@@ -7,22 +7,13 @@ from .amount import ProductAmount
 
 
 class TestCreateRecipe(TestCase):
-    recipe_id = 'R-R459706'  # black-bean-tofu-met-chinese-rijst
-
-    def test_create_recipe(self):
-        recipe = allerhande_scraper.get_recipe(self.recipe_id)
-        recipe_new, ingredients_created = RecipeService.create_recipe(
-            name=recipe['name'],
-            author_if_user=None,
-            source_if_not_user=recipe['url'],
-            number_persons=recipe['number_persons'],
-            preparation_time_in_min=recipe['preparation_time_in_min'],
-            preparation='',
-            recipe_items=recipe['recipe_items'],
-            picture_url=''
-        )
-        print(recipe_new)
-
+    def test_water(self):
+        recipe, ingredients_created = RecipeService.create_recipe_from_ah_id('R-R1189786')
+        recipe_items = recipe.recipeitem_set.all()
+        for ri in recipe_items:
+            self.assertNotEqual(ri.ingredient.name, 'water')
+            self.assertNotEqual(ri.ingredient.name, 'kraanwater')
+        self.assertEqual(len(recipe_items), 7)
 
 class TestAmount(TestCase):
     recipe_id = 'R-R399568'

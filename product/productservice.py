@@ -177,6 +177,8 @@ class RecipeService():
             recipe_item_quantity = recipe_item[0]
             recipe_item_unit = recipe_item[1]
             recipe_item_ingredient = recipe_item[2]
+            if recipe_item_ingredient == 'water' or recipe_item_ingredient == 'kraanwater':
+                continue
             ingredient, created = Ingredient.objects.get_or_create(name=recipe_item_ingredient)
             if created:
                 ingredients_created.append(ingredient.id)
