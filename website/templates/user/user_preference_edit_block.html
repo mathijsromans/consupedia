@@ -2,29 +2,39 @@
 
 <section class="csp-setting-sliders container">
 		<div class="row"> 
-		<label class="col-md-3" for="price" title="De prijs van een product"><span class="fa fa-eur"></span> Prijs</label>
-		<input class="col-md-3" type="range" name="price" min="0" max="100" value="{{ userPreference.price_weight }}">
-		<div class="col-md-3 csp-price-value">{{ userPreference.price_weight }}%</div>
+		<label class="col-sm-3" for="price" title="De prijs van een product"><span class="fa fa-eur"></span> Prijs</label>
+		<div class="col-sm-6">
+			<input type="range" name="price" min="0" max="100" value="{{ userPreference.price_weight }}">
+		</div>
+		<div class="col-sm-3 csp-price-value">{{ userPreference.price_weight }}%</div>
 	</div>
 		<div class="row">
-		<label class="col-md-3" for="environment" title="De impact van de productieketen op klimaatverandering, biodiversiteit en water"><span class="fa fa-leaf"></span> Milieu</label>		
-		<input class="col-md-3" type="range" name="environment" min="0" max="100" value="{{ userPreference.environment_weight }}">
-		<div class="col-md-3 csp-environment-value">{{ userPreference.environment_weight }}%</div>
+		<label class="col-sm-3" for="environment" title="De impact van de productieketen op klimaatverandering, biodiversiteit en water"><span class="fa fa-leaf"></span> Milieu</label>
+		<div class="col-sm-6">		
+			<input type="range" name="environment" min="0" max="100" value="{{ userPreference.environment_weight }}">
+		</div>
+		<div class="col-sm-3 csp-environment-value">{{ userPreference.environment_weight }}%</div>
  	</div>
 	<div class="row">
-		<label class="col-md-3" for="social" title="De risico's van een product op onder andere discriminatie, kinderarbeid en/of leefbaar loon"><span class="fa fa-group"></span> Sociaal</label>
-		<input class="col-md-3" type="range" name="social" min="0" max="100" value="{{ userPreference.social_weight }}">
-		<div class="col-md-3 csp-social-value">{{ userPreference.social_weight }}%</div>
+		<label class="col-sm-3" for="social" title="De risico's van een product op onder andere discriminatie, kinderarbeid en/of leefbaar loon"><span class="fa fa-group"></span> Sociaal</label>
+		<div class="col-sm-6">
+			<input type="range" name="social" min="0" max="100" value="{{ userPreference.social_weight }}">
+		</div>
+		<div class="col-sm-3 csp-social-value">{{ userPreference.social_weight }}%</div>
 	</div>
 	<div class="row">
-		<label class="col-md-3" for="animals" title="De omstandigheden voor leven en slacht van dieren in verschillende dierhouderij-systemen"><span class="fa fa-bug"></span> Dierenwelzijn</label>
-		<input class="col-md-3" type="range" name="animals" min="0" max="100" value="{{ userPreference.animals_weight }}">
-		<div class="col-md-3 csp-animals-value">{{ userPreference.animals_weight }}%</div>
+		<label class="col-sm-3" for="animals" title="De omstandigheden voor leven en slacht van dieren in verschillende dierhouderij-systemen"><span class="fa fa-bug"></span> Dierenwelzijn</label>
+		<div class="col-sm-6">
+			<input type="range" name="animals" min="0" max="100" value="{{ userPreference.animals_weight }}">
+		</div>
+		<div class="col-sm-3 csp-animals-value">{{ userPreference.animals_weight }}%</div>
 	</div>
 	<div class="row">
-		<label class="col-md-3" for="personal_health" title="Hoe gezond een product is wordt bepaald op basis van de richtlijnen van de Gezondheidsraad"><span class="fa fa-heartbeat"></span> Gezondheid</label>
-		<input class="col-md-3" type="range" name="personal_health" min="0" max="100" value="{{ userPreference.personal_health_weight }}">	
-		<div class="col-md-3 csp-personal_health-value">{{ userPreference.personal_health_weight }}%</div>	
+		<label class="col-sm-3" for="personal_health" title="Hoe gezond een product is wordt bepaald op basis van de richtlijnen van de Gezondheidsraad"><span class="fa fa-heartbeat"></span> Gezondheid</label>
+		<div class="col-sm-6">
+			<input type="range" name="personal_health" min="0" max="100" value="{{ userPreference.personal_health_weight }}">	
+		</div>
+		<div class="col-sm-3 csp-personal_health-value">{{ userPreference.personal_health_weight }}%</div>	
 	</div>	
 </section>
 
