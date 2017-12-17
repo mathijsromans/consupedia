@@ -173,6 +173,11 @@ LOGGING = {
             'propagate': True,
             'level': 'ERROR',
         },
+        'website': {
+            'handlers': ['file_debug', 'file_error', 'console'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
         'product': {
             'handlers': ['file_debug', 'file_error', 'console'],
             'propagate': True,
