@@ -96,11 +96,11 @@ class RecipeDetailView(TemplateView):
         context['recipe'] = recipe
         context['ingredient_and_price_list'] = ingredient_and_price_list
         totalScores = recipe.calculateTotalScores(up)
-        score_text = "Prijs: " + str(totalScores['total_price_weight']) + ", "
-        score_text += "Mileu: " + str(totalScores['total_environment_weight']) + ", "
-        score_text += "Sociaal: " + str(totalScores['total_social_weight']) + ", "
-        score_text += "Dierenwelzijn: " + str(totalScores['total_animals_weight']) + ", "
-        score_text += "Gezondheid: " + str(totalScores['total_personal_health_weight'])
+        score_text = "Prijs: " + format(totalScores['total_price_weight'], '.2f') + ", "
+        score_text += "Mileu: " + format(totalScores['total_environment_weight'], '.2f') + ", "
+        score_text += "Sociaal: " + format(totalScores['total_social_weight'], '.2f') + ", "
+        score_text += "Dierenwelzijn: " + format(totalScores['total_animals_weight'], '.2f') + ", "
+        score_text += "Gezondheid: " + format(totalScores['total_personal_health_weight'], '.2f')
         context['recipe_score_text'] = score_text
         return context
 
