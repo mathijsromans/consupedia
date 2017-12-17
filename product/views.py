@@ -48,7 +48,7 @@ class ProductsView(TemplateView):
         return context
 
 class IngredientsView(TemplateView):
-    template_name = 'category/categories.html'
+    template_name = 'ingredient/ingredients.html'
 
     def dispatch(self, request, *args, **kwargs):
         create_query = self.request.GET.get('create_box', None)
@@ -173,7 +173,7 @@ class ProductView(TemplateView):
 
 
 class IngredientView(TemplateView):
-    template_name = 'category/category.html'
+    template_name = 'ingredient/ingredient.html'
 
     def get_context_data(self, ingredient_id, **kwargs):
         context = super().get_context_data(**kwargs)
