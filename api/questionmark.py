@@ -24,7 +24,6 @@ def search_product(search_name):
     return result
 
 def search_by_string(params):
-    logger.info('SEARCHING FOR ' + str(params))
     params_as_string = json.dumps(params)
     query, created = QuestionMarkQuery.objects.get_or_create(params_as_string=params_as_string)
     if created:

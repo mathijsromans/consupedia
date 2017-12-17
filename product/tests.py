@@ -18,7 +18,8 @@ class TestCreateRecipe(TestCase):
             number_persons=recipe['number_persons'],
             preparation_time_in_min=recipe['preparation_time_in_min'],
             preparation='',
-            recipe_items=recipe['recipe_items']
+            recipe_items=recipe['recipe_items'],
+            picture_url=''
         )
         print(recipe_new)
 

@@ -11,6 +11,8 @@ regex_name = re.compile('<meta property="twitter:title" content="(.*?)">', re.DO
 regex_number_persons = re.compile('<div class="icon icon-people"></div><span>.*?(\d+).*?</span></li>', re.DOTALL)
 regex_recept_url = re.compile('/allerhande/recept/R-R(.*?)/', re.DOTALL)
 
+# data-phone-src="https://static.ah.nl/static/recepten/img_088124_890x594_JPG.jpg"
+regex_picture = re.compile('data-phone-src="(.*?)"', re.DOTALL)
 
 # def get_recipe_ids_from_page(ah_url):
 #     response = requests.get(ah_url)
@@ -36,9 +38,11 @@ def get_recipe(recipe_id):
     preparation_time_in_min = get_preparation_time_min(text)
     number_persons = get_number_persons(text)
     name = get_name(text)
+    picture_url = get_picture(text)
     recipe = {
         'name': name,
         'url': url,
+        'picture_url': picture_url,
         'recipe_items': recipe_items,
         'preparation_time_in_min': preparation_time_in_min,
         'number_persons': number_persons
@@ -54,6 +58,11 @@ def get_name(page_html_text):
 def get_number_persons(page_html_text):
     matches = regex_number_persons.findall(page_html_text)
     return int(matches[0])
+
+
+def get_picture(page_html_text):
+    matches = regex_picture.findall(page_html_text)
+    return matches[0]
 
 
 def get_recipe_items(page_html_text):

@@ -49,3 +49,8 @@ class TestAllerHandeScraper(TestCase):
         content, url = allerhande_scraper.get_recipe_page_html(self.recipe_id)
         name = allerhande_scraper.get_name(content)
         self.assertEqual(name, 'Tante Greets spaghetti bolognese')
+
+    def test_get_picture(self):
+        content, url = allerhande_scraper.get_recipe_page_html(self.recipe_id)
+        picture = allerhande_scraper.get_picture(content)
+        self.assertEqual(picture, 'https://static.ah.nl/static/recepten/img_004328_890x594_JPG.jpg')

@@ -142,7 +142,8 @@ class RecipeService():
             number_persons=recipe['number_persons'],
             preparation_time_in_min=recipe['preparation_time_in_min'],
             preparation='',
-            recipe_items=recipe['recipe_items']
+            recipe_items=recipe['recipe_items'],
+            picture_url=recipe['picture_url']
         )
 
     @staticmethod
@@ -152,7 +153,8 @@ class RecipeService():
                       number_persons,
                       preparation_time_in_min,
                       preparation,
-                      recipe_items):
+                      recipe_items,
+                      picture_url):
         if Recipe.objects.filter(name=name).first():
             # recipe already exists
             return
@@ -162,10 +164,11 @@ class RecipeService():
 
         new_recipe = Recipe.objects.create(name=name,
                                            author_if_user=author_if_user,
-                                           source_if_not_user = source_if_not_user,
-                                           number_persons = number_persons,
-                                           preparation_time_in_min = preparation_time_in_min,
-                                           preparation = preparation)
+                                           source_if_not_user=source_if_not_user,
+                                           number_persons=number_persons,
+                                           preparation_time_in_min=preparation_time_in_min,
+                                           preparation=preparation,
+                                           picture_url=picture_url)
 
         for recipe_item in recipe_items:
             if len(recipe_item) != 3:

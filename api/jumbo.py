@@ -12,7 +12,6 @@ regex_product = '(?s)<h3 data-jum-action.*?quickView">(.*?)</a></h3>.*?jum-price
 def search_product(search_term):
     MAX_PAGES = 10
     results = []
-    print('SEARCHING FOR ' + search_term)
     for page_number in range(0, MAX_PAGES):
         matches = get_search_result(search_term, page_number)
 
@@ -37,12 +36,8 @@ def get_search_result(search_term, page_number):
 
     query, created = JumboQuery.objects.get_or_create(q_product_name = search_term + str(page_number))
     if created:
-        start = time.time()
         query.html = cache.query("https://www.jumbo.com/producten", params=params, headers={}, result_type=cache.ResultType.HTML)
-
         query.save()
-        end = time.time()
-        logger.info('ACTUAL JUMBO QUERY: END - time: ' + str(end - start))
 
     regex = re.compile(regex_product)
     matches = regex.findall(query.html)
