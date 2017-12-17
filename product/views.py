@@ -190,6 +190,7 @@ class IngredientView(TemplateView):
             if self.request.user.is_authenticated():
                 up, created = UserPreferences.objects.get_or_create(user=self.request.user)
                 product_list = recommended_products(ingredient, up)
+                context['product_list'] = product_list
                 context['product'] = product_list[0] if product_list else None
         except ObjectDoesNotExist:
             pass

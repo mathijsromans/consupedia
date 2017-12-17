@@ -20,7 +20,9 @@
         Verwijder producten die niet bij dit ingrediënt passen.
       </div>
 
-      {% include "ingredient/ingredient_products_table.html" %}
+      {% with products=ingredient.product_set.all %}
+      {% include "product/products_table.html" %}
+      {% endwith %}
 
     </div>
     <div class="pull-right">

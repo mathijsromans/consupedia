@@ -1,5 +1,5 @@
 <table class="table">
-  {% for product in ingredient.product_set.all %}
+  {% for product in products %}
     <tr id="row-{{ product.id }}">
       <td><a href="{% url 'product' product.id %}">{{ product.name }}</a></td>
       <td>{% if product.price %}{{ product.price }}{% endif %}</td>
