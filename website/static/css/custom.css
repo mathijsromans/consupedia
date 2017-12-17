@@ -223,3 +223,18 @@ body {
 {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }
+
+.loader {
+  border: 8px solid #EAEAEA;
+  border-radius: 50%;
+  border-top: 8px solid #0D7A07;
+  border-bottom: 8px solid #0D7A07;
+  width: 60px;
+  height: 60px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

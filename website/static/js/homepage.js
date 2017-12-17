@@ -1,8 +1,9 @@
 $('#get-recipes').click(getRecipes);
+$('.loader').hide();
 
 function getRecipes(e) {
-	console.log("test");
 	var pref = e.target.name;
+	$('.loader').show();
 
 	$.post(
 	    "/recipes/get_for_user",
@@ -10,7 +11,8 @@ function getRecipes(e) {
 	    function(data) {
 			if(data.status == 'success')
 			{
-				showRecipes(data.recipes)
+				showRecipes(data.recipes);
+				$('.loader').hide();
 			}
 	    },
 	    "json"
