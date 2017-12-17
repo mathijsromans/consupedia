@@ -378,7 +378,8 @@ def get_recipes_for_user(request):
                     'number_persons': entry.number_persons,
                     'preparation_time_in_min': entry.preparation_time_in_min,
                     'content': entry.number_persons,
-                    'id': entry.id} for entry in testList]
+                    'id': entry.id,
+                    'picture_url': entry.picture_url} for entry in testList]
     
     response = json.dumps({'status': 'success',
                            'recipes': list_result })                                      

@@ -223,6 +223,16 @@ body {
 {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }
+.recipe-item .panel-body
+{
+  padding: 0px;
+}
+
+.recipe-image
+{
+  max-width: 100%;
+  max-height: 100%;
+}
 
 .loader {
   border: 8px solid #EAEAEA;

@@ -27,10 +27,24 @@ function showRecipes(recipeList) {
 		var time = recipe.preparation_time_in_min;
 		var persons = recipe.number_persons;
 		var recipeId = recipe.id;
+		var picture_url = recipe.picture_url;
+		var pictureBackground = '<img src="'+ picture_url +'" class="recipe-image">';
+		var panelFooter = 
+		'<div class="panel-footer">' +
+			'<div class="row">' +
+				'<div class="col-xs-6" align="left">'+
+					'<span><i class="fa fa-clock-o"></i> ' +  time+ ' min</span>'+ 
+	        	'</div>' +
+	        	'<div class="col-xs-6" align="right">'+ 
+	        		'<span><i class="fa fa-user"></i> ' + persons + '</span>'
+	        	'</div>' +
+	        '</div>' +
+	    '</div>';
+
 		var div = '<div class="panel panel-primary recipe-item" id="'+recipeId+'">' 
 		+ '<div class="panel-heading"><h3 class="panel-title">' + name + '</h3></div>'
-		+ '<div class="panel-body">'+ content +'</div>' 
-		+ '<div class="panel-footer">duur:'+ time +' personen: '+persons+'</div>'
+		+ '<div class="panel-body">'+ pictureBackground +'</div>' 
+		+ panelFooter
 		+ '</div>';
 
 		$("#recipes-list").append(div);
