@@ -108,6 +108,11 @@ body {
   font-size: 20px;
 }
 
+.csp-setting-sliders .fa {
+  color: #0D7A07;
+  width: 30px;
+}
+
 .csp-price {	background-color: gold;}
 .csp-environment {	background-color: green;}
 .csp-social {	background-color: pink;}
