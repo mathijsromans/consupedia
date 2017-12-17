@@ -356,7 +356,8 @@ def get_recipes_for_user(request):
     list_result = [{'name': entry.name, 
                     'number_persons': entry.number_persons,
                     'preparation_time_in_min': entry.preparation_time_in_min,
-                    'content': entry.number_persons} for entry in testList]
+                    'content': entry.number_persons,
+                    'id': entry.id} for entry in testList]
     
     response = json.dumps({'status': 'success',
                            'recipes': list_result })                                      

@@ -24,12 +24,20 @@ function showRecipes(recipeList) {
 		var content = recipe.content;
 		var time = recipe.preparation_time_in_min;
 		var persons = recipe.number_persons;
-		var div = '<div class="panel panel-primary recipe-item">' 
+		var recipeId = recipe.id;
+		var div = '<div class="panel panel-primary recipe-item" id="'+recipeId+'">' 
 		+ '<div class="panel-heading"><h3 class="panel-title">' + name + '</h3></div>'
 		+ '<div class="panel-body">'+ content +'</div>' 
 		+ '<div class="panel-footer">duur:'+ time +' personen: '+persons+'</div>'
 		+ '</div>';
 
 		$("#recipes-list").append(div);
+		$("#"+ recipeId).click(function(){
+			navigateToRecipe(recipeId);
+		});
 	});
+}
+
+function navigateToRecipe(recipeId) {	
+	window.location.href = '/recipe/' + recipeId;
 }
