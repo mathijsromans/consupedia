@@ -102,6 +102,7 @@ class RecipeDetailView(TemplateView):
         score_text += "Dierenwelzijn: " + format(totalScores['total_animals_weight'], '.2f') + ", "
         score_text += "Gezondheid: " + format(totalScores['total_personal_health_weight'], '.2f')
         context['recipe_score_text'] = score_text
+        context['recipe_total_score_text'] = recipe.calculateTotalScore(up)
         return context
 
 

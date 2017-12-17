@@ -6,8 +6,8 @@
     </span>
     <div><i class="fa fa-clock-o"></i> {{ recipe.preparation_time_in_min }} min</div>
     <div><i class="fa fa-user"></i> {{ recipe.number_persons }}</div>
-
-    <div><i class="fa fa-bar-chart"></i> {{ recipe_score_text }}</div>
+    <div><i class="fa fa-sliders"></i> {{ recipe_score_text }}</div>
+    <div><i class="fa fa-bar-chart"></i> <strong>Totaal score: </strong>{{ recipe_total_score_text }}</div>
   </div>
 
   {% if ingredient_and_price_list %}

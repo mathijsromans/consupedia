@@ -122,6 +122,12 @@ body {
   width: 30px;
 }
 
+.panel-heading .fa 
+{
+  color: #0D7A07;
+  width: 20px;
+}
+
 .csp-price {	background-color: gold;}
 .csp-environment {	background-color: green;}
 .csp-social {	background-color: pink;}
