@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from api import questionmark, allerhande_scraper
+from api import questionmark, allerhande_scraper, ah
 
 
 class TestQuestionApi(TestCase):
@@ -54,3 +54,10 @@ class TestAllerHandeScraper(TestCase):
         content, url = allerhande_scraper.get_recipe_page_html(self.recipe_id)
         picture = allerhande_scraper.get_picture(content)
         self.assertEqual(picture, 'https://static.ah.nl/static/recepten/img_004328_890x594_JPG.jpg')
+
+class TestAH(TestCase):
+
+    def test_amount(self):
+        result = ah.search_product("AH Biologisch Oude kaas 50+ plakken")[0]
+        self.assertEqual(result['price'], 350)
+
