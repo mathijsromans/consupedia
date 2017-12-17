@@ -261,7 +261,7 @@ class RecipeItem(models.Model):
         price = self.price(user_preference)
         if price:
             return price
-        return 0.5  # should be error, really
+        return 50  # cents, should be error, really
 
     def price_str(self, user_preference):
         price = self.price(user_preference)
