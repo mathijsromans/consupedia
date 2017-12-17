@@ -12,11 +12,6 @@ class TestQuestionApi(TestCase):
 class TestAllerHandeScraper(TestCase):
     recipe_id = 'R-R399568'
 
-    def test_get_recipe_urls_from_page(self):
-        url = 'https://www.ah.nl/allerhande/'
-        recipe_urls = allerhande_scraper.get_recipe_ids_from_page(url)
-        print(recipe_urls)
-
     def test_get_recipe_page_html(self):
         content, url = allerhande_scraper.get_recipe_page_html(self.recipe_id)
 

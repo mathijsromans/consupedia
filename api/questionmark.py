@@ -1,4 +1,3 @@
-import requests
 import json
 from .models import QuestionMarkQuery
 import logging

@@ -1,5 +1,4 @@
 import logging
-import requests
 import json
 from .models import AHQuery
 from api import cache

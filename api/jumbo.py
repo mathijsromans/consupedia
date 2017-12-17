@@ -1,4 +1,3 @@
-import requests
 import re
 from .models import JumboQuery
 import logging

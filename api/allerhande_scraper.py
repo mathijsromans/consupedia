@@ -1,5 +1,5 @@
-import requests
 import re
+from api import cache
 
 regex_unit = re.compile('data-quantity-unit-singular="(.*?)"')
 regex_quantity = re.compile('data-quantity="(\d+)"')
@@ -12,24 +12,22 @@ regex_number_persons = re.compile('<div class="icon icon-people"></div><span>.*?
 regex_recept_url = re.compile('/allerhande/recept/R-R(.*?)/', re.DOTALL)
 
 
-def get_recipe_ids_from_page(ah_url):
-    response = requests.get(ah_url)
-    if response.status_code != 200:
-        return '', ''
-    matches = regex_recept_url.findall(response.text)
-    matches = list(set(matches))
-    ids = []
-    for match in matches:
-        ids.append('R-R' + match)
-    return ids
+# def get_recipe_ids_from_page(ah_url):
+#     response = requests.get(ah_url)
+#     if response.status_code != 200:
+#         return '', ''
+#     matches = regex_recept_url.findall(response.text)
+#     matches = list(set(matches))
+#     ids = []
+#     for match in matches:
+#         ids.append('R-R' + match)
+#     return ids
 
 
 def get_recipe_page_html(recipe_id):
     url = 'https://www.ah.nl/allerhande/recept/' + recipe_id
-    response = requests.get(url)
-    if response.status_code != 200:
-        return '', ''
-    return response.text, url
+    result = cache.query(url, params={}, headers={}, result_type=cache.ResultType.HTML)
+    return result, url
 
 
 def get_recipe(recipe_id):
