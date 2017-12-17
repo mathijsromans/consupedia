@@ -4,8 +4,10 @@
     <span align="center">
       <h5><a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.name }}</a></h5>
     </span>
-    <h6><i class="fa fa-clock-o"></i> {{ recipe.preparation_time_in_min }} min</h6>
-    <h6><i class="fa fa-user"></i> {{ recipe.number_persons }}</h6>
+    <div><i class="fa fa-clock-o"></i> {{ recipe.preparation_time_in_min }} min</div>
+    <div><i class="fa fa-user"></i> {{ recipe.number_persons }}</div>
+
+    <div><i class="fa fa-bar-chart"></i> {{ recipe_score_text }}</div>
   </div>
 
   {% if ingredient_and_price_list %}
