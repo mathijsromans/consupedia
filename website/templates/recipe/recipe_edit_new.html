@@ -26,7 +26,9 @@
         <h4>{{ ingredient.name|title }}</h4>
       </div>
 
-      {% include "product/products_table.html" %}
+      {% with products=ingredient.product_set.all %}
+        {% include "product/products_table.html" %}
+      {% endwith %}
 
     </div>
   </div>
