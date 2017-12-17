@@ -11,7 +11,7 @@ class TestCreateRecipe(TestCase):
 
     def test_create_recipe(self):
         recipe = allerhande_scraper.get_recipe(self.recipe_id)
-        recipe_new = RecipeService.create_recipe(
+        recipe_new, ingredients_created = RecipeService.create_recipe(
             name=recipe['name'],
             author_if_user=None,
             source_if_not_user=recipe['url'],

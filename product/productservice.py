@@ -157,7 +157,7 @@ class RecipeService():
                       picture_url):
         if Recipe.objects.filter(name=name).first():
             # recipe already exists
-            return
+            return Recipe.objects.filter(name=name).first(), None
 
         logger.info('BEGIN: Creating recipe with recipe items: ' + str(recipe_items))
         start = time.time()
@@ -170,6 +170,7 @@ class RecipeService():
                                            preparation=preparation,
                                            picture_url=picture_url)
 
+        ingredients_created = []
         for recipe_item in recipe_items:
             if len(recipe_item) != 3:
                 continue
@@ -177,6 +178,8 @@ class RecipeService():
             recipe_item_unit = recipe_item[1]
             recipe_item_ingredient = recipe_item[2]
             ingredient, created = Ingredient.objects.get_or_create(name=recipe_item_ingredient)
+            if created:
+                ingredients_created.append(ingredient.id)
             ProductService().update_products(ingredient)
             quantity, unit = ProductAmount.get_quantity_and_unit( recipe_item_quantity, recipe_item_unit)
             RecipeItem.objects.create(quantity=quantity, unit=unit, ingredient=ingredient, recipe = new_recipe)
@@ -184,4 +187,4 @@ class RecipeService():
         end = time.time()
         logger.info('END: (time: ' + str(end - start) + ') Done creating recipe ' + str(new_recipe))
         
-        return new_recipe
+        return new_recipe, ingredients_created

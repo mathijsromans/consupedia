@@ -1,0 +1,40 @@
+{% extends "website/base.html" %}
+
+{% load bootstrap3 %}
+
+{% block title %}Add recipe {{ block.super }}{% endblock %}
+
+{% block content %}
+
+<h3 class="view-title">{{ recipe.name }}</h3>
+
+<hr/>
+
+<div class="row" align="center">
+  <div class="col-12">
+    <h4>Verwijder hieronder producten die niet onder het ingrediënt passen.</h4>
+  </div>
+</div>
+
+<div class="row">
+{% for ingredient in ingredients_created %}
+  {% if ingredient.product_set.all %}
+  <div class="col-sm-12" align="center">
+    <div class="panel">
+
+      <div class="panel-body">
+        <h4>{{ ingredient.name|title }}</h4>
+      </div>
+
+      {% include "ingredient/ingredient_products_table.html" %}
+
+    </div>
+  </div>
+  {% endif %}
+{% endfor %}
+  <div class="pull-right">
+   <a class="btn btn-primary" href="{% url 'recipe_detail' recipe.id %}">Klaar</a>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
@@ -20,6 +21,8 @@ from .forms import ProductForm, RecipeForm, RecipeURLForm, IngredientForm
 from .forms import UserPreferenceForm
 from .algorithms import set_score, recommended_products
 from product.algorithms import ProductChooseAlgorithm
+
+logger = logging.getLogger(__name__)
 
 
 class ProductsView(TemplateView):
@@ -113,10 +116,24 @@ class RecipeAddView(FormView):
 
     @transaction.atomic
     def form_valid(self, form):
-        recipe = RecipeService.create_recipe_from_ah_id(form.cleaned_data['url'])
-        print('CREATED RECIPE ' + str(recipe))
+        recipe, ingredients_created = RecipeService.create_recipe_from_ah_id(form.cleaned_data['url'])
+        logger.info('CREATED RECIPE ' + str(recipe))
+        ingredients_created = list(recipe.recipeitem_set.values_list('ingredient_id', flat=True))
         recipe_id = recipe.id if recipe else 0
-        return redirect(reverse('recipe_detail', args=[recipe_id]))
+        if not ingredients_created:
+            return redirect('recipe_detail', args=[recipe_id])
+        return redirect(reverse('recipe-edit-new', args=[recipe_id, json.dumps(ingredients_created)]))
+
+
+class RecipeEditNewView(TemplateView):
+    template_name = 'recipe/recipe_edit_new.html'
+
+    def get_context_data(self, recipe_id, ingredients_created, **kwargs):
+        ingredients_created = json.loads(ingredients_created)
+        context = super().get_context_data()
+        context['recipe'] = Recipe.objects.get(id=recipe_id)
+        context['ingredients_created'] = Ingredient.objects.filter(id__in=ingredients_created) if ingredients_created is not None else None
+        return context
 
 
 class RecipeEditView(FormView):

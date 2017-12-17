@@ -23,11 +23,11 @@ urlpatterns = [
     url(r'^product/(?P<product_id>[0-9]+)/$', product.views.ProductView.as_view(), name='product'),
     url(r'^product/rating/set/?', login_required(product.views.set_product_rating)),
 
-
     url(r'^recipes/$', product.views.RecipesView.as_view(), name='recipes'),
     url(r'^recipe/(?P<recipe_id>[0-9]+)/$', product.views.RecipeDetailView.as_view(), name='recipe_detail'),
     url(r'^recipes/add$', product.views.RecipeAddView.as_view(), name='recipe-add'),
     url(r'^recipes/edit/(?P<recipe_id>[0-9]+)/$', product.views.RecipeEditView.as_view(), name='recipe-edit'),
+    url(r'^recipes/edit/new/(?P<recipe_id>[0-9]+)/(?P<ingredients_created>.*)/&', product.views.RecipeEditNewView.as_view(), name='recipe-edit-new'),
 
     url(r'^ingredients/$', product.views.IngredientsView.as_view(), name='ingredients'),
     url(r'^ingredient/(?P<ingredient_id>[0-9]+)/$', product.views.IngredientView.as_view(), name='ingredient'),
