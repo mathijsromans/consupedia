@@ -23,7 +23,6 @@ urlpatterns = [
     url(r'^product/(?P<product_id>[0-9]+)/$', product.views.ProductView.as_view(), name='product'),
     url(r'^product/rating/set/?', login_required(product.views.set_product_rating)),
 
-    url(r'^ingredient/edit/(?P<ingredient_id>[0-9]+)/$', product.views.IngredientEditView.as_view(), name='ingredient-edit'),
 
     url(r'^recipes/$', product.views.RecipesView.as_view(), name='recipes'),
     url(r'^recipe/(?P<recipe_id>[0-9]+)/$', product.views.RecipeDetailView.as_view(), name='recipe_detail'),
@@ -32,6 +31,9 @@ urlpatterns = [
 
     url(r'^ingredients/$', product.views.IngredientsView.as_view(), name='ingredients'),
     url(r'^ingredient/(?P<ingredient_id>[0-9]+)/$', product.views.IngredientView.as_view(), name='ingredient'),
+    url(r'^ingredient/product/remove/$', product.views.remove_ingredient_product),
+    url(r'^ingredient/edit/(?P<ingredient_id>[0-9]+)/$', product.views.IngredientEditView.as_view(), name='ingredient-edit'),
+    url(r'^ingredient/products/edit/(?P<ingredient_id>[0-9]+)/$', product.views.IngredientProductsEditView.as_view(), name='ingredient-products-edit'),
 
     url(r'^user_preferences/$', product.views.UserPreferenceEditView.as_view(), name='user_prefs'),
     url(r'^user_preference/set/?', login_required(product.views.set_user_preference_data)),

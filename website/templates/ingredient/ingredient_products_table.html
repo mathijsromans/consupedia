@@ -1,0 +1,30 @@
+<table class="table">
+  {% for product in ingredient.product_set.all %}
+    <tr id="row-{{ product.id }}">
+      <td><a href="{% url 'product' product.id %}">{{ product.name }}</a></td>
+      <td>{% if product.price %}{{ product.price }}{% endif %}</td>
+      {% if anonymous_can_edit or not is_anonymous_user %}
+      <td align="right">
+        <button id="button-remove-{{ product.id }}" class="btn btn-info btn-sm"><i class="fa fa-remove"></i></button>
+      </td>
+      {% endif %}
+    </tr>
+
+    <script>
+      $("#button-remove-{{ product.id }}").click(function() {
+        $.post(
+          "/ingredient/product/remove/",
+          {
+            "ingredient_id": {{ ingredient.id }},
+            "product_id": {{ product.id }}
+          },
+          function(data) {
+            $("#row-{{ product.id }}").fadeOut();
+          },
+          "json"
+        );
+      });
+    </script>
+
+  {% endfor %}
+</table>

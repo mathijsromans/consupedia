@@ -47,13 +47,28 @@ class ProductsView(TemplateView):
 class IngredientsView(TemplateView):
     template_name = 'category/categories.html'
 
-    def get_context_data(self, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         create_query = self.request.GET.get('create_box', None)
         if create_query:
             ingredient, created = Ingredient.objects.get_or_create(name=create_query)
             ProductService.update_products(ingredient)
+            return redirect(reverse('ingredient-products-edit', args=(ingredient.id,)))
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['ingredients'] = Ingredient.objects.all().order_by('name')
+        return context
+
+
+class IngredientProductsEditView(TemplateView):
+    template_name = 'ingredient/ingredient_products_edit.html'
+
+    def get_context_data(self, ingredient_id, **kwargs):
+        ingredient = Ingredient.objects.get(id=ingredient_id)
+        context = super().get_context_data(**kwargs)
+        context['anonymous_can_edit'] = True
+        context['ingredient'] = ingredient
         return context
 
 
@@ -158,6 +173,12 @@ class IngredientView(TemplateView):
         except ObjectDoesNotExist:
             pass
         return context
+
+
+def remove_ingredient_product(request):
+    Product.objects.get(id=int(request.POST['product_id'])).delete()
+    response = json.dumps({'status': 'success'})
+    return HttpResponse(response, content_type='application/json')
 
 
 class ProductCreateView(FormView):
