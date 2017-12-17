@@ -93,7 +93,7 @@ class ProductAmount:
             return 1000*quantity, ProductAmount.ML
         if unit_text == 'el' or unit_text == 'eetlepels':
             return quantity, ProductAmount.EL
-        if unit_text == 'tl' or unit_text == 'theelepels':
+        if unit_text == 'tl' or unit_text == 'theelepels'or unit_text == 'theelepeltjes':
             return quantity, ProductAmount.TL
         if unit_text == 'pondje' or unit_text == 'pond':
             return 500*quantity, ProductAmount.GRAM
