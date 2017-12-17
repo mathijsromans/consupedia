@@ -3,6 +3,7 @@ from api import cache
 
 regex_unit = re.compile('data-quantity-unit-singular="(.*?)"')
 regex_quantity = re.compile('data-quantity="(\d+)"')
+regex_additional = re.compile('data-additional-info="(.*?)"')
 regex_ingredient = re.compile('data-description-singular="(.*?)"')
 regex_recipe_item_list = re.compile('<ul class="list shopping ingredient-selector-list">(.*?)</ul>', re.DOTALL)
 regex_recipe_item = re.compile('<li itemprop="ingredients">(.*?)</li>', re.DOTALL)
@@ -74,15 +75,26 @@ def get_recipe_items(page_html_text):
         name = ''
         unit = ''
         quantiy = 0
+
         matches = regex_quantity.findall(match)
         if matches:
             quantiy = int(matches[0])
+
         matches = regex_ingredient.findall(match)
         if matches:
             name = matches[0]
+
         matches = regex_unit.findall(match)
         if matches:
             unit = matches[0]
+
+        matches = regex_additional.findall(match)
+        if matches:
+            addit = matches[0].split(' ')
+            if len(addit) == 2 and unit == 'pak':
+                quantiy = int(addit[0])
+                unit = addit[1]
+
         recipe_items.append([quantiy, unit, name])
     return recipe_items
 
