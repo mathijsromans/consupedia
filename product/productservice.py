@@ -47,6 +47,8 @@ class ProductService:
             ProductService.enrich_product_data(product, jumbo_results, jumbo_shop)
             ProductService.enrich_product_data(product, ah_results, ah_shop)
             product_ids.append(product.id)
+            if not product.prices.exists():
+                product.delete()
         
         # end = time.time()
         # logger.info('END - time: ' + str(end - start))
