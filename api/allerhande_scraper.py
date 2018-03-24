@@ -89,11 +89,15 @@ def get_recipe_items(page_html_text):
             unit = matches[0]
 
         matches = regex_additional.findall(match)
-        if matches:
+        unit_not_so_good = unit == 'pak' or unit == 'zakken' or unit == 'zak'
+        if unit_not_so_good and matches:
             addit = matches[0].split(' ')
-            if len(addit) == 2 and unit == 'pak':
+            if len(addit) == 2:
                 quantiy = int(addit[0])
                 unit = addit[1]
+            elif len(addit) == 3 and addit[0] == 'a':
+                quantiy = int(addit[1])
+                unit = addit[2]
 
         recipe_items.append([quantiy, unit, name])
     return recipe_items
