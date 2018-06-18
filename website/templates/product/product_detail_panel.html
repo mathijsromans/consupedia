@@ -12,7 +12,7 @@
       </div>
       <table class="table table-striped">
         <tr><th>Naam</th><td>{{ product.name }}</td></tr>
-        <tr><th>Categorie</th><td><a href="{% url 'ingredient' product.ingredient.id %}">{{ product.ingredient.name }}</a></td>
+        <tr><th>Categorie</th><td><a href="{% url 'food' product.food.id %}">{{ product.food.name }}</a></td>
         <tr><th>Merk</th><td> {{ product.brand.name }}</td></tr>
         <tr><th>Beste prijs</th><td> {{ product.price }}</td></tr>
         {% if product.ean_code %}<tr><th>EAN code</th><td>{{ product.ean_code }}</td></tr>{% endif %}

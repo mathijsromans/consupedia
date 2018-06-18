@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 from api import questionmark, jumbo, ah, allerhande_scraper
-from product.models import Product, Ingredient, RecipeItem, Recipe, ProductPrice, Shop
+from product.models import Product, Food, RecipeItem, Recipe, ProductPrice, Shop
 from .mappers import QuestionmarkMapper
 from .amount import ProductAmount
 import re
@@ -23,16 +23,16 @@ class ProductService:
 
     @staticmethod
     @transaction.atomic
-    def update_products(ingredient):
+    def update_products(food):
         # logger.info('BEGIN: Updating products for ingredient: ' + str(ingredient))
         # start = time.time()
         qm_mapper = QuestionmarkMapper()
 
-        products_dict = questionmark.search_product(ingredient.name)
+        products_dict = questionmark.search_product(food.name)
         # logger.info('@a: ' + str(time.time() - start))
-        jumbo_results = jumbo.search_product(ingredient.name)
+        jumbo_results = jumbo.search_product(food.name)
         # logger.info('@b: ' + str(time.time() - start))
-        ah_results = ah.search_product(ingredient.name)
+        ah_results = ah.search_product(food.name)
         # logger.info('@c: ' + str(time.time() - start))
         jumbo_shop, created = Shop.objects.get_or_create(name='Jumbo')
         # logger.info('@d: ' + str(time.time() - start))
@@ -42,7 +42,7 @@ class ProductService:
         for product_dict in products_dict['products']:
             # logger.info('@1 ' + str(time.time() - start) + ': ' + product_dict['name'])
             product, created = Product.objects.get_or_create(name=product_dict['name'], questionmark_id=product_dict['id'])
-            product.ingredient = ingredient
+            product.food = food
             product = qm_mapper.map_to_product(product, product_dict)
             ProductService.enrich_product_data(product, jumbo_results, jumbo_shop)
             ProductService.enrich_product_data(product, ah_results, ah_shop)
@@ -57,11 +57,11 @@ class ProductService:
 
     @staticmethod
     def get_or_create_unknown_ingredient():
-        ingredient, created = Ingredient.objects.get_or_create(name='Unknown ingredient')
+        food, created = Food.objects.get_or_create(name='Unknown food')
         if created:
             product, created = Product.objects.get_or_create(name='Unknown product')
-            product.ingredient = ingredient
-        return ingredient
+            product.food = food
+        return food
 
     @staticmethod
     def enrich_product_data(product, retailer_results, shop):
@@ -133,10 +133,12 @@ class ProductService:
 class RecipeService():
 
     @staticmethod
-    def create_recipe_from_ah_id(recipe_id):
+    def create_recipe_from_ah_id(recipe_id, provides, quantity):
         recipe = allerhande_scraper.get_recipe(recipe_id)
         return RecipeService.create_recipe(
             name=recipe['name'],
+            provides=provides,
+            quantity=quantity,
             author_if_user=None,
             source_if_not_user=recipe['url'],
             number_persons=recipe['number_persons'],
@@ -148,6 +150,8 @@ class RecipeService():
 
     @staticmethod
     def create_recipe(name,
+                      provides,
+                      quantity,
                       author_if_user,
                       source_if_not_user,
                       number_persons,
@@ -163,6 +167,8 @@ class RecipeService():
         start = time.time()
 
         new_recipe = Recipe.objects.create(name=name,
+                                           provides=provides,
+                                           quantity=quantity,
                                            author_if_user=author_if_user,
                                            source_if_not_user=source_if_not_user,
                                            number_persons=number_persons,
@@ -179,12 +185,12 @@ class RecipeService():
             recipe_item_ingredient = recipe_item[2]
             if recipe_item_ingredient == 'water' or recipe_item_ingredient == 'kraanwater':
                 continue
-            ingredient, created = Ingredient.objects.get_or_create(name=recipe_item_ingredient)
+            food, created = Food.objects.get_or_create(name=recipe_item_ingredient)
             if created:
-                ingredients_created.append(ingredient.id)
-            ProductService().update_products(ingredient)
+                ingredients_created.append(food.id)
+            ProductService().update_products(food)
             quantity, unit = ProductAmount.get_quantity_and_unit( recipe_item_quantity, recipe_item_unit)
-            RecipeItem.objects.create(quantity=quantity, unit=unit, ingredient=ingredient, recipe = new_recipe)
+            RecipeItem.objects.create(quantity=quantity, unit=unit, food=food, recipe=new_recipe)
         
         end = time.time()
         logger.info('END: (time: ' + str(end - start) + ') Done creating recipe ' + str(new_recipe))

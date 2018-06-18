@@ -2,12 +2,12 @@
 
   <div class="panel-heading">
     <h5>
-      <a href="{% url 'ingredient' ingredient.id %}">{{ ingredient.name|title }}</a>
+      <a href="{% url 'food' food.id %}">{{ food.name|title }}</a>
     </h5>
   </div>
 
   <div class="panel-footer">
-    {{ ingredient.product_set.count }} producten
+    {{ food.product_set.count }} producten
   </div>
 
 </div>

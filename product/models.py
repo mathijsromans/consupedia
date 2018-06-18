@@ -5,18 +5,24 @@ from .amount import ProductAmount
 import re
 
 
-class Ingredient(models.Model):
-    name = models.CharField(max_length=256)
+class Food(models.Model):
+    """ Describes anything that can be eaten with various degrees of specificity
+
+    Has a unit but quantity is always 1
+
+    Examples: 1 sandwich
+              1 g of brown rice
+              1 g of vegetables
+              1 ml of soft drink
+              1 g of salt consisting of 33.3% NaCl, 66% KCl,  50mg/kg (KI)
+    """
+
+    name = models.CharField(max_length=255)
+    unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
+    provides = models.ForeignKey('self', null=True, blank=True)
 
     def __str__(self):
         return self.name
-
-    def alt_names(self):
-        result = [self.name]
-        words = self.name.split(" ")
-        if len(words) > 1:
-            result.append(" ".join(reversed(words)).replace(",", ""))  # "tijm, gedroogd" -> "gedroogd tijm"
-        return result
 
 
 class Score(models.Model):
@@ -52,7 +58,7 @@ class Product(models.Model):
     prices = models.ManyToManyField(Shop, through='ProductPrice')
     quantity = models.IntegerField(default=0)
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
-    ingredient = models.ForeignKey(Ingredient, null=True)
+    food = models.ForeignKey(Food, null=False)
     scores = models.OneToOneField(Score, null=True)
     thumb_url = models.CharField(max_length=256, null=True)
     version = models.IntegerField(default=CURRENT_VERSION)
@@ -150,6 +156,8 @@ class Rating(models.Model):
 class Recipe(models.Model):
     name = models.CharField(max_length=256)
     author_if_user = models.ForeignKey(User, null=True, blank=True)
+    provides = models.ForeignKey(Food, null=False)
+    quantity = models.IntegerField()
     source_if_not_user = models.CharField(max_length=256)
     number_persons = models.IntegerField(default=0)
     preparation_time_in_min = models.IntegerField(default=0)
@@ -216,17 +224,18 @@ class Recipe(models.Model):
 
 from .algorithms import recommended_products
 
+
 class RecipeItem(models.Model):
     quantity = models.IntegerField()
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
-    ingredient = models.ForeignKey(Ingredient)
+    food = models.ForeignKey(Food)
     recipe = models.ForeignKey(Recipe)
 
     def get_amount(self):
         return ProductAmount(quantity=self.quantity, unit=self.unit)
 
     def recommended_product(self, user_preference):
-        product_list = recommended_products(self.ingredient, user_preference)
+        product_list = recommended_products(self.food, user_preference)
         if product_list:
             return product_list[0]
         return None
@@ -250,7 +259,7 @@ class RecipeItem(models.Model):
         return '€ {:03.2f}'.format(price/100.0)
 
     def __str__(self):
-        return str(self.quantity) + ' ' + str(self.unit) + ' ' + str(self.ingredient)
+        return str(self.quantity) + ' ' + str(self.unit) + ' ' + str(self.food)
 
 class ProductPrice(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

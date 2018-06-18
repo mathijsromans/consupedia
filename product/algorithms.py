@@ -39,8 +39,8 @@ def generate_sorted_list(product_list, user_preferences):
     return product_list
 
 
-def recommended_products(ingredient, user_preference):
-    product_list = Product.objects.filter(ingredient=ingredient)
+def recommended_products(food, user_preference):
+    product_list = Product.objects.filter(food=food)
     product_list = generate_sorted_list(product_list, user_preference)
     return product_list
 
@@ -80,12 +80,12 @@ class ProductChooseAlgorithm:
         return result
         
     @staticmethod
-    def maximize_product_scores(user_pref, ingredient=None):
+    def maximize_product_scores(user_pref, food=None):
         maxScore = -99999999999
         if Product.objects.all():
             productToReturn = Product.objects.all()[0]
             for product in Product.objects.all():
-                if product.ingredient == ingredient or not ingredient:
+                if product.food == food or not food:
                     result = ProductChooseAlgorithm.calculate_product_score(product, user_pref)
                     if result and result.total() > maxScore:
                         maxScore = result.total()

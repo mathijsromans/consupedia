@@ -11,8 +11,8 @@ class TestCreateRecipe(TestCase):
         recipe, ingredients_created = RecipeService.create_recipe_from_ah_id('R-R1189786')
         recipe_items = recipe.recipeitem_set.all()
         for ri in recipe_items:
-            self.assertNotEqual(ri.ingredient.name, 'water')
-            self.assertNotEqual(ri.ingredient.name, 'kraanwater')
+            self.assertNotEqual(ri.food.name, 'water')
+            self.assertNotEqual(ri.food.name, 'kraanwater')
         self.assertEqual(len(recipe_items), 7)
 
 class TestAmount(TestCase):

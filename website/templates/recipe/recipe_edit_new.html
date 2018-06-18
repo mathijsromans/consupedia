@@ -17,16 +17,16 @@
 </div>
 
 <div class="row">
-{% for ingredient in ingredients_created %}
-  {% if ingredient.product_set.all %}
+{% for food in ingredients_created %}
+  {% if food.product_set.all %}
   <div class="col-sm-12" align="center">
     <div class="panel">
 
       <div class="panel-body">
-        <h4>{{ ingredient.name|title }}</h4>
+        <h4>{{ food.name|title }}</h4>
       </div>
 
-      {% with products=ingredient.product_set.all %}
+      {% with products=food.product_set.all %}
         {% include "product/products_table.html" %}
       {% endwith %}
 

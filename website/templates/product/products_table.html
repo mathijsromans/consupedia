@@ -13,9 +13,9 @@
     <script>
       $("#button-remove-{{ product.id }}").click(function() {
         $.post(
-          "/ingredient/product/remove/",
+          "/food/product/remove/",
           {
-            "ingredient_id": {{ ingredient.id }},
+            "ingredient_id": {{ food.id }},
             "product_id": {{ product.id }}
           },
           function(data) {

@@ -1,12 +1,12 @@
 {% extends "website/base.html" %}
 
-{% block title %}{{ ingredient.name }} {{ block.super }}{% endblock %}
+{% block title %}{{ food.name }} {{ block.super }}{% endblock %}
 
 {% block content %}
 
-{% if ingredient %}
+{% if food %}
 <div class="row" align="left">
-  <h3>{{ ingredient.name }}</h3>
+  <h3>{{ food.name }}</h3>
   <hr/>
 </div>
 {% endif %}
@@ -20,13 +20,13 @@
         Verwijder producten die niet bij dit ingrediënt passen.
       </div>
 
-      {% with products=ingredient.product_set.all %}
+      {% with products=food.product_set.all %}
       {% include "product/products_table.html" %}
       {% endwith %}
 
     </div>
     <div class="pull-right">
-     <a class="btn btn-primary" href="{% url 'ingredient' ingredient.id %}">Klaar</a>
+     <a class="btn btn-primary" href="{% url 'food' food.id %}">Klaar</a>
     </div>
   </div>
 </div>

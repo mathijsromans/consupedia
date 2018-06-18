@@ -1,4 +1,4 @@
-$('.ingredient').click(selectIngredient);
+$('.food').click(selectIngredient);
 
 function selectIngredient(e) {
 	var ingredientId = this.id;
