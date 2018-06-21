@@ -6,9 +6,16 @@
 
 {% if food %}
 <div class="row" align="left">
-  <h3>{{ food.name }}</h3>
-  <hr/>
+  <div class="col-sm-12" align="center">
+ <h3>{{ food.name }}</h3>
+  {% if not is_anonymous_user %}
+    <div align="right">
+      <a class='btn btn-primary' href="{% url 'food-edit' food.id %}">Edit</a>
+    </div>
+    {% endif %}
+  </div>
 </div>
+<hr/>
 {% endif %}
 
 {% if product %}

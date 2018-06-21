@@ -54,8 +54,10 @@ class FoodsView(TemplateView):
         create_query = self.request.GET.get('create_box', None)
         if create_query:
             food, created = Food.objects.get_or_create(name=create_query)
-            ProductService.update_products(food)
-            return redirect(reverse('food-products-edit', args=(food.id,)))
+            if self.request.GET.get('create_new_with_products'):
+                ProductService.update_products(food)
+                return redirect(reverse('food-products-edit', args=(food.id,)))
+            return redirect(reverse('foods'))
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
