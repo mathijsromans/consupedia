@@ -8,12 +8,37 @@
 <div class="row" align="left">
   <div class="col-sm-12" align="center">
  <h3>{{ food.name }}</h3>
+  {% if food.provides %}
+  <div class="row" align="center">
+  <h5> <a href="{% url 'food' food.provides.id %}">{{ food.provides.name|title }}</a> </h5>
+  </div>
+  {% endif %}
   {% if not is_anonymous_user %}
     <div align="right">
       <a class='btn btn-primary' href="{% url 'food-edit' food.id %}">Edit</a>
     </div>
     {% endif %}
   </div>
+</div>
+<hr/>
+{% endif %}
+
+{% if recipes %}
+<div class="row" align="center">
+  <h4>Recepten</h4>
+{% for recipe in recipes %}
+{% include "recipe/recipe_panel.html" %}
+{% endfor %}
+</div>
+<hr/>
+{% endif %}
+
+{% if foods %}
+<div class="row" align="center">
+  <h4>Eten</h4>
+{% for food in foods %}
+{% include "food/food_panel.html" %}
+{% endfor %}
 </div>
 <hr/>
 {% endif %}

@@ -223,6 +223,8 @@ class FoodView(TemplateView):
         try:
             food = Food.objects.get(id=food_id)
             context['food'] = food
+            context['recipes'] = food.recipe_set.all()
+            context['foods'] = food.food_set.all()
             if self.request.user.is_authenticated():
                 up, created = UserPreferences.objects.get_or_create(user=self.request.user)
                 product_list = recommended_products(food, up)
