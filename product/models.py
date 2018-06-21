@@ -19,7 +19,7 @@ class Food(models.Model):
 
     name = models.CharField(max_length=255)
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
-    provides = models.ForeignKey('self', null=True, blank=True)
+    provides = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -53,13 +53,13 @@ class Product(models.Model):
     CURRENT_VERSION = 1
     name = models.CharField(max_length=256, null=True)  # name according to Questionmark
     questionmark_id = models.IntegerField(default=0)
-    brand = models.ForeignKey(Brand, null=True)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=True)
     ean_code = models.CharField(max_length=25, null=True)
     prices = models.ManyToManyField(Shop, through='ProductPrice')
     quantity = models.IntegerField(default=0)
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
-    food = models.ForeignKey(Food, null=False)
-    scores = models.OneToOneField(Score, null=True)
+    food = models.ForeignKey(Food, on_delete=models.CASCADE, null=False)
+    scores = models.OneToOneField(Score, on_delete=models.CASCADE, null=True)
     thumb_url = models.CharField(max_length=256, null=True)
     version = models.IntegerField(default=CURRENT_VERSION)
     product_score = 0
@@ -120,7 +120,7 @@ class Product(models.Model):
 
 
 class UserPreferences(models.Model):
-    user = models.OneToOneField(User, unique=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
     price_weight = models.IntegerField(default=50)
     environment_weight = models.IntegerField(default=50)
     social_weight = models.IntegerField(default=50)
@@ -145,8 +145,8 @@ class UserPreferences(models.Model):
 
 
 class Rating(models.Model):
-    user = models.ForeignKey(User, null=False)
-    product = models.ForeignKey(Product, null=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=False)
     rating = models.IntegerField(null=False)
 
     class Meta:
@@ -155,8 +155,8 @@ class Rating(models.Model):
 
 class Recipe(models.Model):
     name = models.CharField(max_length=256)
-    author_if_user = models.ForeignKey(User, null=True, blank=True)
-    provides = models.ForeignKey(Food, null=False)
+    author_if_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    provides = models.ForeignKey(Food, on_delete=models.CASCADE, null=False)
     quantity = models.IntegerField()
     source_if_not_user = models.CharField(max_length=256)
     number_persons = models.IntegerField(default=0)
@@ -228,8 +228,8 @@ from .algorithms import recommended_products
 class RecipeItem(models.Model):
     quantity = models.IntegerField()
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
-    food = models.ForeignKey(Food)
-    recipe = models.ForeignKey(Recipe)
+    food = models.ForeignKey(Food, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
     def get_amount(self):
         return ProductAmount(quantity=self.quantity, unit=self.unit)
@@ -260,6 +260,7 @@ class RecipeItem(models.Model):
 
     def __str__(self):
         return str(self.quantity) + ' ' + str(self.unit) + ' ' + str(self.food)
+
 
 class ProductPrice(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

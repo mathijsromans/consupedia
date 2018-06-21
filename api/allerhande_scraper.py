@@ -1,5 +1,8 @@
 import re
 from api import cache
+import logging
+
+logger = logging.getLogger(__name__)
 
 regex_unit = re.compile('data-quantity-unit-singular="(.*?)"')
 regex_quantity = re.compile('data-quantity="(\d+)"')
@@ -35,7 +38,9 @@ def get_recipe_page_html(recipe_id):
 
 def get_recipe(recipe_id):
     text, url = get_recipe_page_html(recipe_id)
+    logger.info(text)
     recipe_items = get_recipe_items(text)
+    logger.info(str(recipe_items))
     preparation_time_in_min = get_preparation_time_min(text)
     number_persons = get_number_persons(text)
     name = get_name(text)

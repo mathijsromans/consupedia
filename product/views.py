@@ -86,12 +86,11 @@ class RecipesView(TemplateView):
 
 
 def calculateTotalScores(recipe, up):
-    print('SCORING')
     for recipe_item in recipe.recipeitem_set.all():
         product = recipe_item.recommended_product(up)
         if product:
             scores = ProductChooseAlgorithm.calculate_product_score(product, up)
-            print(scores)
+            logger.info(scores)
     total_price_weight = recipe.calculateTotalPriceWeight(up) * up.price_weight
     total_environment_weight = -recipe.calculateTotalEnvironmentWeight(up) * up.environment_weight
     total_social_weight = -recipe.calculateTotalSocialWeight(up) * up.social_weight
@@ -159,8 +158,8 @@ class RecipeAddView(FormView):
         logger.info('CREATED RECIPE ' + str(recipe))
         foods_created = list(recipe.recipeitem_set.values_list('food_id', flat=True))
         recipe_id = recipe.id if recipe else 0
-        if not foods_created:
-            return redirect('recipe_detail', args=[recipe_id])
+        # if not foods_created:
+        #     return redirect('recipe_detail', args=[recipe_id])
         return redirect(reverse('recipe-edit-new', args=[recipe_id, json.dumps(foods_created)]))
 
 
