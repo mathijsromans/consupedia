@@ -16,7 +16,7 @@ from .management.commands.create_recipes import Command
 from .models import Rating, Recipe, RecipeItem
 from .models import UserPreferences
 from .productservice import ProductService, RecipeService
-from .forms import ProductForm, RecipeForm, RecipeURLForm, IngredientForm
+from .forms import ProductForm, RecipeForm, RecipeURLForm, FoodForm
 from .forms import UserPreferenceForm
 from .algorithms import set_score, recommended_products
 from product.algorithms import ProductChooseAlgorithm
@@ -46,8 +46,9 @@ class ProductsView(TemplateView):
         context['n_products_all'] = products_all.count()
         return context
 
-class IngredientsView(TemplateView):
-    template_name = 'ingredient/ingredients.html'
+
+class FoodsView(TemplateView):
+    template_name = 'food/foods.html'
 
     def dispatch(self, request, *args, **kwargs):
         create_query = self.request.GET.get('create_box', None)
@@ -59,15 +60,15 @@ class IngredientsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['ingredients'] = Food.objects.all().order_by('name')
+        context['foods'] = Food.objects.all().order_by('name')
         return context
 
 
-class IngredientProductsEditView(TemplateView):
-    template_name = 'ingredient/ingredient_products_edit.html'
+class FoodProductsEditView(TemplateView):
+    template_name = 'food/food_products_edit.html'
 
-    def get_context_data(self, ingredient_id, **kwargs):
-        food = Food.objects.get(id=ingredient_id)
+    def get_context_data(self, food_id, **kwargs):
+        food = Food.objects.get(id=food_id)
         context = super().get_context_data(**kwargs)
         context['anonymous_can_edit'] = True
         context['food'] = food
@@ -119,9 +120,9 @@ class RecipeDetailView(TemplateView):
         context = super().get_context_data(**kwargs)
         recipe = Recipe.objects.get(id=recipe_id)
         up, created = UserPreferences.objects.get_or_create( user = self.request.user )
-        ingredient_and_price_list = [(recipe_item, recipe_item.price_str(up)) for recipe_item in recipe.recipeitem_set.all() ]
+        food_and_price_list = [(recipe_item, recipe_item.price_str(up)) for recipe_item in recipe.recipeitem_set.all() ]
         context['recipe'] = recipe
-        context['ingredient_and_price_list'] = ingredient_and_price_list
+        context['food_and_price_list'] = food_and_price_list
         totalScores = calculateTotalScores(recipe, up)
         score_text = "Prijs: " + format(totalScores['total_price_weight'], '.2f') + ", "
         score_text += "Mileu: " + format(totalScores['total_environment_weight'], '.2f') + ", "
@@ -143,32 +144,34 @@ class RecipeAddView(FormView):
                 'quantity': 1}
 
     def get_context_data(self, **kwargs):
+        if not Food.objects.exists():
+            Food.objects.create(name='Warme maaltijd')
         context = super().get_context_data(**kwargs)
 #        context['url'] = 'R-R399568'
         return context
 
     @transaction.atomic
     def form_valid(self, form):
-        recipe, ingredients_created = RecipeService.create_recipe_from_ah_id(
+        recipe, foods_created = RecipeService.create_recipe_from_ah_id(
             form.cleaned_data['url'],
             form.cleaned_data['provides'],
             form.cleaned_data['quantity'])
         logger.info('CREATED RECIPE ' + str(recipe))
-        ingredients_created = list(recipe.recipeitem_set.values_list('ingredient_id', flat=True))
+        foods_created = list(recipe.recipeitem_set.values_list('food_id', flat=True))
         recipe_id = recipe.id if recipe else 0
-        if not ingredients_created:
+        if not foods_created:
             return redirect('recipe_detail', args=[recipe_id])
-        return redirect(reverse('recipe-edit-new', args=[recipe_id, json.dumps(ingredients_created)]))
+        return redirect(reverse('recipe-edit-new', args=[recipe_id, json.dumps(foods_created)]))
 
 
 class RecipeEditNewView(TemplateView):
     template_name = 'recipe/recipe_edit_new.html'
 
-    def get_context_data(self, recipe_id, ingredients_created, **kwargs):
-        ingredients_created = json.loads(ingredients_created)
+    def get_context_data(self, recipe_id, foods_created, **kwargs):
+        foods_created = json.loads(foods_created)
         context = super().get_context_data()
         context['recipe'] = Recipe.objects.get(id=recipe_id)
-        context['ingredients_created'] = Food.objects.filter(id__in=ingredients_created) if ingredients_created is not None else None
+        context['foods_created'] = Food.objects.filter(id__in=foods_created) if foods_created is not None else None
         return context
 
 
@@ -211,13 +214,13 @@ class ProductView(TemplateView):
         return context
 
 
-class IngredientView(TemplateView):
-    template_name = 'ingredient/ingredient.html'
+class FoodView(TemplateView):
+    template_name = 'food/food.html'
 
-    def get_context_data(self, ingredient_id, **kwargs):
+    def get_context_data(self, food_id, **kwargs):
         context = super().get_context_data(**kwargs)
         try:
-            food = Food.objects.get(id=ingredient_id)
+            food = Food.objects.get(id=food_id)
             context['food'] = food
             if self.request.user.is_authenticated():
                 up, created = UserPreferences.objects.get_or_create(user=self.request.user)
@@ -229,7 +232,7 @@ class IngredientView(TemplateView):
         return context
 
 
-def remove_ingredient_product(request):
+def remove_food_product(request):
     Product.objects.get(id=int(request.POST['product_id'])).delete()
     response = json.dumps({'status': 'success'})
     return HttpResponse(response, content_type='application/json')
@@ -271,9 +274,9 @@ class ProductEditView(FormView):
         context['product'] = self.product
         return context
 
-class IngredientEditView(FormView):
-    template_name = 'ingredient/ingredient_edit.html'
-    form_class = IngredientForm
+class FoodEditView(FormView):
+    template_name = 'food/food_edit.html'
+    form_class = FoodForm
 
     @property
     def success_url(self):
@@ -281,7 +284,7 @@ class IngredientEditView(FormView):
 
     @property
     def recipe_item(self):
-        return RecipeItem.objects.get(id=self.kwargs['ingredient_id'])
+        return RecipeItem.objects.get(id=self.kwargs['food_id'])
 
     def get_initial(self):
         return {'quantity': self.recipe_item.quantity,
@@ -362,7 +365,7 @@ def set_product_rating(request):
     return HttpResponse(response, content_type='application/json')
     
 def get_what_to_eat_result(request):
-    food = Food.objects.get(id=request.POST['ingredient_id'])
+    food = Food.objects.get(id=request.POST['food_id'])
     up = UserPreferences()
     #todo get user preferences from post request.
     up.price_weight = 5

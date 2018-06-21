@@ -18,7 +18,7 @@
     </section>
 
     {% if product.food %}
-      <a href="{% url 'food' product.food.id %}">{{ product.ingredient.name }}</a>
+      <a href="{% url 'food' product.food.id %}">{{ product.food.name }}</a>
     {% endif %}
   </div>
 

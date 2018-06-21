@@ -8,7 +8,7 @@ from .amount import ProductAmount
 
 class TestCreateRecipe(TestCase):
     def test_water(self):
-        recipe, ingredients_created = RecipeService.create_recipe_from_ah_id('R-R1189786')
+        recipe, foods_created = RecipeService.create_recipe_from_ah_id('R-R1189786')
         recipe_items = recipe.recipeitem_set.all()
         for ri in recipe_items:
             self.assertNotEqual(ri.food.name, 'water')

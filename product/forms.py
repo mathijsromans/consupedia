@@ -12,7 +12,7 @@ class ProductForm(forms.Form):
     price = forms.IntegerField(label='Price (cents)',validators=[validate_price])
 
 
-class IngredientForm(forms.Form):
+class FoodForm(forms.Form):
     quantity = forms.IntegerField(label='quantity')
     unit = forms.CharField(label='unit', max_length=5)
     food = forms.ModelChoiceField(label='food', queryset=Food.objects.all().order_by('name'))

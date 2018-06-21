@@ -1,11 +1,11 @@
-$('.food').click(selectIngredient);
+$('.food').click(selectFood);
 
-function selectIngredient(e) {
-	var ingredientId = this.id;
+function selectFood(e) {
+	var foodId = this.id;
 	$.post(
 	    "/what_to_eat/get_result/",
 	    {
-	        'ingredient_id': ingredientId,
+	        'food_id': foodId,
 	    },
 	    function(data) {
             var product = data[0];

@@ -15,7 +15,7 @@
         $.post(
           "/food/product/remove/",
           {
-            "ingredient_id": {{ food.id }},
+            "food_id": {{ food.id }},
             "product_id": {{ product.id }}
           },
           function(data) {

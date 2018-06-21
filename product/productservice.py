@@ -24,7 +24,7 @@ class ProductService:
     @staticmethod
     @transaction.atomic
     def update_products(food):
-        # logger.info('BEGIN: Updating products for ingredient: ' + str(ingredient))
+        # logger.info('BEGIN: Updating products for food: ' + str(food))
         # start = time.time()
         qm_mapper = QuestionmarkMapper()
 
@@ -41,8 +41,7 @@ class ProductService:
         product_ids = []
         for product_dict in products_dict['products']:
             # logger.info('@1 ' + str(time.time() - start) + ': ' + product_dict['name'])
-            product, created = Product.objects.get_or_create(name=product_dict['name'], questionmark_id=product_dict['id'])
-            product.food = food
+            product, created = Product.objects.get_or_create(name=product_dict['name'], questionmark_id=product_dict['id'], food=food)
             product = qm_mapper.map_to_product(product, product_dict)
             ProductService.enrich_product_data(product, jumbo_results, jumbo_shop)
             ProductService.enrich_product_data(product, ah_results, ah_shop)
@@ -56,11 +55,10 @@ class ProductService:
         return Product.objects.filter(id__in=product_ids)
 
     @staticmethod
-    def get_or_create_unknown_ingredient():
+    def get_or_create_unknown_food():
         food, created = Food.objects.get_or_create(name='Unknown food')
         if created:
-            product, created = Product.objects.get_or_create(name='Unknown product')
-            product.food = food
+            Product.objects.get_or_create(name='Unknown product', food=food)
         return food
 
     @staticmethod
@@ -176,18 +174,18 @@ class RecipeService():
                                            preparation=preparation,
                                            picture_url=picture_url)
 
-        ingredients_created = []
+        foods_created = []
         for recipe_item in recipe_items:
             if len(recipe_item) != 3:
                 continue
             recipe_item_quantity = recipe_item[0]
             recipe_item_unit = recipe_item[1]
-            recipe_item_ingredient = recipe_item[2]
-            if recipe_item_ingredient == 'water' or recipe_item_ingredient == 'kraanwater':
+            recipe_item_food = recipe_item[2]
+            if recipe_item_food == 'water' or recipe_item_food == 'kraanwater':
                 continue
-            food, created = Food.objects.get_or_create(name=recipe_item_ingredient)
+            food, created = Food.objects.get_or_create(name=recipe_item_food)
             if created:
-                ingredients_created.append(food.id)
+                foods_created.append(food.id)
             ProductService().update_products(food)
             quantity, unit = ProductAmount.get_quantity_and_unit( recipe_item_quantity, recipe_item_unit)
             RecipeItem.objects.create(quantity=quantity, unit=unit, food=food, recipe=new_recipe)
@@ -195,4 +193,4 @@ class RecipeService():
         end = time.time()
         logger.info('END: (time: ' + str(end - start) + ') Done creating recipe ' + str(new_recipe))
         
-        return new_recipe, ingredients_created
+        return new_recipe, foods_created

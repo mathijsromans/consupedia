@@ -13,7 +13,7 @@
 <div class="row">
   <form type="get" action="." style="margin: 0">
     <div class="col-sm-3">
-      <input class="form-control" id="create_box" type="text" name="create_box" placeholder="Ingredient...">
+      <input class="form-control" id="create_box" type="text" name="create_box" placeholder="Food...">
     </div>
     <div class="col-sm-3">
       <button class="btn btn-primary" id="search_submit" type="submit">Maak nieuw</button>
@@ -24,9 +24,9 @@
 <hr/>
 
 <div class="row">
-  {% for food in ingredients %}
+  {% for food in foods %}
   <div class="col-sm-6 col-md-4 col-lg-3">
-    {% include "food/ingredient_panel.html" %}
+    {% include "food/food_panel.html" %}
   </div>
 
   {% if forloop.counter|divisibleby:2 %}
