@@ -16,7 +16,7 @@ from .management.commands.create_recipes import Command
 from .models import Rating, Recipe, RecipeItem
 from .models import UserPreferences
 from .productservice import ProductService, RecipeService
-from .forms import ProductForm, RecipeForm, RecipeURLForm, FoodForm
+from .forms import ProductForm, RecipeForm, RecipeURLForm, RecipeItemForm, FoodForm
 from .forms import UserPreferenceForm
 from .algorithms import set_score, recommended_products
 from product.algorithms import ProductChooseAlgorithm
@@ -273,9 +273,10 @@ class ProductEditView(FormView):
         context['product'] = self.product
         return context
 
-class FoodEditView(FormView):
-    template_name = 'food/food_edit.html'
-    form_class = FoodForm
+
+class RecipeItemEditView(FormView):
+    template_name = 'recipe/recipe_item_edit.html'
+    form_class = RecipeItemForm
 
     @property
     def success_url(self):
@@ -283,12 +284,13 @@ class FoodEditView(FormView):
 
     @property
     def recipe_item(self):
-        return RecipeItem.objects.get(id=self.kwargs['food_id'])
+        return RecipeItem.objects.get(id=self.kwargs['recipe_item_id'])
 
     def get_initial(self):
-        return {'quantity': self.recipe_item.quantity,
-                'unit': self.recipe_item.unit,
-                'food': self.recipe_item.food}
+        recipe_item = self.recipe_item
+        return {'quantity': recipe_item.quantity,
+                'unit': recipe_item.unit,
+                'food': recipe_item.food}
 
     @transaction.atomic
     def form_valid(self, form):
@@ -303,6 +305,40 @@ class FoodEditView(FormView):
         context = super().get_context_data(**kwargs)
         context['recipe_item'] = self.recipe_item
         return context
+
+
+class FoodEditView(FormView):
+    template_name = 'food/food_edit.html'
+    form_class = FoodForm
+
+    @property
+    def success_url(self):
+        return '/food/' + str(self.food.id)
+
+    @property
+    def food(self):
+        return Food.objects.get(id=self.kwargs['food_id'])
+
+    def get_initial(self):
+        food = self.food
+        return {'name': food.name,
+                'unit': food.unit,
+                'provides': food.provides}
+
+    @transaction.atomic
+    def form_valid(self, form):
+        food = self.food
+        food.name = form.cleaned_data['name']
+        food.unit = form.cleaned_data['unit']
+        food.provides = form.cleaned_data['provides']
+        food.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['food'] = self.food
+        return context
+
 
 class UserPreferenceEditView(FormView):
     template_name = 'user/user_preference_edit.html'

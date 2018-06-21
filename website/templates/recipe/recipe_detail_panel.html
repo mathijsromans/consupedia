@@ -17,7 +17,7 @@
       <th>{{ recipe_item.quantity }} {{ recipe_item.unit }}</th>
       <td><a href="{% url 'food' recipe_item.food.id %}">{{ recipe_item.food }}</a></td>
       <td>{{ price }}</td>
-      <td align="right"><a href="{% url 'food-edit' recipe_item.id %}"><i class="fa fa-pencil"></i></a></td>
+      <td align="right"><a href="{% url 'recipe_item-edit' recipe_item.id %}"><i class="fa fa-pencil"></i></a></td>
     </tr>
     {% endfor %}
   </table>

@@ -2,12 +2,12 @@
 
 {% load bootstrap3 %}
 
-{% block title %}Verander {{ food.name }} {{ block.super }}{% endblock %}
+{% block title %}Verander ingrediënt "{{ recipe_item.name }}" {{ block.super }}{% endblock %}
 
 {% block content %}
 
 <div class="row" align="center">
-  <h3>Verander {{ food.name }}</h3>
+  <h3>Verander ingrediënt "{{ recipe_item.name }}"</h3>
 </div>
 
 <div class="row">
@@ -19,13 +19,13 @@
 
         <div class="row">
           <div class="col-sm-6">
-            {% bootstrap_field form.name %}
+            {% bootstrap_field form.quantity %}
           </div>
           <div class="col-sm-6">
             {% bootstrap_field form.unit %}
           </div>
           <div class="col-sm-6">
-            {% bootstrap_field form.provides %}
+            {% bootstrap_field form.food %}
           </div>
         </div>
 

@@ -258,6 +258,10 @@ class RecipeItem(models.Model):
             return '?'
         return '€ {:03.2f}'.format(price/100.0)
 
+    @property
+    def name(self):
+        return str(self)
+
     def __str__(self):
         return str(self.quantity) + ' ' + str(self.unit) + ' ' + str(self.food)
 

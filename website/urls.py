@@ -28,11 +28,12 @@ urlpatterns = [
     url(r'^recipes/add$', product.views.RecipeAddView.as_view(), name='recipe-add'),
     url(r'^recipes/edit/(?P<recipe_id>[0-9]+)/$', product.views.RecipeEditView.as_view(), name='recipe-edit'),
     url(r'^recipes/edit/new/(?P<recipe_id>[0-9]+)/(?P<foods_created>.*)/&', product.views.RecipeEditNewView.as_view(), name='recipe-edit-new'),
+    url(r'^recipes/ingredient/edit/(?P<recipe_item_id>[0-9]+)/$', product.views.RecipeItemEditView.as_view(), name='recipe_item-edit'),
 
     url(r'^foods/$', product.views.FoodsView.as_view(), name='foods'),
-    url(r'^food/(?P<food_id>[0-9]+)/$', product.views.FoodsView.as_view(), name='food'),
+    url(r'^food/(?P<food_id>[0-9]+)/$', product.views.FoodView.as_view(), name='food'),
+    url(r'^food/edit/(?P<food_id>[0-9]+)/$', product.views.FoodEditView.as_view(), name='food-edit'),
     url(r'^food/product/remove/$', product.views.remove_food_product),
-    url(r'^food/edit/(?P<food_id>[0-9]+)/$', product.views.FoodsView.as_view(), name='food-edit'),
     url(r'^food/products/edit/(?P<food_id>[0-9]+)/$', product.views.FoodProductsEditView.as_view(), name='food-products-edit'),
 
     url(r'^user_preferences/$', product.views.UserPreferenceEditView.as_view(), name='user_prefs'),
