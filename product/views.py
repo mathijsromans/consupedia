@@ -20,6 +20,7 @@ from .forms import ProductForm, RecipeForm, RecipeURLForm, RecipeItemForm, FoodF
 from .forms import UserPreferenceForm
 from .algorithms import set_score, recommended_products
 from product.algorithms import ProductChooseAlgorithm
+from product.productservice import ProductService
 
 logger = logging.getLogger(__name__)
 
@@ -186,14 +187,6 @@ class RecipeEditView(TemplateView):
         food_and_price_list = [(recipe_item, recipe_item.price_str(up)) for recipe_item in recipe.recipeitem_set.all() ]
         context['recipe'] = recipe
         context['food_and_price_list'] = food_and_price_list
-        totalScores = calculateTotalScores(recipe, up)
-        score_text = "Prijs: " + format(totalScores['total_price_weight'], '.2f') + ", "
-        score_text += "Mileu: " + format(totalScores['total_environment_weight'], '.2f') + ", "
-        score_text += "Sociaal: " + format(totalScores['total_social_weight'], '.2f') + ", "
-        score_text += "Dierenwelzijn: " + format(totalScores['total_animals_weight'], '.2f') + ", "
-        score_text += "Gezondheid: " + format(totalScores['total_personal_health_weight'], '.2f')
-        context['recipe_score_text'] = score_text
-        context['recipe_total_score_text'] = format(calculateTotalScore(recipe, up), '.2f')
         return context
 
 
@@ -303,6 +296,13 @@ class RecipeItemEditView(FormView):
         context = super().get_context_data(**kwargs)
         context['recipe_item'] = self.recipe_item
         return context
+
+
+def add_recipe_item(request, recipe_id):
+    recipe = Recipe.objects.get(id=recipe_id)
+    food = ProductService.get_or_create_unknown_food()
+    recipe_item = RecipeItem.objects.create(quantity=1, unit=food.unit, food=food, recipe=recipe)
+    return redirect(reverse('recipe_item-edit', args=(recipe_item.id,)))
 
 
 class FoodEditView(FormView):

@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^recipes/edit/(?P<recipe_id>[0-9]+)/$', product.views.RecipeEditView.as_view(), name='recipe-edit'),
     url(r'^recipes/edit/new/(?P<recipe_id>[0-9]+)/(?P<foods_created>.*)/&', product.views.RecipeEditNewView.as_view(), name='recipe-edit-new'),
     url(r'^recipes/ingredient/edit/(?P<recipe_item_id>[0-9]+)/$', product.views.RecipeItemEditView.as_view(), name='recipe_item-edit'),
+    url(r'^recipes/ingredient/add/(?P<recipe_id>[0-9]+)/$', product.views.add_recipe_item, name='recipe_item-add'),
 
     url(r'^foods/$', product.views.FoodsView.as_view(), name='foods'),
     url(r'^food/(?P<food_id>[0-9]+)/$', product.views.FoodView.as_view(), name='food'),

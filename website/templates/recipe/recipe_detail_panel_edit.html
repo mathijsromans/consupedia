@@ -6,8 +6,6 @@
     </span>
     <div><i class="fa fa-clock-o"></i> {{ recipe.preparation_time_in_min }} min</div>
     <div><i class="fa fa-user"></i> {{ recipe.number_persons }}</div>
-    <div><i class="fa fa-sliders"></i> {{ recipe_score_text }}</div>
-    <div><i class="fa fa-bar-chart"></i> <strong>Totaal score: </strong>{{ recipe_total_score_text }}</div>
   </div>
 
   {% if food_and_price_list %}
@@ -23,9 +21,8 @@
   </table>
   {% endif %}
 
-  {% if recipe.source_if_not_user %}
-  <div class="panel-footer">
-    Bron: <a href="{{ recipe.source_if_not_user }}">{{ recipe.source_if_not_user }}</a><br/>
-  </div>
-  {% endif %}
+  <span class="pull-left">
+    <a class="btn btn-primary" href="{% url 'recipe_item-add' recipe.id %}">Voeg ingrediënt toe</a>
+  </span>
+
 </div>
