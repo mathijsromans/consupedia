@@ -176,39 +176,25 @@ class RecipeEditNewView(TemplateView):
         return context
 
 
-class RecipeEditView(FormView):
+class RecipeEditView(TemplateView):
     template_name = 'recipe/recipe_edit.html'
-    form_class = RecipeForm
 
-    def __init__(self):
-        self.recipe = None
-
-    def get_initial(self, **kwargs):
-        logger.info(inspect.currentframe().f_code.co_name)
-        if 'recipe_id' in self.kwargs:
-            recipe_id = self.kwargs['recipe_id']
-            self.recipe = Recipe.objects.get(id=recipe_id)
-            return {'name': self.recipe.name, 'quantity': self.recipe.quantity}
-        return None
-
-    def get_context_data(self, **kwargs):
-        logger.info(inspect.currentframe().f_code.co_name)
+    def get_context_data(self, recipe_id, **kwargs):
         context = super().get_context_data(**kwargs)
-        if 'recipe_id' in self.kwargs:
-            recipe_id = self.kwargs['recipe_id']
-            self.recipe = Recipe.objects.get(id=recipe_id )
-            context['recipe'] = self.recipe
+        recipe = Recipe.objects.get(id=recipe_id)
+        up, created = UserPreferences.objects.get_or_create( user = self.request.user )
+        food_and_price_list = [(recipe_item, recipe_item.price_str(up)) for recipe_item in recipe.recipeitem_set.all() ]
+        context['recipe'] = recipe
+        context['food_and_price_list'] = food_and_price_list
+        totalScores = calculateTotalScores(recipe, up)
+        score_text = "Prijs: " + format(totalScores['total_price_weight'], '.2f') + ", "
+        score_text += "Mileu: " + format(totalScores['total_environment_weight'], '.2f') + ", "
+        score_text += "Sociaal: " + format(totalScores['total_social_weight'], '.2f') + ", "
+        score_text += "Dierenwelzijn: " + format(totalScores['total_animals_weight'], '.2f') + ", "
+        score_text += "Gezondheid: " + format(totalScores['total_personal_health_weight'], '.2f')
+        context['recipe_score_text'] = score_text
+        context['recipe_total_score_text'] = format(calculateTotalScore(recipe, up), '.2f')
         return context
-
-    @transaction.atomic
-    def form_valid(self, form):
-        logger.info(inspect.currentframe().f_code.co_name)
-        logger.info(form.cleaned_data['name'])
-        logger.info(form.cleaned_data['quantity'])
-        self.recipe.name = form.cleaned_data['name']
-        self.recipe.quantity = form.cleaned_data['quantity']
-        self.recipe.save()
-        return redirect(reverse('recipe_detail', args=[self.recipe.id]))
 
 
 class ProductView(TemplateView):
