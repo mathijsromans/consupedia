@@ -188,7 +188,7 @@ class RecipeEditView(FormView):
         if 'recipe_id' in self.kwargs:
             recipe_id = self.kwargs['recipe_id']
             self.recipe = Recipe.objects.get(id=recipe_id)
-            return {'name': self.recipe.name, 'quantity': 1}
+            return {'name': self.recipe.name, 'quantity': self.recipe.quantity}
         return None
 
     def get_context_data(self, **kwargs):
