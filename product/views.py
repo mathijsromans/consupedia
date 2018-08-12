@@ -1,6 +1,6 @@
 import json
 import logging
-
+import inspect
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.db import transaction
@@ -179,17 +179,20 @@ class RecipeEditNewView(TemplateView):
 class RecipeEditView(FormView):
     template_name = 'recipe/recipe_edit.html'
     form_class = RecipeForm
-    success_url = '/recipes/'
-    recipe = None
-    
+
+    def __init__(self):
+        self.recipe = None
+
     def get_initial(self, **kwargs):
+        logger.info(inspect.currentframe().f_code.co_name)
         if 'recipe_id' in self.kwargs:
             recipe_id = self.kwargs['recipe_id']
-            self.recipe = Recipe.objects.get(id=recipe_id )
-            return {'name': self.recipe.name}
-        return None       
+            self.recipe = Recipe.objects.get(id=recipe_id)
+            return {'name': self.recipe.name, 'quantity': 1}
+        return None
 
     def get_context_data(self, **kwargs):
+        logger.info(inspect.currentframe().f_code.co_name)
         context = super().get_context_data(**kwargs)
         if 'recipe_id' in self.kwargs:
             recipe_id = self.kwargs['recipe_id']
@@ -199,8 +202,13 @@ class RecipeEditView(FormView):
 
     @transaction.atomic
     def form_valid(self, form):
-        Recipe.objects.create(name=form.cleaned_data['name'])
-        return super().form_valid(form)
+        logger.info(inspect.currentframe().f_code.co_name)
+        logger.info(form.cleaned_data['name'])
+        logger.info(form.cleaned_data['quantity'])
+        self.recipe.name = form.cleaned_data['name']
+        self.recipe.quantity = form.cleaned_data['quantity']
+        self.recipe.save()
+        return redirect(reverse('recipe_detail', args=[self.recipe.id]))
 
 
 class ProductView(TemplateView):
