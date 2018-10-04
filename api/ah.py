@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 def search_product(search_term):
-    query, created = AHQuery.objects.get_or_create(q_product_name = search_term)
+    query, created = AHQuery.objects.get_or_create(q_product_name=search_term)
     if created:
         url = 'https://www.ah.nl/service/rest/delegate?url=/zoeken?rq='
         fake_headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
