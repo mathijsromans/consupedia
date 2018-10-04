@@ -18,8 +18,11 @@ def search_product(search_term):
     json_products = json.loads(query.json)
 
     results = []
+    items = []
     try:
-        items = json_products['_embedded']['lanes'][6]['_embedded']['items']
+        for lane in json_products['_embedded']['lanes']:
+            if lane['type'] == 'SearchLane':
+                items += lane['_embedded']['items']
     except Exception as error:
         # This is not a real error, just the quickest way to see if there are items
         logger.info(error)
@@ -29,6 +32,7 @@ def search_product(search_term):
             ah_product = item['_embedded']['product']
             price_str = str(ah_product['priceLabel']['now'])
             price = int(100*float(price_str))
+            logger.info('Found AH item "' + ah_product['description']+'"')
             results.append({
                 'name' : ah_product['description'], 
                 'price': price, 
