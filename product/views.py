@@ -321,7 +321,8 @@ class FoodEditView(FormView):
         food = self.food
         return {'name': food.name,
                 'unit': food.unit,
-                'provides': food.provides}
+                'provides': food.provides,
+                'mass_equivalent': food.mass_equivalent}
 
     @transaction.atomic
     def form_valid(self, form):
@@ -329,6 +330,7 @@ class FoodEditView(FormView):
         food.name = form.cleaned_data['name']
         food.unit = form.cleaned_data['unit']
         food.provides = form.cleaned_data['provides']
+        food.mass_equivalent = form.cleaned_data['mass_equivalent']
         food.save()
         return super().form_valid(form)
 

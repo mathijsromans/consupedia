@@ -21,9 +21,10 @@ class RecipeItemForm(forms.Form):
 
 
 class FoodForm(forms.Form):
-    name = forms.CharField(label='Name', max_length=256)
-    unit = forms.ChoiceField(label='Unit', choices=ProductAmount.UNIT_CHOICES)
-    provides = forms.ModelChoiceField(label='Provides', required=False, queryset=Food.objects.all().order_by('name'))
+    name = forms.CharField(label='Naam', max_length=256)
+    unit = forms.ChoiceField(label='Eenheid', choices=ProductAmount.UNIT_CHOICES)
+    provides = forms.ModelChoiceField(label='Levert', required=False, queryset=Food.objects.all().order_by('name'))
+    mass_equivalent = forms.IntegerField(label='Equivalent gewicht (g)')
 
 
 class UserPreferenceForm(forms.Form):
