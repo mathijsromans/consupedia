@@ -211,7 +211,6 @@ class FoodView(TemplateView):
             food = Food.objects.get(id=food_id)
             context['food'] = food
             context['recipes'] = food.recipe_set.all()
-            context['foods'] = food.food_set.all()
             if self.request.user.is_authenticated():
                 up, created = UserPreferences.objects.get_or_create(user=self.request.user)
                 product_list = recommended_products(food, up)
@@ -321,7 +320,6 @@ class FoodEditView(FormView):
         food = self.food
         return {'name': food.name,
                 'unit': food.unit,
-                'provides': food.provides,
                 'mass_equivalent': food.mass_equivalent}
 
     @transaction.atomic
@@ -329,7 +327,6 @@ class FoodEditView(FormView):
         food = self.food
         food.name = form.cleaned_data['name']
         food.unit = form.cleaned_data['unit']
-        food.provides = form.cleaned_data['provides']
         food.mass_equivalent = form.cleaned_data['mass_equivalent']
         food.save()
         return super().form_valid(form)
