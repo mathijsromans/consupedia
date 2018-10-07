@@ -153,10 +153,13 @@ class Rating(models.Model):
         unique_together = (('user', 'product'),)
 
 
-class Recipe(models.Model):
+class Conversion(models.Model):
+    provides = models.ForeignKey(Food, on_delete=models.CASCADE, null=False)
+
+
+class Recipe(Conversion):
     name = models.CharField(max_length=256)
     author_if_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    provides = models.ForeignKey(Food, on_delete=models.CASCADE, null=False)
     quantity = models.IntegerField()
     source_if_not_user = models.CharField(max_length=256)
     number_persons = models.IntegerField(default=0)
