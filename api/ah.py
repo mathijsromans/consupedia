@@ -28,7 +28,7 @@ def search_product(search_term):
         logger.info(error)
         return results
     for item in items:
-        if '_embedded' in item and 'product' in item['_embedded']:
+        try:
             ah_product = item['_embedded']['product']
             price_str = str(ah_product['priceLabel']['now'])
             price = int(100*float(price_str))
@@ -38,5 +38,7 @@ def search_product(search_term):
                 'price': price, 
                 'size': ah_product['unitSize']
             })
+        except KeyError:
+            pass  # Ignore, go to next item
 
     return results
