@@ -10,13 +10,13 @@ from django.core import serializers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from .models import Product, Food
 from .management.commands.create_recipes import Command
 from .models import Rating, Recipe, RecipeItem
 from .models import UserPreferences
 from .productservice import ProductService, RecipeService
-from .forms import ProductForm, RecipeForm, RecipeURLForm, RecipeItemForm, FoodForm
+from .forms import ProductForm, RecipeForm, RecipeURLForm, RecipeItemForm, FoodForm, RecipeItemFormset
 from .forms import UserPreferenceForm
 from .algorithms import set_score, recommended_products
 from product.algorithms import ProductChooseAlgorithm
@@ -136,8 +136,44 @@ class RecipeDetailView(TemplateView):
         return context
 
 
-class RecipeAddView(FormView):
-    template_name = 'recipe/recipe_add.html'
+def create_new_recipe(request):
+    template_name = 'recipe/recipe_new.html'
+    if request.method == 'GET':
+        formset = RecipeItemFormset(request.GET or None)
+        recipe_form = RecipeForm(request.GET or None)
+    elif request.method == 'POST':
+        formset = RecipeItemFormset(request.POST)
+        recipe_form = RecipeForm(request.POST)
+        if formset.is_valid() and recipe_form.is_valid():
+            name = recipe_form.cleaned_data.get('name')
+            provides = recipe_form.cleaned_data.get('provides')
+            quantity = recipe_form.cleaned_data.get('quantity')
+            source_if_not_user = recipe_form.cleaned_data.get('source_if_not_user')
+            preparation_time_in_min = recipe_form.cleaned_data.get('preparation_time_in_min')
+            preparation = recipe_form.cleaned_data.get('preparation')
+            recipe = Recipe.objects.create(name=name,
+                                           provides=provides,
+                                           quantity=quantity,
+                                           source_if_not_user=source_if_not_user,
+                                           preparation_time_in_min=preparation_time_in_min,
+                                           preparation=preparation)
+            for form in formset:
+                # extract name from each form and save
+                quantity = form.cleaned_data.get('quantity')
+                unit = form.cleaned_data.get('unit')
+                food = form.cleaned_data.get('food')
+                # save recipe_item instance
+                if quantity:
+                    RecipeItem.objects.create(quantity=1, unit=unit, food=food, recipe=recipe)
+            return redirect('recipes')
+    return render(request, template_name, {
+        'formset': formset,
+        'recipe_form': recipe_form
+    })
+
+
+class RecipeAHAddView(FormView):
+    template_name = 'recipe/recipe_new_ah.html'
     form_class = RecipeURLForm
     success_url = '/recipes/'
 
@@ -149,7 +185,6 @@ class RecipeAddView(FormView):
         if not Food.objects.exists():
             Food.objects.create(name='Warme maaltijd')
         context = super().get_context_data(**kwargs)
-#        context['url'] = 'R-R399568'
         return context
 
     @transaction.atomic
@@ -161,8 +196,6 @@ class RecipeAddView(FormView):
         logger.info('CREATED RECIPE ' + str(recipe))
         foods_created = list(recipe.recipeitem_set.values_list('food_id', flat=True))
         recipe_id = recipe.id if recipe else 0
-        # if not foods_created:
-        #     return redirect('recipe_detail', args=[recipe_id])
         return redirect(reverse('recipe-edit-new', args=[recipe_id, json.dumps(foods_created)]))
 
 

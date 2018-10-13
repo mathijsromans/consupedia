@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import formset_factory
 from django.core.exceptions import ValidationError
 from product.models import Food
 from product.amount import ProductAmount
@@ -15,15 +16,33 @@ class ProductForm(forms.Form):
 
 
 class RecipeItemForm(forms.Form):
-    quantity = forms.IntegerField(label='Quantity')
-    unit = forms.CharField(label='Unit', max_length=5)
-    food = forms.ModelChoiceField(label='Food', queryset=Food.objects.all().order_by('name'))
+#    provides = forms.ModelChoiceField(label='resultaat', empty_label=None, queryset=Food.objects.all().order_by('name'))
+    quantity = forms.IntegerField(label='')
+    unit = forms.ChoiceField(label='', choices=ProductAmount.UNIT_CHOICES)
+    food = forms.ModelChoiceField(label='', queryset=Food.objects.all().order_by('name'))
+
+
+class TestForm(forms.Form):
+    quantity = forms.CharField(
+        label='quantity',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter Book Name here'
+        })
+    )
+
+RecipeItemFormset = formset_factory(RecipeItemForm, extra=1)
 
 
 class FoodForm(forms.Form):
     name = forms.CharField(label='Naam', max_length=256)
     unit = forms.ChoiceField(label='Eenheid', choices=ProductAmount.UNIT_CHOICES)
     mass_equivalent = forms.IntegerField(label='Equivalent gewicht (g)')
+
+
+class FoodWithUnitChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, food):
+        return '(' + food.unit + ') ' + food.name
 
 
 class UserPreferenceForm(forms.Form):
@@ -41,6 +60,12 @@ class RecipeURLForm(forms.Form):
 
 
 class RecipeForm(forms.Form):
-    name = forms.CharField(label='Name', max_length=256)
-#    provides = forms.ModelChoiceField(label='resultaat', empty_label=None, queryset=Food.objects.all().order_by('name'))
-    quantity = forms.IntegerField(label='hoeveelheid', min_value=1)
+    name = forms.CharField(label='Naam', max_length=256,
+                           widget=forms.TextInput(attrs={'placeholder': 'Naam van recept...'}))
+    provides = FoodWithUnitChoiceField(label='Resultaat', empty_label=None, queryset=Food.objects.all().order_by('name'))
+    quantity = forms.IntegerField(label='Aantal', widget=forms.NumberInput(attrs={'placeholder': 'Hoeveelheid...'}))
+    source_if_not_user = forms.CharField(label='Bron', max_length=256,
+                           widget=forms.TextInput(attrs={'placeholder': 'Bron...'}))
+    preparation_time_in_min = forms.IntegerField(label='Bereidingstijd in minuten', widget=forms.NumberInput(attrs={'placeholder': 'Bereidingstijd...'}))
+    preparation = forms.CharField(label='Bereidingswijze',
+                           widget=forms.Textarea(attrs={'placeholder': 'Bereidingswijze...'}))

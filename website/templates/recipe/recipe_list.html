@@ -14,7 +14,8 @@
   <div class="col-md-6" align="right">
   {% if not is_anonymous_user %}
     <div class="vertical-spacer-10"></div>
-    <a class="btn btn-primary" href="{% url 'recipe-add' %}">Nieuw recept</a>
+    <a class="btn btn-primary" href="{% url 'recipe-new' %}">Nieuw recept</a>
+    <a class="btn btn-primary" href="{% url 'recipe-new-ah' %}">Nieuw AH recept</a>
   {% endif %}
   </div>
 </div>
