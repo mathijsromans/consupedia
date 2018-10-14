@@ -36,7 +36,7 @@ class Food(models.Model):
         return self.name
 
 
-class Score(models.Model):
+class ProductScore(models.Model):
     environment = models.IntegerField(null=True)
     social = models.IntegerField(null=True)
     animals = models.IntegerField(null=True)
@@ -70,7 +70,7 @@ class Product(models.Model):
     quantity = models.IntegerField(default=0)
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
     food = models.ForeignKey(Food, on_delete=models.CASCADE, null=False)
-    scores = models.OneToOneField(Score, on_delete=models.CASCADE, null=True)
+    scores = models.OneToOneField(ProductScore, on_delete=models.CASCADE, null=True)
     thumb_url = models.CharField(max_length=256, null=True)
     version = models.IntegerField(default=CURRENT_VERSION)
     product_score = 0

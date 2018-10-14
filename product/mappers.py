@@ -1,4 +1,4 @@
-from product.models import Score, Brand
+from product.models import ProductScore, Brand
 
 class QuestionmarkMapper:
     def map_to_product(self, product, product_dict):
@@ -36,7 +36,7 @@ class QuestionmarkMapper:
         personal_health_score = product_dict["personal_health_score"]
 
         if theme_scores or personal_health_score:
-            product.scores = Score.objects.create()
+            product.scores = ProductScore.objects.create()
 
         if theme_scores:
             for score in theme_scores:
