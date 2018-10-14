@@ -4,6 +4,17 @@ from django.db.models import Avg
 from .amount import ProductAmount
 from .algorithms import generate_sorted_list
 import re
+import collections
+
+
+Score = collections.namedtuple('Score', ['total',
+                                         'price',
+                                         'taste',
+                                         'environment',
+                                         'social',
+                                         'animals',
+                                         'personal_health'])
+Score.__new__.__defaults__ = (None, None, None, None, None)
 
 
 class Food(models.Model):
@@ -31,6 +42,20 @@ class Food(models.Model):
         product_list = self.product_set.all()
         product_list = generate_sorted_list(product_list, user_preference)
         return product_list
+
+    def recommended_recipe_and_score(self, user_preference):
+        recipe_list = self.recommended_recipes_and_scores(user_preference)
+        if recipe_list:
+            return recipe_list[0]
+        return None
+
+    def recommended_recipes_and_scores(self, user_preference):
+        dummy_score = Score(total=0, price=0)
+        recipes = self.conversion_set.all()
+        recipes = Recipe.objects.filter(provides=self)
+        recipe_list = [(recipe, dummy_score) for recipe in recipes]
+        # recipe_list = generate_sorted_list(product_list, user_preference)
+        return recipe_list
 
     def __str__(self):
         return self.name
@@ -181,6 +206,12 @@ class Recipe(Conversion):
     def __str__(self):
         return 'Recept ' + self.name
 
+    def price(self, user_preference):
+        total = 0
+        for recipe_item in self.recipeitem_set.all():
+            total += recipe_item.price(user_preference)
+        return total
+
     def recommended_scores(self, up):
         result = []
         for recipe_item in self.recipeitem_set.all():
@@ -246,6 +277,10 @@ class RecipeItem(models.Model):
 
     def price(self, user_preference):
         product = self.food.recommended_product(user_preference)
+        recipe = self.food.recommended_recipe_and_score(user_preference)
+        if recipe:
+            print(recipe)
+            return recipe[0].price(user_preference)
         if product:
             return product.price.price * (self.get_amount() / product.get_amount())
         return None
