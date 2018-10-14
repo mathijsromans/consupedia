@@ -20,6 +20,12 @@ class Food(models.Model):
     name = models.CharField(max_length=255)
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
 
+    def recommended_product(self, user_preference):
+        product_list = recommended_products(self, user_preference)
+        if product_list:
+            return product_list[0]
+        return None
+
     def __str__(self):
         return self.name
 
@@ -172,7 +178,7 @@ class Recipe(Conversion):
     def recommended_scores(self, up):
         result = []
         for recipe_item in self.recipeitem_set.all():
-            product = recipe_item.recommended_product(up)
+            product = recipe_item.food.recommended_product(up)
             if product and product.scores:
                 result.append(product.scores)
         return result
@@ -235,14 +241,8 @@ class RecipeItem(models.Model):
     def get_amount(self):
         return ProductAmount(quantity=self.quantity, unit=self.food.unit)
 
-    def recommended_product(self, user_preference):
-        product_list = recommended_products(self.food, user_preference)
-        if product_list:
-            return product_list[0]
-        return None
-
     def price(self, user_preference):
-        product = self.recommended_product(user_preference)
+        product = self.food.recommended_product(user_preference)
         if product:
             return product.price.price * (self.get_amount() / product.get_amount())
         return None

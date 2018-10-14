@@ -121,7 +121,7 @@ class RecipeDetailView(TemplateView):
     def get_context_data(self, recipe_id, **kwargs):
         context = super().get_context_data(**kwargs)
         recipe = Recipe.objects.get(id=recipe_id)
-        up, created = UserPreferences.objects.get_or_create( user = self.request.user )
+        up, created = UserPreferences.objects.get_or_create(user=self.request.user)
         food_and_price_list = [(recipe_item, recipe_item.price_str(up)) for recipe_item in recipe.recipeitem_set.all() ]
         context['recipe'] = recipe
         context['food_and_price_list'] = food_and_price_list
