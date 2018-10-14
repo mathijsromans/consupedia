@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Avg
 from .amount import ProductAmount
+from .algorithms import generate_sorted_list
 import re
 
 
@@ -21,10 +22,15 @@ class Food(models.Model):
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
 
     def recommended_product(self, user_preference):
-        product_list = recommended_products(self, user_preference)
+        product_list = self.recommended_products(user_preference)
         if product_list:
             return product_list[0]
         return None
+
+    def recommended_products(self, user_preference):
+        product_list = self.product_set.all()
+        product_list = generate_sorted_list(product_list, user_preference)
+        return product_list
 
     def __str__(self):
         return self.name
@@ -228,9 +234,6 @@ class Recipe(Conversion):
                 sum += scores.personal_health
                 n += 1
         return sum / n
-
-
-from .algorithms import recommended_products
 
 
 class RecipeItem(models.Model):

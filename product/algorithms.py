@@ -1,4 +1,10 @@
-from product.models import Product
+def generate_sorted_list(product_list, user_preferences):
+    for product in product_list:
+        set_score(product, user_preferences)
+    product_list = list(product_list)
+    product_list = [p for p in product_list if p.product_score]
+    product_list.sort(key= lambda x: x.product_score if x.product_score else -99999999, reverse=True)
+    return product_list
 
 
 class ScoreResult:
@@ -28,21 +34,6 @@ def set_score(product, user_preferences):
     if score:
         product.product_score = score.total()
         product.product_score_details = str(score)
-
-
-def generate_sorted_list(product_list, user_preferences):
-    for product in product_list:
-        set_score(product, user_preferences)
-    product_list = list(product_list)
-    product_list = [p for p in product_list if p.product_score]
-    product_list.sort(key= lambda x: x.product_score if x.product_score else -99999999, reverse=True)
-    return product_list
-
-
-def recommended_products(food, user_preference):
-    product_list = Product.objects.filter(food=food)
-    product_list = generate_sorted_list(product_list, user_preference)
-    return product_list
 
 
 def score_product(userweights, product_scores):

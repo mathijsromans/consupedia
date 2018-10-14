@@ -18,7 +18,7 @@ from .models import UserPreferences
 from .productservice import ProductService, RecipeService
 from .forms import ProductForm, RecipeForm, RecipeURLForm, RecipeItemForm, FoodForm, RecipeItemFormset
 from .forms import UserPreferenceForm
-from .algorithms import set_score, recommended_products
+from .algorithms import set_score
 from product.algorithms import ProductChooseAlgorithm
 from product.productservice import ProductService
 
@@ -90,7 +90,7 @@ class RecipesView(TemplateView):
 
 def calculateTotalScores(recipe, up):
     for recipe_item in recipe.recipeitem_set.all():
-        product = recipe_item.recommended_product(up)
+        product = recipe_item.food.recommended_product(up)
         if product:
             scores = ProductChooseAlgorithm.calculate_product_score(product, up)
             logger.info(scores)
@@ -243,7 +243,7 @@ class FoodView(TemplateView):
             context['conversions'] = food.conversion_set.all()
             if self.request.user.is_authenticated():
                 up, created = UserPreferences.objects.get_or_create(user=self.request.user)
-                product_list = recommended_products(food, up)
+                product_list = food.recommended_products(up)
                 context['product_list'] = product_list
                 context['product'] = product_list[0] if product_list else None
         except ObjectDoesNotExist:
