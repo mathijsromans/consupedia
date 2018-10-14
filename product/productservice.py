@@ -187,8 +187,8 @@ class RecipeService():
             if created:
                 foods_created.append(food.id)
             ProductService().update_products(food)
-            quantity, unit = ProductAmount.get_quantity_and_unit( recipe_item_quantity, recipe_item_unit)
-            RecipeItem.objects.create(quantity=quantity, unit=unit, food=food, recipe=new_recipe)
+            quantity, unit = ProductAmount.get_quantity_and_unit(recipe_item_quantity, recipe_item_unit)
+            RecipeItem.objects.create(quantity=quantity, food=food, recipe=new_recipe)
         
         end = time.time()
         logger.info('END: (time: ' + str(end - start) + ') Done creating recipe ' + str(new_recipe))

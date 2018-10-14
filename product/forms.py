@@ -10,16 +10,19 @@ def validate_price(value):
         raise ValidationError("Value cannot be below 0")
 
 
+class FoodWithUnitChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, food):
+        return '(' + food.unit + ') ' + food.name
+
+
 class ProductForm(forms.Form):
     name = forms.CharField(label='Name', max_length=100)
     price = forms.IntegerField(label='Price (cents)',validators=[validate_price])
 
 
 class RecipeItemForm(forms.Form):
-#    provides = forms.ModelChoiceField(label='resultaat', empty_label=None, queryset=Food.objects.all().order_by('name'))
     quantity = forms.IntegerField(label='')
-    unit = forms.ChoiceField(label='', choices=ProductAmount.UNIT_CHOICES)
-    food = forms.ModelChoiceField(label='', queryset=Food.objects.all().order_by('name'))
+    food = FoodWithUnitChoiceField(label='', queryset=Food.objects.all().order_by('name'))
 
 
 class TestForm(forms.Form):
@@ -37,11 +40,6 @@ RecipeItemFormset = formset_factory(RecipeItemForm, extra=1)
 class FoodForm(forms.Form):
     name = forms.CharField(label='Naam', max_length=256)
     unit = forms.ChoiceField(label='Eenheid', choices=ProductAmount.UNIT_CHOICES)
-
-
-class FoodWithUnitChoiceField(forms.ModelChoiceField):
-    def label_from_instance(self, food):
-        return '(' + food.unit + ') ' + food.name
 
 
 class UserPreferenceForm(forms.Form):

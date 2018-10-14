@@ -229,12 +229,11 @@ from .algorithms import recommended_products
 
 class RecipeItem(models.Model):
     quantity = models.IntegerField()
-    unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
     def get_amount(self):
-        return ProductAmount(quantity=self.quantity, unit=self.unit)
+        return ProductAmount(quantity=self.quantity, unit=self.food.unit)
 
     def recommended_product(self, user_preference):
         product_list = recommended_products(self.food, user_preference)
@@ -245,7 +244,7 @@ class RecipeItem(models.Model):
     def price(self, user_preference):
         product = self.recommended_product(user_preference)
         if product:
-            return product.price.price * ( self.get_amount() / product.get_amount() )
+            return product.price.price * (self.get_amount() / product.get_amount())
         return None
 
     def price_estimate(self, user_preference):
@@ -265,7 +264,7 @@ class RecipeItem(models.Model):
         return str(self)
 
     def __str__(self):
-        return str(self.quantity) + ' ' + str(self.unit) + ' ' + str(self.food)
+        return str(self.quantity) + ' ' + str(self.food.unit) + ' ' + str(self.food)
 
 
 class ProductPrice(models.Model):

@@ -158,13 +158,10 @@ def create_new_recipe(request):
                                            preparation_time_in_min=preparation_time_in_min,
                                            preparation=preparation)
             for form in formset:
-                # extract name from each form and save
                 quantity = form.cleaned_data.get('quantity')
-                unit = form.cleaned_data.get('unit')
                 food = form.cleaned_data.get('food')
-                # save recipe_item instance
                 if quantity:
-                    RecipeItem.objects.create(quantity=1, unit=unit, food=food, recipe=recipe)
+                    RecipeItem.objects.create(quantity=quantity, food=food, recipe=recipe)
             return redirect('recipes')
     return render(request, template_name, {
         'formset': formset,
@@ -312,14 +309,12 @@ class RecipeItemEditView(FormView):
     def get_initial(self):
         recipe_item = self.recipe_item
         return {'quantity': recipe_item.quantity,
-                'unit': recipe_item.unit,
                 'food': recipe_item.food}
 
     @transaction.atomic
     def form_valid(self, form):
         recipe_item = self.recipe_item
         recipe_item.quantity = form.cleaned_data['quantity']
-        recipe_item.unit = form.cleaned_data['unit']
         recipe_item.food = form.cleaned_data['food']
         recipe_item.save()
         return super().form_valid(form)
@@ -333,7 +328,7 @@ class RecipeItemEditView(FormView):
 def add_recipe_item(request, recipe_id):
     recipe = Recipe.objects.get(id=recipe_id)
     food = ProductService.get_or_create_unknown_food()
-    recipe_item = RecipeItem.objects.create(quantity=1, unit=food.unit, food=food, recipe=recipe)
+    recipe_item = RecipeItem.objects.create(quantity=1, food=food, recipe=recipe)
     return redirect(reverse('recipe_item-edit', args=(recipe_item.id,)))
 
 
