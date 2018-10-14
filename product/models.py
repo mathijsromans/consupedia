@@ -19,7 +19,6 @@ class Food(models.Model):
 
     name = models.CharField(max_length=255)
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
-    mass_equivalent = models.IntegerField(default=0)  # mass in g if applicable, otherwise 0
 
     def __str__(self):
         return self.name
