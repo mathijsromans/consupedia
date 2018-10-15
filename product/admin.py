@@ -14,7 +14,7 @@ class ProductPriceInline(admin.TabularInline):
 
 class ProductAdmin(admin.ModelAdmin):
     model = Product
-    list_display = ('name', 'version', 'questionmark_id', 'brand', 'price', 'quantity', 'unit', 'food', 'product_score')
+    list_display = ('name', 'version', 'questionmark_id', 'brand', 'price', 'quantity', 'unit', 'food')
     inlines = [
         ProductPriceInline,
     ]

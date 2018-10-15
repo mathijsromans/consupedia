@@ -1,55 +1,7 @@
 def generate_sorted_list(product_list, user_preferences):
-    for product in product_list:
-        set_score(product, user_preferences)
-    product_list = list(product_list)
-    product_list = [p for p in product_list if p.product_score]
-    product_list.sort(key= lambda x: x.product_score if x.product_score else -99999999, reverse=True)
-    return product_list
-
-
-class ScoreResult:
-
-    def __init__(self):
-        self.score = []
-
-    def add_score(self, score, descr):
-        self.score.append((score, descr))
-
-    def total(self):
-        result = 0
-        for s in self.score:
-            result += s[0]
-        return result
-
-    def __str__(self):
-        result = ''
-        for s in self.score:
-            result += ' ' + s[1]
-        result += ' -> {:.2f}'.format(self.total())
-        return result
-
-
-def set_score(product, user_preferences):
-    score = ProductChooseAlgorithm.calculate_product_score(product, user_preferences)
-    if score:
-        product.product_score = score.total()
-        product.product_score_details = str(score)
-
-
-def score_product(userweights, product_scores):
-    result = ScoreResult()
-    counter = 0
-    while counter < len(product_scores):
-        if product_scores[counter]:
-            score = product_scores[counter] * userweights[counter]
-            descr = '({:.2f}, {:.2f}->{:.2f})'.format(product_scores[counter], userweights[counter], score)
-            result.add_score(score, descr)
-        else:
-            score = 4 * userweights[counter]  # niet bekende score. Dan score 4, slechter dan gemiddelde.
-            descr = '(n/a, {:.2f}->{:.2f})'.format(userweights[counter], score)
-            result.add_score(score, descr)
-        counter += 1
-    return result
+    products_and_scores = [(product,  ProductChooseAlgorithm.calculate_product_score(product, user_preferences)) for product in product_list]
+    products_and_scores.sort(key=lambda x: x[1].total(), reverse=True)
+    return products_and_scores
 
 
 class ProductChooseAlgorithm:
@@ -57,17 +9,15 @@ class ProductChooseAlgorithm:
     def calculate_product_score(product, user_pref):
         result = None
         if product.price:
-            product_scores = [0, 0, 0, 0]
-            if product.scores:
-                product_scores = [product.scores.environment, product.scores.social, product.scores.animals, product.scores.personal_health]
-            normalizedUserweights = user_pref.get_rel_weights()
-            price_weight = normalizedUserweights.pop(0)
-            result = score_product(normalizedUserweights, product_scores)
-            score = -200*product.price.price * price_weight
+            price = product.price.price
             if product.quantity:
-                score /= product.quantity
-            descr = '(' +str(product.price) + ', {:.2f}->{:.2f})'.format(price_weight, score)
-            result.add_score(score, descr)
+                price /= product.quantity
+            product_scores_dict = {}
+            if product.scores:
+                product_scores_dict.update(product.scores.get_dict())
+            product_scores_dict['price'] = price
+            result = Score(user_pref)
+            result.scores = product_scores_dict
         return result
         
     @staticmethod
@@ -97,3 +47,4 @@ class ProductChooseAlgorithm:
             return productToReturn.name
         return None
 
+from .models import Score, Product

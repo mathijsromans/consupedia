@@ -18,7 +18,6 @@ from .models import UserPreferences
 from .productservice import ProductService, RecipeService
 from .forms import ProductForm, RecipeForm, RecipeURLForm, RecipeItemForm, FoodForm, RecipeItemFormset
 from .forms import UserPreferenceForm
-from .algorithms import set_score
 from product.algorithms import ProductChooseAlgorithm
 from product.productservice import ProductService
 
@@ -88,26 +87,9 @@ class RecipesView(TemplateView):
         return context
 
 
-def calculateTotalScores(recipe, up):
-    for recipe_item in recipe.recipeitem_set.all():
-        product = recipe_item.food.recommended_product(up)
-        if product:
-            scores = ProductChooseAlgorithm.calculate_product_score(product, up)
-            logger.info(scores)
-    total_price_weight = recipe.calculateTotalPriceWeight(up) * up.price_weight
-    total_environment_weight = -recipe.calculateTotalEnvironmentWeight(up) * up.environment_weight
-    total_social_weight = -recipe.calculateTotalSocialWeight(up) * up.social_weight
-    total_animals_weight = -recipe.calculateTotalAnimalsWeight(up) * up.animals_weight
-    total_personal_health_weight = -recipe.calculateTotalPersonalHealthWeight(up) * up.personal_health_weight
-    return {'total_price_weight': total_price_weight,
-            'total_environment_weight':total_environment_weight,
-            'total_social_weight': total_social_weight,
-            'total_animals_weight': total_animals_weight,
-            'total_personal_health_weight': total_personal_health_weight}
-
-
 def calculateTotalScore(recipe, up):
-    scores = calculateTotalScores(recipe, up)
+    scores = recipe.score(up)
+    return scores
     return scores['total_price_weight'] + \
         scores['total_environment_weight'] + \
         scores['total_social_weight'] + \
@@ -125,14 +107,14 @@ class RecipeDetailView(TemplateView):
         food_and_price_list = [(recipe_item, recipe_item.price_str(up)) for recipe_item in recipe.recipeitem_set.all() ]
         context['recipe'] = recipe
         context['food_and_price_list'] = food_and_price_list
-        totalScores = calculateTotalScores(recipe, up)
-        score_text = "Prijs: " + format(totalScores['total_price_weight'], '.2f') + ", "
-        score_text += "Mileu: " + format(totalScores['total_environment_weight'], '.2f') + ", "
-        score_text += "Sociaal: " + format(totalScores['total_social_weight'], '.2f') + ", "
-        score_text += "Dierenwelzijn: " + format(totalScores['total_animals_weight'], '.2f') + ", "
-        score_text += "Gezondheid: " + format(totalScores['total_personal_health_weight'], '.2f')
+        score_text = ''
+        # score_text += "Prijs: " + format(totalScores['total_price_weight'], '.2f') + ", "
+        # score_text += "Mileu: " + format(totalScores['total_environment_weight'], '.2f') + ", "
+        # score_text += "Sociaal: " + format(totalScores['total_social_weight'], '.2f') + ", "
+        # score_text += "Dierenwelzijn: " + format(totalScores['total_animals_weight'], '.2f') + ", "
+        # score_text += "Gezondheid: " + format(totalScores['total_personal_health_weight'], '.2f')
         context['recipe_score_text'] = score_text
-        context['recipe_total_score_text'] = format(calculateTotalScore(recipe, up), '.2f')
+        context['recipe_total_score_text'] = str(recipe.score(up))
         return context
 
 
@@ -226,9 +208,10 @@ class ProductView(TemplateView):
     def get_context_data(self, product_id, **kwargs):
         context = super().get_context_data(**kwargs)
         product = Product.objects.get(id=product_id)
-        up, created = UserPreferences.objects.get_or_create( user = self.request.user )
-        set_score(product, up)
+        up, created = UserPreferences.objects.get_or_create(user = self.request.user)
+        score = ProductChooseAlgorithm.calculate_product_score(product, up)
         context['product'] = product
+        context['score'] = score
         return context
 
 
@@ -243,7 +226,7 @@ class FoodView(TemplateView):
             context['conversions'] = food.conversion_set.all()
             if self.request.user.is_authenticated():
                 up, created = UserPreferences.objects.get_or_create(user=self.request.user)
-                product_list = food.recommended_products(up)
+                product_list = food.recommended_products_and_scores(up)
                 context['product_list'] = product_list
                 context['product'] = product_list[0] if product_list else None
         except ObjectDoesNotExist:

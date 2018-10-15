@@ -2,19 +2,32 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Avg
 from .amount import ProductAmount
-from .algorithms import generate_sorted_list
 import re
-import collections
 
 
-Score = collections.namedtuple('Score', ['total',
-                                         'price',
-                                         'taste',
-                                         'environment',
-                                         'social',
-                                         'animals',
-                                         'personal_health'])
-Score.__new__.__defaults__ = (None, None, None, None, None)
+class Score:
+    def __init__(self, user_pref):
+        self.user_pref = user_pref
+        self.scores = {}
+
+    def add_score(self, category, score):
+        self.scores[category] += score
+
+    def total(self):
+        result = 0
+        user_pref_dict = self.user_pref.get_dict()
+        for key, value in self.scores.items():
+            user_pref_value = user_pref_dict.get(key)
+            if user_pref_dict and value is not None:
+                result += value * user_pref_value
+        return result
+
+    def __str__(self):
+        result = ''
+        for key, value in self.scores:
+            result += '{}: {}, '.format(key, value)
+        result += ' -> {:.2f}'.format(self.total())
+        return result
 
 
 class Food(models.Model):
@@ -32,16 +45,16 @@ class Food(models.Model):
     name = models.CharField(max_length=255)
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
 
-    def recommended_product(self, user_preference):
-        product_list = self.recommended_products(user_preference)
-        if product_list:
-            return product_list[0]
+    def recommended_product_and_score(self, user_preference):
+        products_and_scores = self.recommended_products_and_scores(user_preference)
+        if products_and_scores:
+            return products_and_scores[0]
         return None
 
-    def recommended_products(self, user_preference):
+    def recommended_products_and_scores(self, user_preference):
         product_list = self.product_set.all()
-        product_list = generate_sorted_list(product_list, user_preference)
-        return product_list
+        products_and_scores = generate_sorted_list(product_list, user_preference)
+        return products_and_scores
 
     def recommended_recipe_and_score(self, user_preference):
         recipe_list = self.recommended_recipes_and_scores(user_preference)
@@ -50,7 +63,7 @@ class Food(models.Model):
         return None
 
     def recommended_recipes_and_scores(self, user_preference):
-        dummy_score = Score(total=0, price=0)
+        dummy_score = Score(0)
         recipes = self.conversion_set.all()
         recipes = Recipe.objects.filter(provides=self)
         recipe_list = [(recipe, dummy_score) for recipe in recipes]
@@ -66,6 +79,14 @@ class ProductScore(models.Model):
     social = models.IntegerField(null=True)
     animals = models.IntegerField(null=True)
     personal_health = models.IntegerField(null=True)
+
+    def get_dict(self):
+        return {
+            'environment': self.environment,
+            'social': self.social,
+            'animals': self.animals,
+            'health': self.personal_health,
+        }
 
 
 class Brand(models.Model):
@@ -98,8 +119,6 @@ class Product(models.Model):
     scores = models.OneToOneField(ProductScore, on_delete=models.CASCADE, null=True)
     thumb_url = models.CharField(max_length=256, null=True)
     version = models.IntegerField(default=CURRENT_VERSION)
-    product_score = 0
-    product_score_details = ''
 
     @property
     def price(self):
@@ -176,6 +195,15 @@ class UserPreferences(models.Model):
     def get_weights(self):
         return [self.price_weight, self.environment_weight, self.social_weight, self.animals_weight, self.personal_health_weight]
 
+    def get_dict(self):
+        return {
+            'price': self.price_weight,
+            'environment': self.environment_weight,
+            'social': self.social_weight,
+            'animals': self.animals_weight,
+            'health': self.personal_health_weight,
+        }
+
     def __str__(self):
         return 'Preferences of ' + self.user.username
 
@@ -206,19 +234,14 @@ class Recipe(Conversion):
     def __str__(self):
         return 'Recept ' + self.name
 
+    def score(self, user_pref):
+        return Score(user_pref)
+
     def price(self, user_preference):
         total = 0
         for recipe_item in self.recipeitem_set.all():
             total += recipe_item.price(user_preference)
         return total
-
-    def recommended_scores(self, up):
-        result = []
-        for recipe_item in self.recipeitem_set.all():
-            product = recipe_item.food.recommended_product(up)
-            if product and product.scores:
-                result.append(product.scores)
-        return result
 
     def calculateTotalPriceWeight(self, up):
         total = 0
@@ -276,13 +299,12 @@ class RecipeItem(models.Model):
         return ProductAmount(quantity=self.quantity, unit=self.food.unit)
 
     def price(self, user_preference):
-        product = self.food.recommended_product(user_preference)
-        recipe = self.food.recommended_recipe_and_score(user_preference)
-        if recipe:
-            print(recipe)
-            return recipe[0].price(user_preference)
-        if product:
-            return product.price.price * (self.get_amount() / product.get_amount())
+        product_and_score = self.food.recommended_product_and_score(user_preference)
+        recipe_and_score = self.food.recommended_recipe_and_score(user_preference)
+        if recipe_and_score:
+            return recipe_and_score[0].price(user_preference)
+        if product_and_score:
+            return product_and_score[0].price.price * (self.get_amount() / product_and_score[0].get_amount())
         return None
 
     def price_estimate(self, user_preference):
@@ -315,3 +337,4 @@ class ProductPrice(models.Model):
     def __str__(self):
         return '€ {:03.2f}'.format(self.price/100.0) + ' bij ' + str(self.shop)
 
+from .algorithms import generate_sorted_list
