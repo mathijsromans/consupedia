@@ -226,9 +226,11 @@ class FoodView(TemplateView):
             context['conversions'] = food.conversion_set.all()
             if self.request.user.is_authenticated():
                 up, created = UserPreferences.objects.get_or_create(user=self.request.user)
-                product_list = food.recommended_products_and_scores(up)
-                context['product_list'] = product_list
-                context['product'] = product_list[0] if product_list else None
+                products_and_scores = food.recommended_products_and_scores(up)
+                context['product_list'] = [p[0] for p in products_and_scores]
+                if products_and_scores:
+                    context['product'] = products_and_scores[0][0]
+                    context['score'] = products_and_scores[0][1]
         except ObjectDoesNotExist:
             pass
         return context

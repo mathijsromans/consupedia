@@ -24,8 +24,12 @@ class Score:
 
     def __str__(self):
         result = ''
-        for key, value in self.scores:
-            result += '{}: {}, '.format(key, value)
+        user_pref_dict = self.user_pref.get_dict()
+        for key, value in self.scores.items():
+            user_pref_value = user_pref_dict.get(key)
+            if user_pref_dict and value is not None:
+                partial = value * user_pref_value
+                result += '{}: {} -> {}, '.format(key, value, partial)
         result += ' -> {:.2f}'.format(self.total())
         return result
 
