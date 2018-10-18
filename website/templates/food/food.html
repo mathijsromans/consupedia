@@ -40,10 +40,25 @@
 <hr/>
 {% endif %}
 
-{% if product %}
+{% if recommended_product %}
 <div class="row" align="center">
   <h4>Aanbevolen product</h4>
-  {% include "product/product_detail_panel.html" %}
+    {% with product=recommended_product %}
+      {% include "product/product_detail_panel.html" %}
+    {% endwith %}
+</div>
+{% endif %}
+
+{% if recommended_recipe %}
+<div class="row" align="center">
+  <h4>Aanbevolen recept</h4>
+  <div class="row">
+    <div class="col-md-12">
+      {% with recipe=recommended_recipe %}
+        {% include "recipe/recipe_panel.html" %}
+      {% endwith %}
+    </div>
+  </div>
 </div>
 {% endif %}
 

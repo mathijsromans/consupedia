@@ -24,6 +24,9 @@ class Score:
         self.user_pref = user_pref
         self._scores = {}
 
+    def __lt__(self, other):
+        return self.total() < other.total()
+
     def add(self, other):
         logger.info('{}'.format(self))
         for key, value in other._scores.items():

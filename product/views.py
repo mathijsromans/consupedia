@@ -221,12 +221,23 @@ class FoodView(TemplateView):
                 up, created = UserPreferences.objects.get_or_create(user=self.request.user)
                 products_and_scores = food.recommended_products_and_scores(up)
                 recipes_and_scores = food.recommended_recipes_and_scores(up)
+                recommended_product = None
+                recommended_recipe = None
+                score = None
+                if products_and_scores:
+                    recommended_product = products_and_scores[0][0]
+                    score = products_and_scores[0][1]
+                if recipes_and_scores:
+                    recommended_recipe_score = recipes_and_scores[0][1]
+                    if not score or recommended_recipe_score < score:
+                        recommended_recipe = recipes_and_scores[0][0]
+                        score = recommended_recipe_score
                 context['products_and_total_scores'] = [(p[0], p[1].total()) for p in products_and_scores]
                 context['recipes_with_info'] = [(p[0], p[1].price(), p[1].total()) for p in recipes_and_scores]
                 context['product_list'] = [p[0] for p in products_and_scores]
-                if products_and_scores:
-                    context['product'] = products_and_scores[0][0]
-                    context['score'] = products_and_scores[0][1]
+                context['recommended_product'] = recommended_product
+                context['recommended_recipe'] = recommended_recipe
+                context['score'] = score
         except ObjectDoesNotExist:
             pass
         return context
