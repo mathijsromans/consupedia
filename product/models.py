@@ -9,6 +9,16 @@ import re
 logger = logging.getLogger(__name__)
 
 
+class Price:
+    def __init__(self, cents):
+        self.cents = cents
+
+    def __str__(self):
+        if self.cents:
+            return '€ {:03.2f}'.format(self.cents/100.0)
+        return '€ ?'
+
+
 class Score:
     def __init__(self, user_pref):
         self.user_pref = user_pref
@@ -24,6 +34,9 @@ class Score:
 
     def add_score(self, category, score):
         self._scores[category] += score
+
+    def price(self):
+        return Price(self._scores.get('price'))
 
     def total(self):
         result = 0
@@ -386,6 +399,6 @@ class ProductPrice(models.Model):
     datetime_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return '€ {:03.2f}'.format(self.price/100.0) + ' bij ' + str(self.shop)
+        return str(Price(self.price)) + ' bij ' + str(self.shop)
 
 from .algorithms import generate_sorted_list

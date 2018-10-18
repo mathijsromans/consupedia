@@ -36,7 +36,7 @@
 
 {% if product %}
 <div class="row" align="center">
-  <h4>Aanbevolen</h4>
+  <h4>Aanbevolen product</h4>
   {% include "product/product_detail_panel.html" %}
 </div>
 {% endif %}
@@ -44,15 +44,23 @@
 <div class="row">
   <div class="col-sm-12" align="center">
     <div class="panel">
-
       <div class="panel-heading">
-        <h4>Vergelijkbare producten</h4>
+        <h4>Producten</h4>
       </div>
-
       {% with products=product_list %}
         {% include "product/products_table.html" %}
       {% endwith %}
+    </div>
+  </div>
+</div>
 
+<div class="row">
+  <div class="col-sm-12" align="center">
+    <div class="panel">
+      <div class="panel-heading">
+        <h4>Recepten</h4>
+      </div>
+      {% include "recipe/recipes_table.html" %}
     </div>
   </div>
 </div>

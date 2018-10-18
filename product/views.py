@@ -227,7 +227,9 @@ class FoodView(TemplateView):
             if self.request.user.is_authenticated():
                 up, created = UserPreferences.objects.get_or_create(user=self.request.user)
                 products_and_scores = food.recommended_products_and_scores(up)
+                recipes_and_scores = food.recommended_recipes_and_scores(up)
                 context['products_and_total_scores'] = [(p[0], p[1].total()) for p in products_and_scores]
+                context['recipes_with_info'] = [(p[0], p[1].price(), p[1].total()) for p in recipes_and_scores]
                 context['product_list'] = [p[0] for p in products_and_scores]
                 if products_and_scores:
                     context['product'] = products_and_scores[0][0]

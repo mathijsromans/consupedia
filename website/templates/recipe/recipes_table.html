@@ -1,0 +1,9 @@
+<table class="table">
+  {% for recipe, price, total_score in recipes_with_info %}
+    <tr id="row-{{ recipe.id }}">
+      <td><a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.name }}</a></td>
+      <td>{% if price %}{{ price }}{% else %}? {% endif %}</td>
+      <td>({{ total_score }})</td>
+    </tr>
+  {% endfor %}
+</table>
