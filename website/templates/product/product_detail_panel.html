@@ -1,9 +1,8 @@
-
 <div class="row" align="center">
   <div class="col-md-6 col-md-offset-3">
     <div class="panel">
       <div class="panel-heading">
-        <h3 class="nopadding">{{ product.name }}</h3>
+        <h3 class="nopadding"><a href="{% url 'product' product.id %}">{{ product.name }}</a></h3>
       </div>
       <div class="panel-body">
         {% if product.thumb_url %}
@@ -35,21 +34,3 @@
     {% endif %}
   </div>
 </div>
-
-<div class="row" align="center">
-  <h4>Prijzen</h4>
-</div>
-
-<div class="row">
-  {% for pp in product.productprice_set.all %}
-  <div class="col-md-6">
-    <div class="well">
-      <h4>{{ pp }}</h4>
-    </div>
-  </div>
-  {% if forloop.counter|divisibleby:2 %}
-  <div class="clearfix"></div>
-  {% endif %}
-  {% endfor %}
-</div>
-

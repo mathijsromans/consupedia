@@ -107,14 +107,7 @@ class RecipeDetailView(TemplateView):
         food_and_price_list = [(recipe_item, recipe_item.price_str(up)) for recipe_item in recipe.recipeitem_set.all() ]
         context['recipe'] = recipe
         context['food_and_price_list'] = food_and_price_list
-        score_text = ''
-        # score_text += "Prijs: " + format(totalScores['total_price_weight'], '.2f') + ", "
-        # score_text += "Mileu: " + format(totalScores['total_environment_weight'], '.2f') + ", "
-        # score_text += "Sociaal: " + format(totalScores['total_social_weight'], '.2f') + ", "
-        # score_text += "Dierenwelzijn: " + format(totalScores['total_animals_weight'], '.2f') + ", "
-        # score_text += "Gezondheid: " + format(totalScores['total_personal_health_weight'], '.2f')
-        context['recipe_score_text'] = score_text
-        context['recipe_total_score_text'] = str(recipe.score(up))
+        context['score'] = recipe.score(up)
         return context
 
 
@@ -195,7 +188,7 @@ class RecipeEditView(TemplateView):
     def get_context_data(self, recipe_id, **kwargs):
         context = super().get_context_data(**kwargs)
         recipe = Recipe.objects.get(id=recipe_id)
-        up, created = UserPreferences.objects.get_or_create( user = self.request.user )
+        up, created = UserPreferences.objects.get_or_create(user=self.request.user)
         food_and_price_list = [(recipe_item, recipe_item.price_str(up)) for recipe_item in recipe.recipeitem_set.all() ]
         context['recipe'] = recipe
         context['food_and_price_list'] = food_and_price_list
@@ -208,8 +201,8 @@ class ProductView(TemplateView):
     def get_context_data(self, product_id, **kwargs):
         context = super().get_context_data(**kwargs)
         product = Product.objects.get(id=product_id)
-        up, created = UserPreferences.objects.get_or_create(user = self.request.user)
-        score = ProductChooseAlgorithm.calculate_product_score(product, up)
+        up, created = UserPreferences.objects.get_or_create(user=self.request.user)
+        score = product.score(up)
         context['product'] = product
         context['score'] = score
         return context

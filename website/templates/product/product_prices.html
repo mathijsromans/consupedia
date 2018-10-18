@@ -1,0 +1,17 @@
+<div class="row" align="center">
+  <h4>Prijzen</h4>
+</div>
+
+<div class="row">
+  {% for pp in product.productprice_set.all %}
+  <div class="col-md-6">
+    <div class="well">
+      <h4>{{ pp }}</h4>
+    </div>
+  </div>
+  {% if forloop.counter|divisibleby:2 %}
+  <div class="clearfix"></div>
+  {% endif %}
+  {% endfor %}
+</div>
+

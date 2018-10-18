@@ -27,13 +27,15 @@ class Score:
     def add(self, other):
         logger.info('{}'.format(self))
         for key, value in other._scores.items():
-            if key in self._scores:
-                self._scores[key] += value
-            else:
-                self._scores[key] = value
+            self.add_score(key, value)
 
-    def add_score(self, category, score):
-        self._scores[category] += score
+    def add_score(self, key, value):
+        if not key or not value:
+            return
+        if key in self._scores:
+            self._scores[key] += value
+        else:
+            self._scores[key] = value
 
     def price(self):
         return Price(self._scores.get('price'))
@@ -113,14 +115,13 @@ class ProductScore(models.Model):
     animals = models.IntegerField(null=True)
     personal_health = models.IntegerField(null=True)
 
-    def get_dict(self):
-        return {
-            'environment': self.environment,
-            'social': self.social,
-            'animals': self.animals,
-            'health': self.personal_health,
-        }
-
+    def score(self, userpref):
+        result = Score(userpref)
+        result.add_score('environment', self.environment)
+        result.add_score('social', self.social)
+        result.add_score('animals', self.animals)
+        result.add_score('health', self.personal_health)
+        return result
 
 class Brand(models.Model):
     name = models.CharField(max_length=256)  # name according to Questionmark
@@ -154,19 +155,15 @@ class Product(models.Model):
     version = models.IntegerField(default=CURRENT_VERSION)
 
     def score(self, user_pref):
-        result = None
+        result = Score(user_pref)
         if self.price:
             price = self.price.price
             if self.quantity:
                 price /= self.quantity
-            product_scores_dict = {}
-            if self.scores:
-                product_scores_dict.update(self.scores.get_dict())
-            product_scores_dict['price'] = price
-            result = Score(user_pref)
-            result.scores = product_scores_dict
+            result.add_score('price', price)
+        if self.scores:
+            result.add(self.scores.score(user_pref))
         return result
-
 
     @property
     def price(self):

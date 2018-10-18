@@ -1,5 +1,5 @@
 def generate_sorted_list(product_list, user_preferences):
-    products_and_scores = [(product,  ProductChooseAlgorithm.calculate_product_score(product, user_preferences)) for product in product_list]
+    products_and_scores = [(product,  product.score(user_preferences)) for product in product_list]
     products_and_scores.sort(key=lambda x: x[1].total())
     return products_and_scores
 
