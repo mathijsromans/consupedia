@@ -1,22 +1,34 @@
+import logging
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Avg
+from django.core.validators import MinValueValidator
 from .amount import ProductAmount
 import re
+
+logger = logging.getLogger(__name__)
 
 
 class Score:
     def __init__(self, user_pref):
         self.user_pref = user_pref
-        self.scores = {}
+        self._scores = {}
+
+    def add(self, other):
+        logger.info('{}'.format(self))
+        for key, value in other._scores.items():
+            if key in self._scores:
+                self._scores[key] += value
+            else:
+                self._scores[key] = value
 
     def add_score(self, category, score):
-        self.scores[category] += score
+        self._scores[category] += score
 
     def total(self):
         result = 0
         user_pref_dict = self.user_pref.get_dict()
-        for key, value in self.scores.items():
+        for key, value in self._scores.items():
             user_pref_value = user_pref_dict.get(key)
             if user_pref_dict and value is not None:
                 result += value * user_pref_value
@@ -25,12 +37,12 @@ class Score:
     def __str__(self):
         result = ''
         user_pref_dict = self.user_pref.get_dict()
-        for key, value in self.scores.items():
+        for key, value in self._scores.items():
             user_pref_value = user_pref_dict.get(key)
             if user_pref_dict and value is not None:
                 partial = value * user_pref_value
-                result += '{}: {} -> {}, '.format(key, value, partial)
-        result += ' -> {:.2f}'.format(self.total())
+                result += '[{}: {} -> {}] '.format(key, value, partial)
+        result += '-> {:.2f}'.format(self.total())
         return result
 
 
@@ -67,12 +79,16 @@ class Food(models.Model):
         return None
 
     def recommended_recipes_and_scores(self, user_preference):
-        dummy_score = Score(0)
-        recipes = self.conversion_set.all()
+        logger.info('recommended_recipes_and_scores for {}'.format(self))
+        conversions = self.conversion_set.all()
+        for c in conversions:
+            logger.info('Conversion {}'.format(c))
         recipes = Recipe.objects.filter(provides=self)
-        recipe_list = [(recipe, dummy_score) for recipe in recipes]
-        # recipe_list = generate_sorted_list(product_list, user_preference)
-        return recipe_list
+        for r in recipes:
+            logger.info('Recipe {}'.format(r))
+        recipes_and_scores = [(recipe, recipe.score(user_preference)) for recipe in recipes]
+        recipes_and_scores.sort(key=lambda x: x[1].total())
+        return recipes_and_scores
 
     def __str__(self):
         return self.name
@@ -114,15 +130,30 @@ class Product(models.Model):
     CURRENT_VERSION = 1
     name = models.CharField(max_length=256, null=True)  # name according to Questionmark
     questionmark_id = models.IntegerField(default=0)
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=True)
-    ean_code = models.CharField(max_length=25, null=True)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=True, blank=True)
+    ean_code = models.CharField(max_length=25, null=True, blank=True)
     prices = models.ManyToManyField(Shop, through='ProductPrice')
-    quantity = models.IntegerField(default=0)
+    quantity = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
     food = models.ForeignKey(Food, on_delete=models.CASCADE, null=False)
     scores = models.OneToOneField(ProductScore, on_delete=models.CASCADE, null=True)
     thumb_url = models.CharField(max_length=256, null=True)
     version = models.IntegerField(default=CURRENT_VERSION)
+
+    def score(self, user_pref):
+        result = None
+        if self.price:
+            price = self.price.price
+            if self.quantity:
+                price /= self.quantity
+            product_scores_dict = {}
+            if self.scores:
+                product_scores_dict.update(self.scores.get_dict())
+            product_scores_dict['price'] = price
+            result = Score(user_pref)
+            result.scores = product_scores_dict
+        return result
+
 
     @property
     def price(self):
@@ -239,12 +270,15 @@ class Recipe(Conversion):
         return 'Recept ' + self.name
 
     def score(self, user_pref):
-        return Score(user_pref)
+        result = Score(user_pref)
+        for recipe_item in self.recipeitem_set.all():
+            result.add(recipe_item.score(user_pref))
+        return result
 
-    def price(self, user_preference):
+    def price(self, user_pref):
         total = 0
         for recipe_item in self.recipeitem_set.all():
-            total += recipe_item.price(user_preference)
+            total += recipe_item.price(user_pref)
         return total
 
     def calculateTotalPriceWeight(self, up):
@@ -302,11 +336,24 @@ class RecipeItem(models.Model):
     def get_amount(self):
         return ProductAmount(quantity=self.quantity, unit=self.food.unit)
 
-    def price(self, user_preference):
-        product_and_score = self.food.recommended_product_and_score(user_preference)
-        recipe_and_score = self.food.recommended_recipe_and_score(user_preference)
+    def score(self, user_pref):
+        product_and_score = self.food.recommended_product_and_score(user_pref)
+        recipe_and_score = self.food.recommended_recipe_and_score(user_pref)
         if recipe_and_score:
-            return recipe_and_score[0].price(user_preference)
+            return recipe_and_score[0].score(user_pref)
+        if product_and_score:
+            return product_and_score[0].score(user_pref)
+        return None
+
+    def price(self, user_pref):
+        product_and_score = self.food.recommended_product_and_score(user_pref)
+        recipe_and_score = self.food.recommended_recipe_and_score(user_pref)
+        if recipe_and_score:
+            logger.info('Got price for {}: recipe = {}'.format(self, recipe_and_score[0]))
+        if product_and_score:
+            logger.info('Got price for {}: product = {} self.get_amount() = {}, product_and_score[0].get_amount() = {}'.format(self, product_and_score[0], self.get_amount(), product_and_score[0].get_amount()))
+        if recipe_and_score:
+            return recipe_and_score[0].price(user_pref)
         if product_and_score:
             return product_and_score[0].price.price * (self.get_amount() / product_and_score[0].get_amount())
         return None

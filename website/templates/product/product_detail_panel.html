@@ -18,7 +18,9 @@
         {% if product.ean_code %}<tr><th>EAN code</th><td>{{ product.ean_code }}</td></tr>{% endif %}
       </table>
         <h5>Scores</h5>
+
       <table class="table table-striped">
+        <tr><th>Totaal</th><td>{{ score }}</td></tr>
         <tr><th>Milieu</th><td>{{ product.scores.environment }}</td></tr>
         <tr><th>Mensenrechten</th><td>{{ product.scores.social }}</td></tr>
         <tr><th>Dierenwelzijn</th><td>{{ product.scores.animals }}</td></tr>

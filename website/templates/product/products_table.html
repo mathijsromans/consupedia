@@ -1,8 +1,9 @@
 <table class="table">
-  {% for product in products %}
+  {% for product, total_score in products_and_total_scores %}
     <tr id="row-{{ product.id }}">
       <td><a href="{% url 'product' product.id %}">{{ product.name }}</a></td>
       <td>{% if product.price %}{{ product.price }}{% endif %}</td>
+      <td>({{ total_score }})</td>
       {% if anonymous_can_edit or not is_anonymous_user %}
       <td align="right">
         <button id="button-remove-{{ product.id }}" class="btn btn-info btn-sm"><i class="fa fa-remove"></i></button>
