@@ -1,6 +1,5 @@
 import logging
 import uuid
-from product.algorithms import ProductChooseAlgorithm
 
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User, Group
@@ -10,7 +9,6 @@ from django.views.generic import TemplateView, UpdateView
 
 from product.models import UserPreferences
 from product.models import Product
-from product.algorithms import generate_sorted_list
 from website import settings
 
 logger = logging.getLogger(__name__)

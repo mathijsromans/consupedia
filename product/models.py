@@ -91,7 +91,8 @@ class Food(models.Model):
 
     def recommended_products_and_scores(self, user_preference):
         product_list = self.product_set.all()
-        products_and_scores = generate_sorted_list(product_list, user_preference)
+        products_and_scores = [(product,  product.score(user_preference)) for product in product_list]
+        products_and_scores.sort(key=lambda x: x[1].total())
         return products_and_scores
 
     def recommended_recipe_and_score(self, user_preference):
@@ -293,12 +294,6 @@ class Recipe(Conversion):
         result.scale(1.0/self.quantity)
         return result
 
-    def price(self, user_pref):
-        total = 0
-        for recipe_item in self.recipeitem_set.all():
-            total += recipe_item.price(user_pref)
-        return total
-
 
 class RecipeItem(models.Model):
     quantity = models.IntegerField()
@@ -317,25 +312,6 @@ class RecipeItem(models.Model):
             return product_and_score[0].score(user_pref)
         return None
 
-    def price(self, user_pref):
-        product_and_score = self.food.recommended_product_and_score(user_pref)
-        recipe_and_score = self.food.recommended_recipe_and_score(user_pref)
-        if recipe_and_score:
-            logger.info('Got price for {}: recipe = {}'.format(self, recipe_and_score[0]))
-        if product_and_score:
-            logger.info('Got price for {}: product = {} self.get_amount() = {}, product_and_score[0].get_amount() = {}'.format(self, product_and_score[0], self.get_amount(), product_and_score[0].get_amount()))
-        if recipe_and_score:
-            return recipe_and_score[0].price(user_pref)
-        if product_and_score:
-            return product_and_score[0].price.price * (self.get_amount() / product_and_score[0].get_amount())
-        return None
-
-    def price_str(self, user_preference):
-        price = self.price(user_preference)
-        if not price:
-            return '?'
-        return '€ {:03.2f}'.format(price/100.0)
-
     @property
     def name(self):
         return str(self)
@@ -353,5 +329,3 @@ class ProductPrice(models.Model):
 
     def __str__(self):
         return str(Price(self.price)) + ' bij ' + str(self.shop)
-
-from .algorithms import generate_sorted_list

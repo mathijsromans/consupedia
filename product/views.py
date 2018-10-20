@@ -1,6 +1,5 @@
 import json
 import logging
-import inspect
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.db import transaction
@@ -12,13 +11,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, render
 from .models import Product, Food
-from .management.commands.create_recipes import Command
 from .models import Rating, Recipe, RecipeItem
 from .models import UserPreferences
 from .productservice import ProductService, RecipeService
 from .forms import ProductForm, RecipeForm, RecipeURLForm, RecipeItemForm, FoodForm, RecipeItemFormset
 from .forms import UserPreferenceForm
-from product.algorithms import ProductChooseAlgorithm
 from product.productservice import ProductService
 
 logger = logging.getLogger(__name__)
@@ -104,7 +101,7 @@ class RecipeDetailView(TemplateView):
         context = super().get_context_data(**kwargs)
         recipe = Recipe.objects.get(id=recipe_id)
         up, created = UserPreferences.objects.get_or_create(user=self.request.user)
-        food_and_price_list = [(recipe_item, recipe_item.price_str(up)) for recipe_item in recipe.recipeitem_set.all() ]
+        food_and_price_list = [(recipe_item, recipe_item.score(up).price()) for recipe_item in recipe.recipeitem_set.all() ]
         context['recipe'] = recipe
         context['food_and_price_list'] = food_and_price_list
         context['score'] = recipe.score(up)
@@ -189,7 +186,7 @@ class RecipeEditView(TemplateView):
         context = super().get_context_data(**kwargs)
         recipe = Recipe.objects.get(id=recipe_id)
         up, created = UserPreferences.objects.get_or_create(user=self.request.user)
-        food_and_price_list = [(recipe_item, recipe_item.price_str(up)) for recipe_item in recipe.recipeitem_set.all() ]
+        food_and_price_list = [(recipe_item, recipe_item.score(up).price()) for recipe_item in recipe.recipeitem_set.all() ]
         context['recipe'] = recipe
         context['food_and_price_list'] = food_and_price_list
         return context
@@ -417,13 +414,13 @@ def set_product_rating(request):
 def get_what_to_eat_result(request):
     food = Food.objects.get(id=request.POST['food_id'])
     up = UserPreferences()
-    #todo get user preferences from post request.
+    #TODO: get user preferences from post request.
     up.price_weight = 5
     up.environment_weight = 5
     up.social_weight = 5
     up.animals_weight = 5
     up.personal_health_weight = 5
-    result = ProductChooseAlgorithm.maximize_product_scores(up, food)
+    result = None  # TODO: get product
     scores = result.scores
   
     data = serializers.serialize('json', [result, scores, ])
