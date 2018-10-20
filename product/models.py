@@ -299,52 +299,6 @@ class Recipe(Conversion):
             total += recipe_item.price(user_pref)
         return total
 
-    def calculateTotalPriceWeight(self, up):
-        total = 0
-        for recipe_item in self.recipeitem_set.all():
-            total += recipe_item.price_estimate(up)
-        return total
-
-    def calculateTotalEnvironmentWeight(self, up):
-        sum = 0
-        n = 1
-        rec_scores = self.recommended_scores(up)
-        for scores in rec_scores:
-            if scores.environment:
-                sum += scores.environment
-                n += 1
-        return sum / n
-
-    def calculateTotalSocialWeight(self, up):
-        sum = 0
-        n = 1
-        rec_scores = self.recommended_scores(up)
-        for scores in rec_scores:
-            if scores.social:
-                sum += scores.social
-                n += 1
-        return sum / n
-
-    def calculateTotalAnimalsWeight(self, up):
-        sum = 0
-        n = 1
-        rec_scores = self.recommended_scores(up)
-        for scores in rec_scores:
-            if scores.animals:
-                sum += scores.animals
-                n += 1
-        return sum / n
-
-    def calculateTotalPersonalHealthWeight(self, up):
-        sum = 0
-        n = 1
-        rec_scores = self.recommended_scores(up)
-        for scores in rec_scores:
-            if scores.personal_health:
-                sum += scores.personal_health
-                n += 1
-        return sum / n
-
 
 class RecipeItem(models.Model):
     quantity = models.IntegerField()
@@ -375,12 +329,6 @@ class RecipeItem(models.Model):
         if product_and_score:
             return product_and_score[0].price.price * (self.get_amount() / product_and_score[0].get_amount())
         return None
-
-    def price_estimate(self, user_preference):
-        price = self.price(user_preference)
-        if price:
-            return price
-        return 50  # cents, should be error, really
 
     def price_str(self, user_preference):
         price = self.price(user_preference)
