@@ -27,6 +27,10 @@ class Score:
     def __lt__(self, other):
         return self.total() < other.total()
 
+    def scale(self, scalar):
+        for key, value in self._scores.items():
+            self._scores[key] = scalar * value
+
     def add(self, other):
         logger.info('{}'.format(self))
         for key, value in other._scores.items():
@@ -286,6 +290,7 @@ class Recipe(Conversion):
         result = Score(user_pref)
         for recipe_item in self.recipeitem_set.all():
             result.add(recipe_item.score(user_pref))
+        result.scale(1.0/self.quantity)
         return result
 
     def price(self, user_pref):
