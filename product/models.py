@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db.models import Avg
 from django.core.validators import MinValueValidator
 from .amount import ProductAmount
+from collections import namedtuple
 import re
 
 logger = logging.getLogger(__name__)
@@ -12,6 +13,9 @@ logger = logging.getLogger(__name__)
 class Price:
     def __init__(self, cents):
         self.cents = cents
+
+    def __mul__(self, other):
+        return Price(self.cents * other)
 
     def __str__(self):
         if self.cents:
@@ -63,7 +67,7 @@ class Score:
             user_pref_value = user_pref_dict.get(key)
             if user_pref_dict and value is not None:
                 partial = value * user_pref_value
-                result += '[{}: {} -> {}] '.format(key, value, partial)
+                result += '[{}: {:.2f} -> {:.2f}] '.format(key, value, partial)
         result += '-> {:.2f}'.format(self.total())
         return result
 
@@ -91,7 +95,7 @@ class Food(models.Model):
 
     def recommended_products_and_scores(self, user_preference):
         product_list = self.product_set.all()
-        products_and_scores = [(product,  product.score(user_preference)) for product in product_list]
+        products_and_scores = [(product,  product.rel_score(user_preference)) for product in product_list]
         products_and_scores.sort(key=lambda x: x[1].total())
         return products_and_scores
 
@@ -109,9 +113,22 @@ class Food(models.Model):
         recipes = Recipe.objects.filter(provides=self)
         for r in recipes:
             logger.info('Recipe {}'.format(r))
-        recipes_and_scores = [(recipe, recipe.score(user_preference)) for recipe in recipes]
+        recipes_and_scores = [(recipe, recipe.rel_score(user_preference)) for recipe in recipes]
         recipes_and_scores.sort(key=lambda x: x[1].total())
         return recipes_and_scores
+
+    def recommended_product_recipe_score(self, user_preference):
+        Recommendation = namedtuple('Recommendation', ['product', 'recipe', 'score'])
+        product_and_score = self.recommended_recipe_and_score(user_preference)
+        recipe_and_score = self.recommended_product_and_score(user_preference)
+        if not recipe_and_score and not product_and_score:
+            return Recommendation(None, None, None)
+        if not recipe_and_score or (product_and_score and product_and_score[1] < recipe_and_score[1]):
+            return Recommendation(product_and_score[0], None, product_and_score[1])
+        return Recommendation(None, recipe_and_score[0], recipe_and_score[1])
+
+    def score(self, user_preference):
+        return self.recommended_product_recipe_score(user_preference).score
 
     def __str__(self):
         return self.name
@@ -130,6 +147,7 @@ class ProductScore(models.Model):
         result.add_score('animals', self.animals)
         result.add_score('health', self.personal_health)
         return result
+
 
 class Brand(models.Model):
     name = models.CharField(max_length=256)  # name according to Questionmark
@@ -165,13 +183,16 @@ class Product(models.Model):
     def score(self, user_pref):
         result = Score(user_pref)
         if self.price:
-            price = self.price.price
-            if self.quantity:
-                price /= self.quantity
-            result.add_score('price', price)
+            result.add_score('price', self.price.price)
         if self.scores:
             result.add(self.scores.score(user_pref))
         return result
+
+    def rel_score(self, user_pref):
+        s = self.score(user_pref)
+        if self.quantity:
+            s.scale(1.0/self.quantity)
+        return s
 
     @property
     def price(self):
@@ -291,8 +312,12 @@ class Recipe(Conversion):
         result = Score(user_pref)
         for recipe_item in self.recipeitem_set.all():
             result.add(recipe_item.score(user_pref))
-        result.scale(1.0/self.quantity)
         return result
+
+    def rel_score(self, user_pref):
+        s = self.score(user_pref)
+        s.scale(1.0/self.quantity)
+        return s
 
 
 class RecipeItem(models.Model):
@@ -304,13 +329,9 @@ class RecipeItem(models.Model):
         return ProductAmount(quantity=self.quantity, unit=self.food.unit)
 
     def score(self, user_pref):
-        product_and_score = self.food.recommended_product_and_score(user_pref)
-        recipe_and_score = self.food.recommended_recipe_and_score(user_pref)
-        if recipe_and_score:
-            return recipe_and_score[0].score(user_pref)
-        if product_and_score:
-            return product_and_score[0].score(user_pref)
-        return None
+        score = self.food.score(user_pref)
+        score.scale(self.quantity)
+        return score
 
     @property
     def name(self):
