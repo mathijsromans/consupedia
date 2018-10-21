@@ -19,12 +19,8 @@
         <h4>Gevonden producten</h4>
         Verwijder producten die niet bij dit ingrediënt passen.
       </div>
-
-      {% with products=food.product_set.all %}
-      {% include "product/products_table.html" %}
-      {% endwith %}
-
-    </div>
+        {% include "product/products_table.html" %}
+      </div>
     <div class="pull-right">
      <a class="btn btn-primary" href="{% url 'food' food.id %}">Klaar</a>
     </div>

@@ -63,17 +63,6 @@ class FoodsView(TemplateView):
         return context
 
 
-class FoodProductsEditView(TemplateView):
-    template_name = 'food/food_products_edit.html'
-
-    def get_context_data(self, food_id, **kwargs):
-        food = Food.objects.get(id=food_id)
-        context = super().get_context_data(**kwargs)
-        context['anonymous_can_edit'] = True
-        context['food'] = food
-        return context
-
-
 class RecipesView(TemplateView):
     template_name = 'recipe/recipe_list.html'
 
@@ -205,6 +194,20 @@ class ProductView(TemplateView):
         return context
 
 
+class FoodProductsEditView(TemplateView):
+    template_name = 'food/food_products_edit.html'
+
+    def get_context_data(self, food_id, **kwargs):
+        food = Food.objects.get(id=food_id)
+        context = super().get_context_data(**kwargs)
+        context['food'] = food
+        if self.request.user.is_authenticated():
+            up, created = UserPreferences.objects.get_or_create(user=self.request.user)
+            products_and_scores = food.recommended_products_and_scores(up)
+            context['products_and_total_scores'] = [(p[0], p[1].total()) for p in products_and_scores]
+        return context
+
+
 class FoodView(TemplateView):
     template_name = 'food/food.html'
 
@@ -231,7 +234,6 @@ class FoodView(TemplateView):
                         score = recommended_recipe_score
                 context['products_and_total_scores'] = [(p[0], p[1].total()) for p in products_and_scores]
                 context['recipes_with_info'] = [(p[0], p[1].price(), p[1].total()) for p in recipes_and_scores]
-                context['product_list'] = [p[0] for p in products_and_scores]
                 context['recommended_product'] = recommended_product
                 context['recommended_recipe'] = recommended_recipe
                 context['score'] = score
