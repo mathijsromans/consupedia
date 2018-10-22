@@ -23,7 +23,7 @@ def search_product(search_term):
         for lane in json_products['_embedded']['lanes']:
             if lane['type'] == 'SearchLane':
                 items += lane['_embedded']['items']
-    except Exception as error:
+    except KeyError as error:
         # This is not a real error, just the quickest way to see if there are items
         logger.info(error)
         return results

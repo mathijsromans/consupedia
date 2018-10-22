@@ -64,5 +64,5 @@ class RecipeForm(forms.Form):
     source_if_not_user = forms.CharField(label='Bron', max_length=256,
                            widget=forms.TextInput(attrs={'placeholder': 'Bron...'}))
     preparation_time_in_min = forms.IntegerField(label='Bereidingstijd in minuten', widget=forms.NumberInput(attrs={'placeholder': 'Bereidingstijd...'}))
-    preparation = forms.CharField(label='Bereidingswijze',
+    preparation = forms.CharField(label='Bereidingswijze', required=False,
                            widget=forms.Textarea(attrs={'placeholder': 'Bereidingswijze...'}))

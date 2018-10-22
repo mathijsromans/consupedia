@@ -50,7 +50,7 @@
 
 {% if recommended_product %}
 <div class="row" align="center">
-  <h4>Aanbevolen product</h4>
+  <h4>Aanbevolen</h4>
     {% with product=recommended_product %}
       {% include "product/product_detail_panel.html" %}
     {% endwith %}
@@ -59,7 +59,7 @@
 
 {% if recommended_recipe %}
 <div class="row" align="center">
-  <h4>Aanbevolen recept</h4>
+  <h4>Aanbevolen</h4>
   <div class="row">
     <div class="col-md-12">
       {% with recipe=recommended_recipe %}

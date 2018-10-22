@@ -30,12 +30,15 @@ class ProductService:
 
         products_dict = questionmark.search_product(food.name)
         # logger.info('@a: ' + str(time.time() - start))
+
         jumbo_results = jumbo.search_product(food.name)
         # logger.info('@b: ' + str(time.time() - start))
         ah_results = ah.search_product(food.name)
         # logger.info('@c: ' + str(time.time() - start))
+        for result in jumbo_results + ah_results:
+            result['used'] = False
+
         jumbo_shop, created = Shop.objects.get_or_create(name='Jumbo')
-        # logger.info('@d: ' + str(time.time() - start))
         ah_shop, created = Shop.objects.get_or_create(name='AH')
 
         product_ids = []
@@ -48,6 +51,13 @@ class ProductService:
             product_ids.append(product.id)
             if not product.prices.exists():
                 product.delete()
+
+        for result in jumbo_results:
+            if not result['used']:
+                logger.info('Unused JUMBO result: {}'.format(result['name']))
+        for result in ah_results:
+            if not result['used']:
+                logger.info('Unused AH result: {}'.format(result['name']))
         
         # end = time.time()
         # logger.info('END - time: ' + str(end - start))
@@ -63,11 +73,12 @@ class ProductService:
 
     @staticmethod
     def enrich_product_data(product, retailer_results, shop):
-        # print ('SEARCHING FOR ' + product.name + ' (van ' + str(product.brand) + ') -> ' + product.get_full_name())
+        logger.info('SEARCHING FOR ' + product.name + ' (van ' + str(product.brand) + ') -> ' + product.get_full_name())
         for retailer_result in retailer_results:
-            # print ('CHECKING ' + str(retailer_result))
+            logger.info('CHECKING ' + str(retailer_result))
             if ProductService.match(retailer_result, product):
                 logging.info('FOUND!!! ' + str(retailer_result))
+                retailer_result['used'] = True
                 price = int(retailer_result['price'])
                 product_name = retailer_result['name']
                 pp, created = ProductPrice.objects.get_or_create(product=product, shop=shop, defaults={'price': price, 'product_name': product_name})
@@ -75,7 +86,8 @@ class ProductService:
 
     @staticmethod
     def match(retailer_result, product):
-        retailer_size = ProductAmount.from_str(retailer_result['size']);
+        retailer_size = ProductAmount.from_str(retailer_result['size'])
+        logger.info('Comparing amount {} -> {} == {}'.format(retailer_result['size'], retailer_size, product.get_amount()))
         if retailer_size != product.get_amount():
             return False
 
@@ -86,6 +98,7 @@ class ProductService:
         name = product.get_full_name()
 
         if retailer_name == name:
+            logger.info('Correct name')
             return True
 
         # print('RETAILER_NAME BEFORE: ' + retailer_name)
@@ -101,6 +114,7 @@ class ProductService:
         name = name.replace('-', '')
         name = name.replace('\'', '')
 
+        logger.info('Comparing {} == {}'.format(retailer_name.lower(), name.lower()))
         if retailer_name.lower() == name.lower():
             return True
 
@@ -108,9 +122,11 @@ class ProductService:
         for brand in brands:
             retailer_name = retailer_name.replace(brand, '').strip()
 
+        logger.info('Comparing {} == {}'.format(retailer_name, name))
+
         if retailer_name == name:
             return True
-
+        return False
 
     @staticmethod
     def contains_jumbo(product_dict):
