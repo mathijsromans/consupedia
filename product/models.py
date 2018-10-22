@@ -119,8 +119,8 @@ class Food(models.Model):
 
     def recommended_product_recipe_score(self, user_preference):
         Recommendation = namedtuple('Recommendation', ['product', 'recipe', 'score'])
-        product_and_score = self.recommended_recipe_and_score(user_preference)
-        recipe_and_score = self.recommended_product_and_score(user_preference)
+        product_and_score = self.recommended_product_and_score(user_preference)
+        recipe_and_score = self.recommended_recipe_and_score(user_preference)
         if not recipe_and_score and not product_and_score:
             return Recommendation(None, None, None)
         if not recipe_and_score or (product_and_score and product_and_score[1] < recipe_and_score[1]):
