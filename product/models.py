@@ -6,6 +6,7 @@ from django.core.validators import MinValueValidator
 from .amount import ProductAmount
 from collections import namedtuple
 import re
+import copy
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +35,11 @@ class Score:
     def scale(self, scalar):
         for key, value in self._scores.items():
             self._scores[key] = scalar * value
+
+    def scaled(self, scalar):
+        result = copy.deepcopy(self)
+        result.scale(scalar)
+        return result
 
     def add(self, other):
         logger.info('{}'.format(self))
@@ -307,6 +313,32 @@ class Recipe(Conversion):
 
     def __str__(self):
         return 'Recept ' + self.name
+
+    FQS = namedtuple('FQS', ['food', 'quantity', 'score'])
+
+    def food_quantity_scores(self, userpreference):
+        return [Recipe.FQS(recipe_item.food, recipe_item.quantity, recipe_item.score(userpreference)) for recipe_item in self.recipeitem_set.all()]
+
+    def recursive_food_quantity_scores(self, userpreference):
+        result = []
+        for recipe_item in self.recipeitem_set.all():
+            prs = recipe_item.food.recommended_product_recipe_score(userpreference)
+            if prs.recipe:
+                fqs_list = prs.recipe.recursive_food_quantity_scores(userpreference)
+                scale = recipe_item.quantity / prs.recipe.quantity
+                for fqs in fqs_list:
+                    result.append(Recipe.FQS(fqs.food, fqs.quantity*scale, fqs.score.scaled(scale)))
+            else:
+                result.append(Recipe.FQS(recipe_item.food, recipe_item.quantity, recipe_item.score(userpreference)))
+        return result
+
+    def recursive_preparation(self, userpreference):
+        result = ''
+        for recipe_item in self.recipeitem_set.all():
+            prs = recipe_item.food.recommended_product_recipe_score(userpreference)
+            if prs.recipe:
+                result += prs.recipe.recursive_preparation(userpreference) + ' '
+        return result + self.preparation
 
     def score(self, user_pref):
         result = Score(user_pref)

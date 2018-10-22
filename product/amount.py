@@ -1,5 +1,6 @@
 import re
 
+
 class ProductAmount:
     NO_UNIT = '-'
     GRAM = 'g'

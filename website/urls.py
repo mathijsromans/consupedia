@@ -25,6 +25,7 @@ urlpatterns = [
 
     url(r'^recipes/$', product.views.RecipesView.as_view(), name='recipes'),
     url(r'^recipe/(?P<recipe_id>[0-9]+)/$', product.views.RecipeDetailView.as_view(), name='recipe_detail'),
+    url(r'^recursive/(?P<recipe_id>[0-9]+)/$', product.views.RecursiveRecipeView.as_view(), name='recursive_recipe'),
     url(r'^recipes/new$', product.views.create_new_recipe, name='recipe-new'),
     url(r'^recipes/new/ah$', product.views.RecipeAHAddView.as_view(), name='recipe-new-ah'),
     url(r'^recipes/edit/(?P<recipe_id>[0-9]+)/$', product.views.RecipeEditView.as_view(), name='recipe-edit'),

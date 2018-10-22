@@ -1,0 +1,21 @@
+{% extends "website/base.html" %}
+
+{% block title %}{{ recipe.name }} {{ block.super }}{% endblock %}
+
+{% block content %}
+
+<div class="vertical-spacer-20"></div>
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    {% include "recipe/recipe_detail_panel.html" %}
+    {% if not is_anonymous_user %}
+      <span class="pull-left">
+        <a class="btn btn-primary" href="{% url 'recipe-edit' recipe.id %}">Bewerk</a>
+      </span>
+    {% endif %}
+  </div>
+</div>
+
+
+{% endblock %}

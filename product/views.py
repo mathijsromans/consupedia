@@ -90,10 +90,24 @@ class RecipeDetailView(TemplateView):
         context = super().get_context_data(**kwargs)
         recipe = Recipe.objects.get(id=recipe_id)
         up, created = UserPreferences.objects.get_or_create(user=self.request.user)
-        recipe_items_and_scores = [(recipe_item, recipe_item.score(up)) for recipe_item in recipe.recipeitem_set.all() ]
         context['recipe'] = recipe
-        context['recipe_items_and_scores'] = recipe_items_and_scores
+        context['food_quantity_scores'] = recipe.food_quantity_scores(up)
         context['score'] = recipe.score(up)
+        context['preparation'] = recipe.preparation
+        return context
+
+
+class RecursiveRecipeView(TemplateView):
+    template_name = 'recipe/recipe_show.html'
+
+    def get_context_data(self, recipe_id, **kwargs):
+        context = super().get_context_data(**kwargs)
+        recipe = Recipe.objects.get(id=recipe_id)
+        up, created = UserPreferences.objects.get_or_create(user=self.request.user)
+        context['recipe'] = recipe
+        context['food_quantity_scores'] = recipe.recursive_food_quantity_scores(up)
+        context['score'] = recipe.score(up)
+        context['preparation'] = recipe.recursive_preparation(up)
         return context
 
 

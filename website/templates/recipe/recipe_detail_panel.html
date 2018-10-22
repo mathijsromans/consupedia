@@ -10,14 +10,14 @@
     <div><i class="fa fa-bar-chart"></i>{{ score }}</div>
   </div>
 
-  {% if recipe_items_and_scores %}
+  {% if food_quantity_scores %}
   <table class="table table-striped">
-    {% for recipe_item, score in recipe_items_and_scores %}
+    {% for fqs in food_quantity_scores %}
     <tr>
-      <th>{{ recipe_item.quantity }} {{ recipe_item.food.unit }}</th>
-      <td><a href="{% url 'food' recipe_item.food.id %}">{{ recipe_item.food }}</a></td>
-      <td>{{ score }}</td>
-      <td>{{ score.price }}</td>
+      <th>{{ fqs.quantity }} {{ fqs.food.unit }}</th>
+      <td><a href="{% url 'food' fqs.food.id %}">{{ fqs.food }}</a></td>
+      <td>{{ fqs.score }}</td>
+      <td>{{ fqs.score.price }}</td>
     </tr>
     {% endfor %}
   </table>
@@ -27,7 +27,7 @@
       Resultaat: <strong>{{ recipe.quantity }} {{ recipe.provides.unit }} <a href="{% url 'food' recipe.provides.id %}">{{ recipe.provides }}</a></strong>
     </div>
    <div>
-      {{ recipe.preparation }}
+      {{ preparation }}
     </div>
 
   {% if recipe.source_if_not_user %}
