@@ -35,8 +35,7 @@ class ProductService:
         # logger.info('@b: ' + str(time.time() - start))
         ah_results = ah.search_product(food.name)
         # logger.info('@c: ' + str(time.time() - start))
-        for result in jumbo_results + ah_results:
-            result['used'] = False
+        unused = set(jumbo_results + ah_results)
 
         jumbo_shop, created = Shop.objects.get_or_create(name='Jumbo')
         ah_shop, created = Shop.objects.get_or_create(name='AH')
@@ -46,19 +45,15 @@ class ProductService:
             # logger.info('@1 ' + str(time.time() - start) + ': ' + product_dict['name'])
             product, created = Product.objects.get_or_create(name=product_dict['name'], questionmark_id=product_dict['id'], food=food)
             product = qm_mapper.map_to_product(product, product_dict)
-            ProductService.enrich_product_data(product, jumbo_results, jumbo_shop)
-            ProductService.enrich_product_data(product, ah_results, ah_shop)
+            ProductService.enrich_product_data(product, jumbo_results, jumbo_shop, unused)
+            ProductService.enrich_product_data(product, ah_results, ah_shop, unused)
             product_ids.append(product.id)
             if not product.prices.exists():
                 product.delete()
 
-        for result in jumbo_results:
-            if not result['used']:
-                logger.info('Unused JUMBO result: {}'.format(result['name']))
-        for result in ah_results:
-            if not result['used']:
-                logger.info('Unused AH result: {}'.format(result['name']))
-        
+        for u in unused:
+            logger.info('Unused result: {}'.format(u))
+
         # end = time.time()
         # logger.info('END - time: ' + str(end - start))
 
@@ -72,26 +67,26 @@ class ProductService:
         return food
 
     @staticmethod
-    def enrich_product_data(product, retailer_results, shop):
+    def enrich_product_data(product, retailer_results, shop, unused):
         logger.info('SEARCHING FOR ' + product.name + ' (van ' + str(product.brand) + ') -> ' + product.get_full_name())
         for retailer_result in retailer_results:
             logger.info('CHECKING ' + str(retailer_result))
             if ProductService.match(retailer_result, product):
                 logging.info('FOUND!!! ' + str(retailer_result))
-                retailer_result['used'] = True
-                price = int(retailer_result['price'])
-                product_name = retailer_result['name']
-                pp, created = ProductPrice.objects.get_or_create(product=product, shop=shop, defaults={'price': price, 'product_name': product_name})
+                unused.discard(retailer_result)
+                pp, created = ProductPrice.objects.update_or_create(
+                    product=product, shop=shop, defaults={'price': retailer_result.price,
+                                                          'product_name': retailer_result.name})
                 pp.save()
 
     @staticmethod
     def match(retailer_result, product):
-        retailer_size = ProductAmount.from_str(retailer_result['size'])
-        logger.info('Comparing amount {} -> {} == {}'.format(retailer_result['size'], retailer_size, product.get_amount()))
+        retailer_size = ProductAmount.from_str(retailer_result.size)
+        logger.info('Comparing amount {} -> {} == {}'.format(retailer_result.size, retailer_size, product.get_amount()))
         if retailer_size != product.get_amount():
             return False
 
-        retailer_name = retailer_result['name']
+        retailer_name = retailer_result.name
         size_sub = ProductAmount.extract_size_substring(retailer_name)
         if size_sub:
             retailer_name = retailer_name.replace(size_sub, '')

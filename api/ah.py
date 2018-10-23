@@ -1,6 +1,6 @@
 import logging
 import json
-from .models import AHQuery
+from .models import AHQuery, AHEntry
 from api import cache
 
 logger = logging.getLogger(__name__)
@@ -33,11 +33,12 @@ def search_product(search_term):
             price_str = str(ah_product['priceLabel']['now'])
             price = int(100*float(price_str))
             logger.info('Found AH item "' + ah_product['description']+'"')
-            results.append({
-                'name' : ah_product['description'], 
-                'price': price, 
-                'size': ah_product['unitSize']
-            })
+            ah_id = ah_product['id']
+            name = ah_product['description']
+            size = ah_product['unitSize']
+            entry, created = AHEntry.objects.update_or_create(
+                ah_id=ah_id, defaults={'name': name, 'price': price, 'size': size})
+            results.append(entry)
         except KeyError:
             pass  # Ignore, go to next item
 

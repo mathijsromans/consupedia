@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from api import questionmark, allerhande_scraper, ah
+from api import questionmark, allerhande_scraper, ah, jumbo
 
 
 class TestQuestionApi(TestCase):
@@ -61,3 +61,15 @@ class TestAH(TestCase):
         result = ah.search_product("AH Biologisch Oude kaas 50+ plakken")[0]
         self.assertEqual(result['price'], 350)
 
+
+class TestJumbo(TestCase):
+
+    def test_get_match(self):
+        with open('data/testing/jumbo_query_stokbrood.html') as f:
+            html = f.read()
+        matches = jumbo.get_matches(html)
+        self.assertEqual(len(matches), 9)
+        results = jumbo.process_matches(matches)
+        self.assertEqual(results[0].name, 'Jumbo Desem Baguette Wit 250g')
+        self.assertEqual(results[0].size, '250 g')
+        self.assertEqual(results[0].price, 139)
