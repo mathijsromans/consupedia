@@ -14,6 +14,9 @@
         <a class="btn btn-primary" href="{% url 'recipe-edit' recipe.id %}">Bewerk</a>
       </span>
     {% endif %}
+    <span class="pull-right">
+      <a class="btn btn-primary" href="{% url 'recursive_recipe' recipe.id %}">Recursief</a>
+    </span>
   </div>
 </div>
 

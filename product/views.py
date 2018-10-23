@@ -98,7 +98,7 @@ class RecipeDetailView(TemplateView):
 
 
 class RecursiveRecipeView(TemplateView):
-    template_name = 'recipe/recipe_show.html'
+    template_name = 'recipe/recursive_recipe_show.html'
 
     def get_context_data(self, recipe_id, **kwargs):
         context = super().get_context_data(**kwargs)
