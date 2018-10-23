@@ -16,8 +16,7 @@ class FoodWithUnitChoiceField(forms.ModelChoiceField):
 
 
 class ProductForm(forms.Form):
-    name = forms.CharField(label='Name', max_length=100)
-    price = forms.IntegerField(label='Price (cents)',validators=[validate_price])
+    food = FoodWithUnitChoiceField(label='', queryset=Food.objects.all().order_by('name'))
 
 
 class RecipeItemForm(forms.Form):

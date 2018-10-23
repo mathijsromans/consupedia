@@ -248,8 +248,9 @@ class FoodView(TemplateView):
                         score = recommended_recipe_score
                 context['products_and_total_scores'] = [(p[0], p[1].total()) for p in products_and_scores]
                 context['recipes_with_info'] = [(p[0], p[1].price(), p[1].total()) for p in recipes_and_scores]
-                context['recommended_product'] = recommended_product
-                context['recommended_recipe'] = recommended_recipe
+                prs = food.recommended_product_recipe_score(up)
+                context['recommended_product'] = prs.product
+                context['recommended_recipe'] = prs.recipe
                 context['score'] = score
                 if food.unit == 'g':
                     context['kg_price'] = score.price()*1000
@@ -285,13 +286,12 @@ class ProductEditView(FormView):
         return Product.objects.get(id=self.kwargs['product_id'])
 
     def get_initial(self):
-        return {'name': self.product.name, 'price': self.product.price}
+        return {'food': self.product.food}
 
     @transaction.atomic
     def form_valid(self, form):
         product = self.product
-        product.name = form.cleaned_data['name']
-        product.price = form.cleaned_data['price']
+        product.food = form.cleaned_data['food']
         product.save()
         return super().form_valid(form)
 

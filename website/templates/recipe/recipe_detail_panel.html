@@ -14,7 +14,7 @@
   <table class="table table-striped">
     {% for fqs in food_quantity_scores %}
     <tr>
-      <th>{{ fqs.quantity }} {{ fqs.food.unit }}</th>
+      <th>{{ fqs.quantity|floatformat }} {{ fqs.food.unit }}</th>
       <td><a href="{% url 'food' fqs.food.id %}">{{ fqs.food }}</a></td>
       <td>{{ fqs.score }}</td>
       <td>{{ fqs.score.price }}</td>
