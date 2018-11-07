@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 # note that (?s) sets the ". matches everything including newline" flag
 regex_product = '(?s)data-jum-action.*?quickView">(.*?)</a></h3>.*?jum-price-format">(.*?)<sup>(.*?)</sup>.*?jum-pack-size">(.*?)</span>'
-MAX_PAGES = 2  # TODO increase again
+MAX_PAGES = 0  # TODO increase again
 
 
 def search_product(search_term):
