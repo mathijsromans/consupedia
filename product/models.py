@@ -61,7 +61,7 @@ class Score:
         result = 0
         user_pref_dict = self.user_pref.get_dict()
         for key, value in self._scores.items():
-            user_pref_value = user_pref_dict.get(key)
+            user_pref_value = user_pref_dict.get(key, 1.0)
             if user_pref_dict and value is not None:
                 result += value * user_pref_value
         return result
@@ -70,12 +70,22 @@ class Score:
         result = ''
         user_pref_dict = self.user_pref.get_dict()
         for key, value in self._scores.items():
-            user_pref_value = user_pref_dict.get(key)
+            user_pref_value = user_pref_dict.get(key, 1.0)
             if user_pref_dict and value is not None:
                 partial = value * user_pref_value
                 result += '[{}: {:.2f} -> {:.2f}] '.format(key, value, partial)
         result += '-> {:.2f}'.format(self.total())
         return result
+
+
+class ScoreCreator(models.Model):
+    name = models.CharField(max_length=255)
+    production_in_ton_per_ha = models.FloatField(default=0)
+
+    def append_score(self, score):
+        m2_per_g = 0.01
+        days_per_year = 365
+        score.add_score('land_use_m2', days_per_year*m2_per_g/self.production_in_ton_per_ha)
 
 
 class Food(models.Model):
@@ -92,6 +102,13 @@ class Food(models.Model):
 
     name = models.CharField(max_length=255)
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
+    score_creator = models.ForeignKey(ScoreCreator, null=True, blank=True)
+
+    def get_score_creator(self):
+        if not self.score_creator:
+            self.score_creator, created = ScoreCreator.objects.get_or_create(name='default')
+            self.score_creator.production_in_ton_per_ha = 5  # default value!
+        return self.score_creator
 
     def recommended_product_and_score(self, user_preference):
         products_and_scores = self.recommended_products_and_scores(user_preference)
@@ -101,7 +118,12 @@ class Food(models.Model):
 
     def recommended_products_and_scores(self, user_preference):
         product_list = self.product_set.all()
-        products_and_scores = [(product,  product.rel_score(user_preference)) for product in product_list]
+        products_and_scores = []
+        sc = self.get_score_creator()
+        for product in product_list:
+            score = product.rel_score(user_preference)
+            sc.append_score(score)
+            products_and_scores.append((product, score))
         products_and_scores.sort(key=lambda x: x[1].total())
         return products_and_scores
 
@@ -196,20 +218,11 @@ class Certificate(models.Model):
         return 'Certificate: {}'.format(self.name)
 
 
-class ScoreCreator(models.Model):
-    production_in_ton_per_ha = models.FloatField(default=0)
-
-    def set_score(self, score, product):
-        if product.scores:
-            score.add(self.scores.score(score.user_pref))
-
-
 class Product(models.Model):
     CURRENT_VERSION = 1
     name = models.CharField(max_length=256, null=True)  # name according to Questionmark
     questionmark_id = models.IntegerField(default=0)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=True, blank=True)
-    score_creator = models.ForeignKey(ScoreCreator, null=True, blank=True)
     ean_code = models.CharField(max_length=25, null=True, blank=True)
     prices = models.ManyToManyField(Shop, through='ProductPrice')
     quantity = models.IntegerField(default=1, validators=[MinValueValidator(1)])
@@ -233,8 +246,8 @@ class Product(models.Model):
         result = Score(user_pref)
         if self.price:
             result.add_score('price', self.price.price)
-        if self.score_creator:
-            self.score_creator.set_score(result, self)
+        if self.scores:
+            result.add(self.scores.score(user_pref))
         return result
 
     def rel_score(self, user_pref):
