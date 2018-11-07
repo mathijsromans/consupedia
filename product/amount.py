@@ -38,6 +38,10 @@ class ProductAmount:
         size = size.replace('ca', '')
         size = size.replace('ca.', '')
         size = size.replace('circa', '')
+
+        # 'per stuk' -> '1 stuk'
+        size = size.replace('per', '1')
+
         numbers = re.findall(r'[-+]?\d*\.\d+|\d+', size)
         if numbers:
             nonnumbers = re.sub('[0-9\. ]', '', size)
