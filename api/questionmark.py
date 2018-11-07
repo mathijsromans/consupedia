@@ -1,5 +1,5 @@
 import json
-from .models import QuestionMarkQuery, QuestionmarkEntry
+from .models import *
 import logging
 import time
 from api import cache
@@ -29,6 +29,7 @@ def search_product(search_name):
         map_brand(entry, product_dict)
         map_scores(entry, product_dict)
         map_urls(entry, product_dict)
+        map_certificates(entry, product_dict)
         entry.save()
         results.append(entry)
     return results
@@ -71,3 +72,17 @@ def map_scores(entry, product_dict):
         elif score["theme_key"] == "animals":
             entry.score_animals = score["score"]
     # entry.score_personal_health = product_dict["personal_health_score"]
+
+
+def map_certificates(entry, product_dict):
+    for certificate in product_dict["certificates"]:
+        id = int(certificate['id'])
+        qm_certificate, created = QuestionmarkCertificate.objects.get_or_create(id=id)
+        qm_certificate.name = certificate['name']
+        qm_certificate.image_url = certificate['image_url']
+        for theme in certificate['themes']:
+            qm_theme, created = QuestionmarkTheme.objects.get_or_create(name=theme)
+            qm_certificate.themes.add(qm_theme)
+        qm_certificate.save()
+        entry.certificates.add(qm_certificate)
+

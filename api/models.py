@@ -40,6 +40,23 @@ class JumboEntry(models.Model):
         return 'Jumbo Entry {}~{}~{}'.format(self.name, self.size, self.price)
 
 
+class QuestionmarkTheme(models.Model):
+    name = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.name
+
+
+class QuestionmarkCertificate(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=256)
+    image_url = models.CharField(max_length=256)
+    themes = models.ManyToManyField(QuestionmarkTheme)
+
+    def __str__(self):
+        return 'Certificate {}'.format(self.name)
+
+
 class QuestionmarkEntry(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=256)
@@ -50,6 +67,7 @@ class QuestionmarkEntry(models.Model):
     score_social = models.IntegerField(blank=True, null=True, default=None)
     score_animals = models.IntegerField(blank=True, null=True, default=None)
     score_personal_health = models.CharField(max_length=20, blank=True, null=True, default=None)
+    certificates = models.ManyToManyField(QuestionmarkCertificate)
 
     def __str__(self):
         return 'Questionmark Entry {}'.format(self.name)
