@@ -93,6 +93,7 @@ class ScoreCreator(models.Model):
     def __str__(self):
         return self.name
 
+
 class Food(models.Model):
     """ Describes anything that can be eaten with various degrees of specificity
 
@@ -131,7 +132,7 @@ class Food(models.Model):
         products_and_scores = []
         sc = self.get_score_creator()
         for product in product_list:
-            score = product.rel_score(user_preference)
+            score = product.score(user_preference)
             sc.append_score(score, self.weight())
             products_and_scores.append((product, score))
         products_and_scores.sort(key=lambda x: x[1].total())
@@ -151,7 +152,7 @@ class Food(models.Model):
         recipes = Recipe.objects.filter(provides=self)
         for r in recipes:
             logger.info('Recipe {}'.format(r))
-        recipes_and_scores = [(recipe, recipe.rel_score(user_preference)) for recipe in recipes]
+        recipes_and_scores = [(recipe, recipe.score(user_preference)) for recipe in recipes]
         recipes_and_scores.sort(key=lambda x: x[1].total())
         return recipes_and_scores
 
@@ -253,15 +254,11 @@ class Product(models.Model):
     usages = models.ManyToManyField(ProductUsage)
 
     def score(self, user_pref):
-        result = Score(user_pref)
+        s = Score(user_pref)
         if self.price:
-            result.add_score('price', self.price.price)
+            s.add_score('price', self.price.price)
         if self.scores:
-            result.add(self.scores.score(user_pref))
-        return result
-
-    def rel_score(self, user_pref):
-        s = self.score(user_pref)
+            s.add(self.scores.score(user_pref))
         if self.quantity:
             s.scale(1.0/self.quantity)
         return s
@@ -407,13 +404,9 @@ class Recipe(Conversion):
         return result + self.preparation
 
     def score(self, user_pref):
-        result = Score(user_pref)
+        s = Score(user_pref)
         for recipe_item in self.recipeitem_set.all():
-            result.add(recipe_item.score(user_pref))
-        return result
-
-    def rel_score(self, user_pref):
-        s = self.score(user_pref)
+            s.add(recipe_item.score(user_pref))
         s.scale(1.0/self.quantity)
         return s
 
