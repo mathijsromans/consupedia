@@ -2,7 +2,7 @@ from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 from api import questionmark, jumbo, ah, allerhande_scraper
 from product.models import Product, Food, RecipeItem, Recipe, ProductPrice, Shop
-from .mappers import QuestionmarkMapper
+from . import mappers
 from .amount import ProductAmount
 import re
 import logging
@@ -26,8 +26,6 @@ class ProductService:
     def update_products(food):
         # logger.info('BEGIN: Updating products for food: ' + str(food))
         # start = time.time()
-        qm_mapper = QuestionmarkMapper()
-
         qm_entries = questionmark.search_product(food.name)
         # logger.info('@a: ' + str(time.time() - start))
 
@@ -44,7 +42,7 @@ class ProductService:
         for qm_entry in qm_entries:
             # logger.info('@1 ' + str(time.time() - start) + ': ' + product_dict['name'])
             product, created = Product.objects.get_or_create(name=qm_entry.name, questionmark_id=qm_entry.id, food=food)
-            product = qm_mapper.map_to_product(product, qm_entry)
+            product = mappers.map_qm_to_product(product, qm_entry)
             ProductService.enrich_product_data(product, jumbo_results, jumbo_shop, unused)
             ProductService.enrich_product_data(product, ah_results, ah_shop, unused)
             product_ids.append(product.id)
