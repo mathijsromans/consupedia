@@ -9,6 +9,7 @@ class QuestionmarkMapper:
         QuestionmarkMapper.extract_amount_from_name(product)
         QuestionmarkMapper.map_scores(product, qm_entry)
         QuestionmarkMapper.map_themes(product, qm_entry)
+        QuestionmarkMapper.map_nutrients(product, qm_entry)
         product.thumb_url = qm_entry.thumb_url
         product.save()
         return product
@@ -46,3 +47,13 @@ class QuestionmarkMapper:
             certificate.save()
             product.certificates.add(certificate)
 
+    @staticmethod
+    def map_nutrients(product, qm_entry):
+        product.energy_in_kj_per_100_g = qm_entry.energy_in_kj_per_100_g
+        product.protein_in_g_per_100_g = qm_entry.protein_in_g_per_100_g
+        product.carbohydrates_in_g_per_100_g = qm_entry.carbohydrates_in_g_per_100_g
+        product.sugar_in_g_per_100_g = qm_entry.sugar_in_g_per_100_g
+        product.fat_saturated_in_g_per_100_g = qm_entry.fat_saturated_in_g_per_100_g
+        product.fat_total_in_g_per_100_g = qm_entry.fat_total_in_g_per_100_g
+        product.salt_in_g_per_100_g = qm_entry.salt_in_g_per_100_g
+        product.fiber_in_g_per_100_g = qm_entry.fiber_in_g_per_100_g

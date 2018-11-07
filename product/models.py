@@ -202,6 +202,14 @@ class Product(models.Model):
     scores = models.OneToOneField(ProductScore, on_delete=models.CASCADE, null=True)
     thumb_url = models.CharField(max_length=256, null=True)
     version = models.IntegerField(default=CURRENT_VERSION)
+    energy_in_kj_per_100_g = models.FloatField(blank=True, null=True, default=None)
+    protein_in_g_per_100_g = models.FloatField(blank=True, null=True, default=None)
+    carbohydrates_in_g_per_100_g = models.FloatField(blank=True, null=True, default=None)
+    sugar_in_g_per_100_g = models.FloatField(blank=True, null=True, default=None)
+    fat_saturated_in_g_per_100_g = models.FloatField(blank=True, null=True, default=None)
+    fat_total_in_g_per_100_g = models.FloatField(blank=True, null=True, default=None)
+    salt_in_g_per_100_g = models.FloatField(blank=True, null=True, default=None)
+    fiber_in_g_per_100_g = models.FloatField(blank=True, null=True, default=None)
     certificates = models.ManyToManyField(Certificate)
 
     def score(self, user_pref):

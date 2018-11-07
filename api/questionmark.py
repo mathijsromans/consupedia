@@ -30,6 +30,7 @@ def search_product(search_name):
         map_scores(entry, product_dict)
         map_urls(entry, product_dict)
         map_certificates(entry, product_dict)
+        map_nutrients(entry, product_dict)
         entry.save()
         results.append(entry)
     return results
@@ -86,3 +87,22 @@ def map_certificates(entry, product_dict):
         qm_certificate.save()
         entry.certificates.add(qm_certificate)
 
+
+def map_nutrients(entry, product_dict):
+    for nutrient in product_dict["product_nutrients"]:
+        if nutrient['code'] == 'energy':
+            entry.energy_in_kj_per_100_g = nutrient['value']
+        elif nutrient['code'] == 'protein':
+            entry.protein_in_g_per_100_g = nutrient['value']
+        elif nutrient['code'] == 'carbohydrates':
+            entry.carbohydrates_in_g_per_100_g = nutrient['value']
+        elif nutrient['code'] == 'sugar':
+            entry.sugar_in_g_per_100_g = nutrient['value']
+        elif nutrient['code'] == 'fat_saturated':
+            entry.fat_saturated_in_g_per_100_g = nutrient['value']
+        elif nutrient['code'] == 'fat_total':
+            entry.fat_total_in_g_per_100_g = nutrient['value']
+        elif nutrient['code'] == 'salt':
+            entry.salt_in_g_per_100_g = nutrient['value']
+        elif nutrient['code'] == 'fiber':
+            entry.fiber_in_g_per_100_g = nutrient['value']
