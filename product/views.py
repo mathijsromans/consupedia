@@ -361,6 +361,7 @@ class FoodEditView(FormView):
         food = self.food
         food.name = form.cleaned_data['name']
         food.unit = form.cleaned_data['unit']
+        food.equiv_weight = form.cleaned_data['equiv_weight']
         food.save()
         return super().form_valid(form)
 

@@ -84,11 +84,11 @@ class ScoreCreator(models.Model):
     killed_animal_iq_points = models.FloatField(default=0)
     sources = models.TextField(blank=True)
 
-    def append_score(self, score):
+    def append_score(self, score, weight):
         m2_per_g = 0.01
         days_per_year = 365
-        score.add_score('land_use_m2', days_per_year*m2_per_g/self.production_in_ton_per_ha)
-        score.add_score('animal_harm', self.killed_animal_iq_points)
+        score.add_score('land_use_m2', weight*days_per_year*m2_per_g/self.production_in_ton_per_ha)
+        score.add_score('animal_harm', weight*self.killed_animal_iq_points)
 
     def __str__(self):
         return self.name
@@ -107,7 +107,8 @@ class Food(models.Model):
 
     name = models.CharField(max_length=255)
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
-    score_creator = models.ForeignKey(ScoreCreator, null=True, blank=True)
+    score_creator = models.ForeignKey(ScoreCreator, null=True)
+    equiv_weight = models.FloatField(null=True, blank=True)
 
     def get_score_creator(self):
         if not self.score_creator:
@@ -120,13 +121,18 @@ class Food(models.Model):
             return products_and_scores[0]
         return None
 
+    def weight(self):
+        if self.equiv_weight:
+            return self.equiv_weight
+        return 1
+
     def recommended_products_and_scores(self, user_preference):
         product_list = self.product_set.all()
         products_and_scores = []
         sc = self.get_score_creator()
         for product in product_list:
             score = product.rel_score(user_preference)
-            sc.append_score(score)
+            sc.append_score(score, self.weight())
             products_and_scores.append((product, score))
         products_and_scores.sort(key=lambda x: x[1].total())
         return products_and_scores

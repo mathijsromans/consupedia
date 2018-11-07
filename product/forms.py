@@ -39,6 +39,7 @@ RecipeItemFormset = formset_factory(RecipeItemForm, extra=1)
 class FoodForm(forms.Form):
     name = forms.CharField(label='Naam', max_length=256)
     unit = forms.ChoiceField(label='Eenheid', choices=ProductAmount.UNIT_CHOICES)
+    equiv_weight = forms.FloatField(label='Equivalent gewicht in gram', required=False)
 
 
 class UserPreferenceForm(forms.Form):
