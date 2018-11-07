@@ -28,7 +28,7 @@ class ProductService:
         # start = time.time()
         qm_mapper = QuestionmarkMapper()
 
-        products_dict = questionmark.search_product(food.name)
+        qm_entries = questionmark.search_product(food.name)
         # logger.info('@a: ' + str(time.time() - start))
 
         jumbo_results = jumbo.search_product(food.name)
@@ -41,10 +41,10 @@ class ProductService:
         ah_shop, created = Shop.objects.get_or_create(name='AH')
 
         product_ids = []
-        for product_dict in products_dict['products']:
+        for qm_entry in qm_entries:
             # logger.info('@1 ' + str(time.time() - start) + ': ' + product_dict['name'])
-            product, created = Product.objects.get_or_create(name=product_dict['name'], questionmark_id=product_dict['id'], food=food)
-            product = qm_mapper.map_to_product(product, product_dict)
+            product, created = Product.objects.get_or_create(name=qm_entry.name, questionmark_id=qm_entry.id, food=food)
+            product = qm_mapper.map_to_product(product, qm_entry)
             ProductService.enrich_product_data(product, jumbo_results, jumbo_shop, unused)
             ProductService.enrich_product_data(product, ah_results, ah_shop, unused)
             product_ids.append(product.id)

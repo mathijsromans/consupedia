@@ -1,19 +1,21 @@
 from product.models import ProductScore, Brand
 
-class QuestionmarkMapper:
-    def map_to_product(self, product, product_dict):
-        self.map_brand(product, product_dict)
-        self.extract_amount_from_name(product)
-        self.map_scores(product, product_dict)
-        self.map_urls(product, product_dict)
 
+class QuestionmarkMapper:
+
+    @staticmethod
+    def map_to_product(product, qm_entry):
+        QuestionmarkMapper.map_brand(product, qm_entry)
+        QuestionmarkMapper.extract_amount_from_name(product)
+        QuestionmarkMapper.map_scores(product, qm_entry)
+        product.thumb_url = qm_entry.thumb_url
         product.save()
         return product
 
     @staticmethod
-    def map_brand(product, product_dict):
-        if product_dict['brand'] and product_dict['brand']['name']:
-            brand, created = Brand.objects.get_or_create(name=product_dict['brand']['name'])
+    def map_brand(product, qm_entry):
+        if qm_entry.brand:
+            brand, created = Brand.objects.get_or_create(name=qm_entry.brand)
             product.brand = brand
 
     @staticmethod
@@ -23,31 +25,10 @@ class QuestionmarkMapper:
             product.set_amount(amount)
 
     @staticmethod
-    def map_urls(product, product_dict):
-        if 'image_urls' in product_dict:
-            urls = product_dict['image_urls']
-            for url in urls:
-                if 'thumb' in url:
-                    product.thumb_url = url['thumb']
-
-    @staticmethod
-    def map_scores(product, product_dict):
-        theme_scores = product_dict["theme_scores"]
-        personal_health_score = product_dict["personal_health_score"]
-
-        if theme_scores or personal_health_score:
-            product.scores = ProductScore.objects.create()
-
-        if theme_scores:
-            for score in theme_scores:
-                if score["theme_key"] == "environment":
-                    product.scores.environment = score["score"]
-                elif score["theme_key"] == "social":
-                    product.scores.social = score["score"]
-                elif score["theme_key"] == "animals":
-                    product.scores.animals = score["score"]
-        if personal_health_score:
-            product.scores.personal_health_score = personal_health_score
-
-        if product.scores:
-            product.scores.save()
+    def map_scores(product, qm_entry):
+        scores, created = ProductScore.objects.get_or_create(product=product)
+        scores.environment = qm_entry.score_environment
+        scores.social = qm_entry.score_social
+        scores.animals = qm_entry.score_animals
+        scores.personal_health_score = qm_entry.score_personal_health
+        scores.save()

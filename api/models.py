@@ -39,3 +39,18 @@ class JumboEntry(models.Model):
     def __str__(self):
         return 'Jumbo Entry {}~{}~{}'.format(self.name, self.size, self.price)
 
+
+class QuestionmarkEntry(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=256)
+    brand = models.CharField(max_length=256)
+    thumb_url = models.CharField(max_length=256)
+    date = models.DateTimeField(auto_now=True)
+    score_environment = models.IntegerField(blank=True, null=True, default=None)
+    score_social = models.IntegerField(blank=True, null=True, default=None)
+    score_animals = models.IntegerField(blank=True, null=True, default=None)
+    score_personal_health = models.CharField(max_length=20, blank=True, null=True, default=None)
+
+    def __str__(self):
+        return 'Questionmark Entry {}'.format(self.name)
+

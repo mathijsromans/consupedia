@@ -1,5 +1,5 @@
 import json
-from .models import QuestionMarkQuery
+from .models import QuestionMarkQuery, QuestionmarkEntry
 import logging
 import time
 from api import cache
@@ -17,11 +17,22 @@ def search_product(search_name):
         'per_page': 500
     }
     while params['q']:
-        result = search_by_string(params)
-        if result['total'] != 0:
+        products_dict = search_by_string(params)
+        if products_dict['total'] != 0:
             break
         params['q'] = " ".join(params['q'].split(" ")[1:])  # remove first word, e.g. "gedroogde tijm" -> "tijm"
-    return result
+    results = []
+    for product_dict in products_dict['products']:
+        qm_id = int(product_dict['id'])
+        entry, created = QuestionmarkEntry.objects.get_or_create(id=qm_id)
+        entry.name = product_dict['name']
+        map_brand(entry, product_dict)
+        map_scores(entry, product_dict)
+        map_urls(entry, product_dict)
+        entry.save()
+        results.append(entry)
+    return results
+
 
 def search_by_string(params):
     params_as_string = json.dumps(params)
@@ -31,32 +42,32 @@ def search_by_string(params):
         # with open('query_' + params_as_string + '.json', 'w') as f:
         #     f.write(query.json)
         query.save()
-    result= json.loads(query.json)
+    result = json.loads(query.json)
     # logger.info('RESULT IS ' + str(result))
     return result
 
-def get_all():
-    page = 0
-    results_found = True
-    while results_found:
-        page = page + 1
-        results_found = store_results(page)
 
-def store_results(page):
-    params = {
-        'per_page': 500,
-        'page': page
-    }
+def map_brand(entry, product_dict):
+    if product_dict['brand'] and product_dict['brand']['name']:
+        entry.brand = product_dict['brand']['name']
 
-    params_as_string = json.dumps(params)
-    json_result = cache.do_query(BASE_URL + 'products/', params=params, headers={}, result_type=cache.ResultType.JSON)
-    string_result = json.dumps(json_result)
 
-    filename = 'qm_' + str(page) + '.json'
-    with open(filename, 'x') as out:
-        out.write(string_result)
+def map_urls(entry, product_dict):
+    if 'image_urls' in product_dict:
+        urls = product_dict['image_urls']
+        for url in urls:
+            if 'thumb' in url:
+                entry.thumb_url = url['thumb']
+                return
 
-    results_found = len(json_result['products']) > 0
 
-    return results_found
-
+def map_scores(entry, product_dict):
+    theme_scores = product_dict["theme_scores"]
+    for score in theme_scores:
+        if score["theme_key"] == "environment":
+            entry.score_environment = score["score"]
+        elif score["theme_key"] == "social":
+            entry.score_social = score["score"]
+        elif score["theme_key"] == "animals":
+            entry.score_animals = score["score"]
+    # entry.score_personal_health = product_dict["personal_health_score"]
