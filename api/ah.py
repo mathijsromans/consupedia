@@ -7,6 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 def search_product(search_term):
+    logger.info('Starting AH query...')
     query, created = AHQuery.objects.get_or_create(q_product_name=search_term)
     if created:
         url = 'https://www.ah.nl/service/rest/delegate?url=/zoeken?rq='
@@ -15,6 +16,7 @@ def search_product(search_term):
         query.json = json.dumps(result)
         query.save()
 
+    logger.info('AH query done')
     json_products = json.loads(query.json)
 
     results = []

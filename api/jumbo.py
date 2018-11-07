@@ -8,11 +8,12 @@ logger = logging.getLogger(__name__)
 
 # note that (?s) sets the ". matches everything including newline" flag
 regex_product = '(?s)data-jum-action.*?quickView">(.*?)</a></h3>.*?jum-price-format">(.*?)<sup>(.*?)</sup>.*?jum-pack-size">(.*?)</span>'
-MAX_PAGES = 10
+MAX_PAGES = 2  # TODO increase again
 
 def search_product(search_term):
     results = []
     for page_number in range(0, MAX_PAGES):
+        logger.info('Starting Jumbo query page {}/{}'.format(page_number, MAX_PAGES))
         query = do_query(search_term, page_number)
         matches = get_matches(query.html)
         if not matches:

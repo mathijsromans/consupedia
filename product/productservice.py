@@ -24,15 +24,17 @@ class ProductService:
     @staticmethod
     @transaction.atomic
     def update_products(food):
-        # logger.info('BEGIN: Updating products for food: ' + str(food))
-        # start = time.time()
+        logger.info('BEGIN: Updating products for food: ' + str(food))
+        start = time.time()
         qm_entries = questionmark.search_product(food.name)
-        # logger.info('@a: ' + str(time.time() - start))
+        logger.info('{}: Found {} questionmark entries'.format(time.time() - start, len(qm_entries)))
 
         jumbo_results = jumbo.search_product(food.name)
-        # logger.info('@b: ' + str(time.time() - start))
+        logger.info('{}: Found {} jumbo entries'.format(time.time() - start, len(jumbo_results)))
+
         ah_results = ah.search_product(food.name)
-        # logger.info('@c: ' + str(time.time() - start))
+        logger.info('{}: Found {} ah entries'.format(time.time() - start, len(ah_results)))
+
         unused = set(jumbo_results + ah_results)
 
         jumbo_shop, created = Shop.objects.get_or_create(name='Jumbo')
@@ -52,8 +54,7 @@ class ProductService:
         for u in unused:
             logger.info('Unused result: {}'.format(u))
 
-        # end = time.time()
-        # logger.info('END - time: ' + str(end - start))
+        logger.info('{}: Done')
 
         return Product.objects.filter(id__in=product_ids)
 
