@@ -80,13 +80,17 @@ class Score:
 
 class ScoreCreator(models.Model):
     name = models.CharField(max_length=255)
-    production_in_ton_per_ha = models.FloatField(default=0)
+    production_in_ton_per_ha = models.FloatField(default=5)
+    killed_animal_iq_points = models.FloatField(default=0)
 
     def append_score(self, score):
         m2_per_g = 0.01
         days_per_year = 365
         score.add_score('land_use_m2', days_per_year*m2_per_g/self.production_in_ton_per_ha)
+        score.add_score('animal_harm', self.killed_animal_iq_points)
 
+    def __str__(self):
+        return self.name
 
 class Food(models.Model):
     """ Describes anything that can be eaten with various degrees of specificity
@@ -107,7 +111,6 @@ class Food(models.Model):
     def get_score_creator(self):
         if not self.score_creator:
             self.score_creator, created = ScoreCreator.objects.get_or_create(name='default')
-            self.score_creator.production_in_ton_per_ha = 5  # default value!
         return self.score_creator
 
     def recommended_product_and_score(self, user_preference):
