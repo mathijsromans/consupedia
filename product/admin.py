@@ -1,10 +1,4 @@
-from product.models import UserPreferences, Food
-from product.models import Rating
-from product.models import Recipe
-from product.models import Shop
-from product.models import ProductPrice
-from product.models import RecipeItem
-from product.models import Product
+from product.models import *
 from django.contrib import admin
 
 
@@ -45,3 +39,5 @@ admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(RecipeItem)
 admin.site.register(Shop)
 admin.site.register(ProductPrice, ProductPriceAdmin)
+admin.site.register(Certificate)
+admin.site.register(ScoreTheme)

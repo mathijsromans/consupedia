@@ -172,6 +172,23 @@ class Shop(models.Model):
         return self.name
 
 
+class ScoreTheme(models.Model):
+    name = models.CharField(max_length=256)
+
+    def __str__(self):
+        return 'Theme: {}'.format(self.name)
+
+
+class Certificate(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=256)
+    image_url = models.CharField(max_length=256)
+    themes = models.ManyToManyField(ScoreTheme)
+
+    def __str__(self):
+        return 'Certificate: {}'.format(self.name)
+
+
 class Product(models.Model):
     CURRENT_VERSION = 1
     name = models.CharField(max_length=256, null=True)  # name according to Questionmark
@@ -185,6 +202,7 @@ class Product(models.Model):
     scores = models.OneToOneField(ProductScore, on_delete=models.CASCADE, null=True)
     thumb_url = models.CharField(max_length=256, null=True)
     version = models.IntegerField(default=CURRENT_VERSION)
+    certificates = models.ManyToManyField(Certificate)
 
     def score(self, user_pref):
         result = Score(user_pref)

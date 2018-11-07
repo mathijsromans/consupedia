@@ -44,7 +44,7 @@ class QuestionmarkTheme(models.Model):
     name = models.CharField(max_length=256)
 
     def __str__(self):
-        return self.name
+        return 'QM Theme: {}'.format(self.name)
 
 
 class QuestionmarkCertificate(models.Model):
@@ -54,7 +54,7 @@ class QuestionmarkCertificate(models.Model):
     themes = models.ManyToManyField(QuestionmarkTheme)
 
     def __str__(self):
-        return 'Certificate {}'.format(self.name)
+        return 'QM Certificate: {}'.format(self.name)
 
 
 class QuestionmarkEntry(models.Model):

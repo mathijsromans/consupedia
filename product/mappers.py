@@ -1,4 +1,4 @@
-from product.models import ProductScore, Brand
+from product.models import ProductScore, Brand, ScoreTheme, Certificate
 
 
 class QuestionmarkMapper:
@@ -8,6 +8,7 @@ class QuestionmarkMapper:
         QuestionmarkMapper.map_brand(product, qm_entry)
         QuestionmarkMapper.extract_amount_from_name(product)
         QuestionmarkMapper.map_scores(product, qm_entry)
+        QuestionmarkMapper.map_themes(product, qm_entry)
         product.thumb_url = qm_entry.thumb_url
         product.save()
         return product
@@ -32,3 +33,16 @@ class QuestionmarkMapper:
         scores.animals = qm_entry.score_animals
         scores.personal_health_score = qm_entry.score_personal_health
         scores.save()
+
+    @staticmethod
+    def map_themes(product, qm_entry):
+        for qm_certificate in qm_entry.certificates.all():
+            certificate, created = Certificate.objects.get_or_create(id=qm_certificate.id)
+            certificate.name = qm_certificate.name
+            certificate.image_url = qm_certificate.image_url
+            for qm_theme in qm_certificate.themes.all():
+                theme, created = ScoreTheme.objects.get_or_create(name=qm_theme.name)
+                certificate.themes.add(theme)
+            certificate.save()
+            product.certificates.add(certificate)
+
