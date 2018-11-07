@@ -196,11 +196,20 @@ class Certificate(models.Model):
         return 'Certificate: {}'.format(self.name)
 
 
+class ScoreCreator(models.Model):
+    production_in_ton_per_ha = models.FloatField(default=0)
+
+    def set_score(self, score, product):
+        if product.scores:
+            score.add(self.scores.score(score.user_pref))
+
+
 class Product(models.Model):
     CURRENT_VERSION = 1
     name = models.CharField(max_length=256, null=True)  # name according to Questionmark
     questionmark_id = models.IntegerField(default=0)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=True, blank=True)
+    score_creator = models.ForeignKey(ScoreCreator, null=True, blank=True)
     ean_code = models.CharField(max_length=25, null=True, blank=True)
     prices = models.ManyToManyField(Shop, through='ProductPrice')
     quantity = models.IntegerField(default=1, validators=[MinValueValidator(1)])
@@ -220,13 +229,12 @@ class Product(models.Model):
     certificates = models.ManyToManyField(Certificate)
     usages = models.ManyToManyField(ProductUsage)
 
-
     def score(self, user_pref):
         result = Score(user_pref)
         if self.price:
             result.add_score('price', self.price.price)
-        if self.scores:
-            result.add(self.scores.score(user_pref))
+        if self.score_creator:
+            self.score_creator.set_score(result, self)
         return result
 
     def rel_score(self, user_pref):
@@ -417,3 +425,4 @@ class ProductPrice(models.Model):
 
     def __str__(self):
         return str(Price(self.price)) + ' bij ' + str(self.shop)
+
