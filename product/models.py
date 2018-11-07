@@ -179,6 +179,13 @@ class ScoreTheme(models.Model):
         return 'Theme: {}'.format(self.name)
 
 
+class ProductUsage(models.Model):
+    name = models.CharField(max_length=256)
+
+    def __str__(self):
+        return 'Usage: {}'.format(self.name)
+
+
 class Certificate(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=256)
@@ -211,6 +218,8 @@ class Product(models.Model):
     salt_in_g_per_100_g = models.FloatField(blank=True, null=True, default=None)
     fiber_in_g_per_100_g = models.FloatField(blank=True, null=True, default=None)
     certificates = models.ManyToManyField(Certificate)
+    usages = models.ManyToManyField(ProductUsage)
+
 
     def score(self, user_pref):
         result = Score(user_pref)

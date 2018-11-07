@@ -47,6 +47,14 @@ class QuestionmarkTheme(models.Model):
         return 'QM Theme: {}'.format(self.name)
 
 
+class QuestionmarkUsage(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=256)
+
+    def __str__(self):
+        return 'QM Usage: {}'.format(self.name)
+
+
 class QuestionmarkCertificate(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=256)
@@ -68,6 +76,7 @@ class QuestionmarkEntry(models.Model):
     score_animals = models.IntegerField(blank=True, null=True, default=None)
     score_personal_health = models.CharField(max_length=20, blank=True, null=True, default=None)
     certificates = models.ManyToManyField(QuestionmarkCertificate)
+    usages = models.ManyToManyField(QuestionmarkUsage)
     energy_in_kj_per_100_g = models.FloatField(blank=True, null=True, default=None)
     protein_in_g_per_100_g = models.FloatField(blank=True, null=True, default=None)
     carbohydrates_in_g_per_100_g = models.FloatField(blank=True, null=True, default=None)

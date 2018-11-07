@@ -31,6 +31,7 @@ def search_product(search_name):
         map_urls(entry, product_dict)
         map_certificates(entry, product_dict)
         map_nutrients(entry, product_dict)
+        map_usages(entry, product_dict)
         entry.save()
         results.append(entry)
     return results
@@ -106,3 +107,12 @@ def map_nutrients(entry, product_dict):
             entry.salt_in_g_per_100_g = nutrient['value']
         elif nutrient['code'] == 'fiber':
             entry.fiber_in_g_per_100_g = nutrient['value']
+
+
+def map_usages(entry, product_dict):
+    for usage in product_dict["usages"]:
+        id = int(usage['id'])
+        qm_usage, created = QuestionmarkUsage.objects.get_or_create(id=id)
+        qm_usage.name = usage['name']
+        qm_usage.save()
+        entry.usages.add(qm_usage)

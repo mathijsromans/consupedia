@@ -1,12 +1,13 @@
-from product.models import ProductScore, Brand, ScoreTheme, Certificate
+from product.models import *
 
 
 def map_qm_to_product(product, qm_entry):
     map_brand(product, qm_entry)
     extract_amount_from_name(product)
     map_scores(product, qm_entry)
-    map_themes(product, qm_entry)
+    map_certificates(product, qm_entry)
     map_nutrients(product, qm_entry)
+    map_usages(product, qm_entry)
     product.thumb_url = qm_entry.thumb_url
     product.save()
     return product
@@ -33,7 +34,7 @@ def map_scores(product, qm_entry):
     scores.save()
 
 
-def map_themes(product, qm_entry):
+def map_certificates(product, qm_entry):
     for qm_certificate in qm_entry.certificates.all():
         certificate, created = Certificate.objects.get_or_create(id=qm_certificate.id)
         certificate.name = qm_certificate.name
@@ -54,3 +55,10 @@ def map_nutrients(product, qm_entry):
     product.fat_total_in_g_per_100_g = qm_entry.fat_total_in_g_per_100_g
     product.salt_in_g_per_100_g = qm_entry.salt_in_g_per_100_g
     product.fiber_in_g_per_100_g = qm_entry.fiber_in_g_per_100_g
+
+
+def map_usages(product, qm_entry):
+    for qm_usage in qm_entry.usages.all():
+        usage, created = ProductUsage.objects.get_or_create(name=qm_usage.name)
+        product.usages.add(usage)
+
