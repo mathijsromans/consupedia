@@ -1,5 +1,6 @@
 import json
 import logging
+from django.db.models import Q
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.db import transaction
@@ -11,7 +12,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, render
 from .models import Product, Food
-from .models import Rating, Recipe, RecipeItem
+from .models import ScoreCreator, Recipe, RecipeItem
 from .models import UserPreferences
 from .productservice import ProductService, RecipeService
 from .forms import ProductForm, RecipeForm, RecipeURLForm, RecipeItemForm, FoodForm, RecipeItemFormset
@@ -416,6 +417,16 @@ class WhatToEatView(TemplateView):
         context['categories'] = Food.objects.all().order_by('name')
         return context
 
+
+class IncompleteView(TemplateView):
+    template_name = 'contribute/incomplete.html'
+
+    def get_context_data(self, **kwargs):
+        default = ScoreCreator.objects.get(name='default')
+        context = super().get_context_data(**kwargs)
+        context['foods'] = Food.objects.filter(Q(score_creator=default) | Q(score_creator=None)).order_by('name')
+#        context['foods'] = Food.objects.all().order_by('name')
+        return context
 
 @login_required
 def set_product_rating(request):

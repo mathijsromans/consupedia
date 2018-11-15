@@ -39,6 +39,8 @@ urlpatterns = [
     url(r'^food/product/remove/$', product.views.remove_food_product),
     url(r'^food/products/edit/(?P<food_id>[0-9]+)/$', product.views.FoodProductsEditView.as_view(), name='food-products-edit'),
 
+    url(r'^contribute/incomplete/$', product.views.IncompleteView.as_view(), name='incomplete'),
+
     url(r'^user_preferences/$', product.views.UserPreferenceEditView.as_view(), name='user_prefs'),
     url(r'^user_preference/set/?', login_required(product.views.set_user_preference_data)),
     url(r'^what_to_eat/$', product.views.WhatToEatView.as_view(), name='what_to_eat'),

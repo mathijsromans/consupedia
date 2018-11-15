@@ -4,16 +4,26 @@
 
 {% block content %}
 
-<div class="row" align="center">
-  <h3>Bijdragen</h3>
+<h3 class="view-title">Help mee!</h3>
+
+<div class="row">
+  <div class="col-sm-12" align="center">
+    <h5>Wilt u ook meehelpen om van deze website een succes te maken?</h5>
+  </div>
 </div>
 
 <div class="row">
-
-  <div class="col-sm-8 - col-sm-offset-2" align="left">
-    <p>Wilt u ook meehelpen om van Consupedia een succes te maken. Neem dan contact op met Mathijs.</p>
+  <div class="col-sm-12 col-md-12 col-lg-12">
+    <div class="panel">
+      <div class="panel-heading">
+        <h5>
+          <a href="{% url 'incomplete' %}">Help mee met het compleet maken van data!</a>
+        </h5>
+      </div>
+    </div>
   </div>
-
 </div>
+
+
 
 {% endblock %}
