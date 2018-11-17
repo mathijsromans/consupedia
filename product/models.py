@@ -367,7 +367,7 @@ class Conversion(models.Model):
 
 class Recipe(Conversion):
     name = models.CharField(max_length=256)
-    author_if_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.IntegerField()
     source_if_not_user = models.CharField(max_length=256)
     number_persons = models.IntegerField(default=0)
