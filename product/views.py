@@ -11,12 +11,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, render
-from .models import Product, Food
-from .models import ScoreCreator, Recipe, RecipeItem
-from .models import UserPreferences
-from .productservice import ProductService, RecipeService
-from .forms import ProductForm, RecipeForm, RecipeURLForm, RecipeItemForm, FoodForm, RecipeItemFormset
-from .forms import UserPreferenceForm
+from .models import *
+from .productservice import RecipeService
+from . import forms
 from product.productservice import ProductService
 
 logger = logging.getLogger(__name__)
@@ -115,11 +112,11 @@ class RecursiveRecipeView(TemplateView):
 def create_new_recipe(request):
     template_name = 'recipe/recipe_new.html'
     if request.method == 'GET':
-        formset = RecipeItemFormset(request.GET or None)
-        recipe_form = RecipeForm(request.GET or None)
+        formset = forms.RecipeItemFormset(request.GET or None)
+        recipe_form = forms.RecipeForm(request.GET or None)
     elif request.method == 'POST':
-        formset = RecipeItemFormset(request.POST)
-        recipe_form = RecipeForm(request.POST)
+        formset = forms.RecipeItemFormset(request.POST)
+        recipe_form = forms.RecipeForm(request.POST)
         if formset.is_valid() and recipe_form.is_valid():
             name = recipe_form.cleaned_data.get('name')
             provides = recipe_form.cleaned_data.get('provides')
@@ -147,7 +144,7 @@ def create_new_recipe(request):
 
 class RecipeAHAddView(FormView):
     template_name = 'recipe/recipe_new_ah.html'
-    form_class = RecipeURLForm
+    form_class = forms.RecipeURLForm
     success_url = '/recipes/'
 
     def get_initial(self, **kwargs):
@@ -268,7 +265,7 @@ def remove_food_product(request):
 
 class ProductCreateView(FormView):
     template_name = 'product/product_add.html'
-    form_class = ProductForm
+    form_class = forms.ProductForm
     success_url = '/products/'
 
     @transaction.atomic
@@ -279,7 +276,7 @@ class ProductCreateView(FormView):
 
 class ProductEditView(FormView):
     template_name = 'product/product_edit.html'
-    form_class = ProductForm
+    form_class = forms.ProductForm
     success_url = '/'
 
     @property
@@ -304,7 +301,7 @@ class ProductEditView(FormView):
 
 class RecipeItemEditView(FormView):
     template_name = 'recipe/recipe_item_edit.html'
-    form_class = RecipeItemForm
+    form_class = forms.RecipeItemForm
 
     @property
     def success_url(self):
@@ -342,7 +339,7 @@ def add_recipe_item(request, recipe_id):
 
 class FoodContributeEditView(FormView):
     template_name = 'contribute/food_edit.html'
-    form_class = FoodForm
+    form_class = forms.FoodForm
 
     @property
     def success_url(self):
@@ -376,7 +373,7 @@ class FoodContributeEditView(FormView):
 
 class FoodEditView(FormView):
     template_name = 'food/food_edit.html'
-    form_class = FoodForm
+    form_class = forms.FoodForm
 
     @property
     def success_url(self):
@@ -408,7 +405,7 @@ class FoodEditView(FormView):
 
 class UserPreferenceEditView(FormView):
     template_name = 'user/user_preference_edit.html'
-    form_class = UserPreferenceForm
+    form_class = forms.UserPreferenceForm
     success_url = '/'
 
     def get_my_preference(self):
