@@ -112,7 +112,8 @@ def create_new_recipe(request):
     elif request.method == 'POST':
         formset = forms.RecipeItemFormset(request.POST)
         recipe_form = forms.RecipeForm(request.POST)
-        if formset.is_valid() and recipe_form.is_valid():
+        user = request.user
+        if formset.is_valid() and recipe_form.is_valid() and user:
             name = recipe_form.cleaned_data.get('name')
             provides = recipe_form.cleaned_data.get('provides')
             quantity = recipe_form.cleaned_data.get('quantity')
@@ -122,6 +123,7 @@ def create_new_recipe(request):
             recipe = Recipe.objects.create(name=name,
                                            provides=provides,
                                            quantity=quantity,
+                                           user=user,
                                            source_if_not_user=source_if_not_user,
                                            preparation_time_in_min=preparation_time_in_min,
                                            preparation=preparation)
@@ -154,10 +156,13 @@ class RecipeAHAddView(FormView):
 
     @transaction.atomic
     def form_valid(self, form):
+        if not self.request.user.is_authenticated():
+            return super().form_invalid(form)
         recipe, foods_created = RecipeService.create_recipe_from_ah_id(
             form.cleaned_data['url'],
             form.cleaned_data['provides'],
-            form.cleaned_data['quantity'])
+            form.cleaned_data['quantity'],
+            self.request.user)
         logger.info('CREATED RECIPE ' + str(recipe))
         foods_created = list(recipe.recipeitem_set.values_list('food_id', flat=True))
         recipe_id = recipe.id if recipe else 0

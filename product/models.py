@@ -168,7 +168,10 @@ class Food(models.Model):
         return Recommendation(None, recipe_and_score[0], recipe_and_score[1])
 
     def score(self, user_preference):
-        return self.recommended_product_recipe_score(user_preference).score
+        s = self.recommended_product_recipe_score(user_preference).score
+        if not s:
+            s = Score(user_preference)
+        return s
 
     def __str__(self):
         return self.name

@@ -141,13 +141,13 @@ class ProductService:
 class RecipeService():
 
     @staticmethod
-    def create_recipe_from_ah_id(recipe_id, provides, quantity):
+    def create_recipe_from_ah_id(recipe_id, provides, quantity, user):
         recipe = allerhande_scraper.get_recipe(recipe_id)
         return RecipeService.create_recipe(
             name=recipe['name'],
             provides=provides,
             quantity=quantity,
-            user=None,
+            user=user,
             source_if_not_user=recipe['url'],
             number_persons=recipe['number_persons'],
             preparation_time_in_min=recipe['preparation_time_in_min'],

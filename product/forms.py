@@ -62,8 +62,8 @@ class RecipeForm(forms.Form):
                            widget=forms.TextInput(attrs={'placeholder': 'Naam van recept...'}))
     provides = FoodWithUnitChoiceField(label='Resultaat', empty_label=None, queryset=Food.objects.all().order_by('name'))
     quantity = forms.IntegerField(label='Aantal', widget=forms.NumberInput(attrs={'placeholder': 'Hoeveelheid...'}))
-    source_if_not_user = forms.CharField(label='Bron', max_length=256,
-                           widget=forms.TextInput(attrs={'placeholder': 'Bron...'}))
+    source_if_not_user = forms.CharField(label='Bron', initial='-', max_length=256, required=False,
+                           widget=forms.TextInput())
     preparation_time_in_min = forms.IntegerField(label='Bereidingstijd in minuten', widget=forms.NumberInput(attrs={'placeholder': 'Bereidingstijd...'}))
     preparation = forms.CharField(label='Bereidingswijze', required=False,
                            widget=forms.Textarea(attrs={'placeholder': 'Bereidingswijze...'}))

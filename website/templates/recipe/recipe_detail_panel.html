@@ -33,6 +33,9 @@
   {% if recipe.source_if_not_user %}
   <div class="panel-footer">
     Bron: <a href="{{ recipe.source_if_not_user }}">{{ recipe.source_if_not_user }}</a><br/>
+    {% if recipe.user %}
+      Toegevoegd door: <strong>{{ recipe.user }}</strong><br/>
+    {% endif %}
   </div>
   {% endif %}
 </div>
