@@ -1,14 +1,15 @@
 {% extends "website/base.html" %}
+
 {% load static %}
 {% load consupedia %}
 
-{% block title %} Missende data {{ block.super }}{% endblock %}
+{% block title %} Categories {{ block.super }}{% endblock %}
 
 {% block content %}
 
-<div class="row" align="center">
-  <h4>Eten zonder cijferinformatie</h4>
-</div>
+
+<h3 class="view-title">Eten</h3>
+
 <div class="row" align="center">
   {% for food in foods %}
   <a href="{% url 'contribute-food' food.id %}"><div class="food" id="{{food.id}}">{{ food.name }}</div></a>
@@ -17,4 +18,3 @@
 <hr/>
 
 {% endblock %}
-

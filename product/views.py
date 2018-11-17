@@ -340,6 +340,40 @@ def add_recipe_item(request, recipe_id):
     return redirect(reverse('recipe_item-edit', args=(recipe_item.id,)))
 
 
+class FoodContributeEditView(FormView):
+    template_name = 'contribute/food_edit.html'
+    form_class = FoodForm
+
+    @property
+    def success_url(self):
+        return '/contribute/'
+
+    @property
+    def food(self):
+        return Food.objects.get(id=self.kwargs['food_id'])
+
+    def get_initial(self):
+        food = self.food
+        return {'name': food.name,
+                'unit': food.unit,
+                'score_creator': food.score_creator}
+
+    @transaction.atomic
+    def form_valid(self, form):
+        food = self.food
+        food.name = form.cleaned_data['name']
+        food.unit = form.cleaned_data['unit']
+        food.equiv_weight = form.cleaned_data['equiv_weight']
+        food.score_creator = form.cleaned_data['score_creator']
+        food.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['food'] = self.food
+        return context
+
+
 class FoodEditView(FormView):
     template_name = 'food/food_edit.html'
     form_class = FoodForm
@@ -425,8 +459,18 @@ class IncompleteView(TemplateView):
         default = ScoreCreator.objects.get(name='default')
         context = super().get_context_data(**kwargs)
         context['foods'] = Food.objects.filter(Q(score_creator=default) | Q(score_creator=None)).order_by('name')
-#        context['foods'] = Food.objects.all().order_by('name')
         return context
+
+
+class ContributeFoodsView(TemplateView):
+    template_name = 'contribute/foods.html'
+
+    def get_context_data(self, **kwargs):
+        default = ScoreCreator.objects.get(name='default')
+        context = super().get_context_data(**kwargs)
+        context['foods'] = Food.objects.all().order_by('name')
+        return context
+
 
 @login_required
 def set_product_rating(request):

@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import formset_factory
 from django.core.exceptions import ValidationError
-from product.models import Food
+from product.models import Food, ScoreCreator
 from product.amount import ProductAmount
 
 
@@ -40,6 +40,7 @@ class FoodForm(forms.Form):
     name = forms.CharField(label='Naam', max_length=256)
     unit = forms.ChoiceField(label='Eenheid', choices=ProductAmount.UNIT_CHOICES)
     equiv_weight = forms.FloatField(label='Equivalent gewicht in gram', required=False)
+    score_creator = forms.ModelChoiceField(label='Cijfers', queryset=ScoreCreator.objects.all().order_by('name'))
 
 
 class UserPreferenceForm(forms.Form):
