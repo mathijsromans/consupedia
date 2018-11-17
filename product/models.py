@@ -83,6 +83,7 @@ class ScoreCreator(models.Model):
     production_in_ton_per_ha = models.FloatField(default=5)
     killed_animal_iq_points = models.FloatField(default=0)
     sources = models.TextField(blank=True)
+    user = models.ForeignKey(User, null=False)
 
     def append_score(self, score, weight):
         m2_per_g = 0.01

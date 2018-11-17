@@ -37,7 +37,11 @@
             {% bootstrap_field form.sources %}
           </div>
         </div>
-
+        <div class="row">
+          <div class="col-sm-12">
+            Aangemaakt door: <strong>{{ sc.user }}</strong>
+          </div>
+        </div>
 
         {% buttons %}
           <button type="submit" class="btn btn-primary">
