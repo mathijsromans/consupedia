@@ -10,6 +10,10 @@
 
 <h3 class="view-title">Eten</h3>
 
+ {% if not is_anonymous_user %}
+    <a class="btn btn-primary" href="{% url 'sc-add' %}">Maak nieuwe cijfers</a>
+  {% endif %}
+
 <div class="row" align="center">
   {% for sc in scs %}
   <a href="{% url 'contribute-sc' sc.id %}"><div class="food" id="{{sc.id}}">{{ sc.name }}</div></a>

@@ -401,10 +401,7 @@ class FoodEditView(FormView):
 class ScoreCreatorEditView(FormView):
     template_name = 'contribute/score_creator_edit.html'
     form_class = forms.ScoreCreatorForm
-
-    @property
-    def success_url(self):
-        return '/contribute/'
+    success_url = '/contribute/'
 
     def score_creator(self):
         return ScoreCreator.objects.get(id=self.kwargs['sc_id'])
@@ -430,6 +427,24 @@ class ScoreCreatorEditView(FormView):
         context = super().get_context_data(**kwargs)
         context['sc'] = self.score_creator()
         return context
+
+
+class ScoreCreatorCreateView(FormView):
+    template_name = 'contribute/score_creator_add.html'
+    form_class = forms.ScoreCreatorForm
+    success_url = '/contribute/'
+
+    @transaction.atomic
+    def form_valid(self, form):
+        if not self.request.user.is_authenticated():
+            return super().form_invalid(form)
+        ScoreCreator.objects.create(
+            name=form.cleaned_data['name'],
+            production_in_ton_per_ha=form.cleaned_data['production_in_ton_per_ha'],
+            killed_animal_iq_points=form.cleaned_data['killed_animal_iq_points'],
+            sources=form.cleaned_data['sources'],
+            user=self.request.user)
+        return super().form_valid(form)
 
 
 class UserPreferenceEditView(FormView):
