@@ -15,6 +15,7 @@ from .models import *
 from .productservice import RecipeService
 from . import forms
 from product.productservice import ProductService
+from product import settings
 
 logger = logging.getLogger(__name__)
 
@@ -462,7 +463,7 @@ class UserPreferenceEditView(FormView):
 
     @staticmethod
     def get_my_preference_by_request(request):
-        up, created = UserPreferences.objects.get_or_create( user = request.user )
+        up, created = UserPreferences.objects.get_or_create(user=request.user)
         return up
 
     def get_initial(self):
@@ -485,7 +486,17 @@ class UserPreferenceEditView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        recipe_count = Recipe.objects.filter(user=self.request.user).count()
+        sc_count = ScoreCreator.objects.filter(user=self.request.user).count()
+        recipe_count_score = recipe_count * settings.POINTS_PER_CREATED_RECIPE
+        sc_count_score = sc_count * settings.POINTS_PER_CREATED_SCORE_CREATOR
+        total_score = recipe_count_score + sc_count_score
         context['userPreference'] = self.get_my_preference()
+        context['recipe_count'] = recipe_count
+        context['recipe_count_score'] = recipe_count_score
+        context['sc_count'] = sc_count
+        context['sc_count_score'] = sc_count_score
+        context['total_score'] = total_score
         return context
         
 

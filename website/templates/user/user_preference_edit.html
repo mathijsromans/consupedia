@@ -10,6 +10,7 @@
   <h3>Voorkeuren voor {{ userPreference.user.username }}</h3>
 </div>
 
+<div class="row" align="center">
 {% include "user/user_preference_edit_block.html" %}
 
 <section class="csp-settings-relview">
@@ -19,5 +20,23 @@
 	<div class="csp-relview csp-animals"></div>
 	<div class="csp-relview csp-personal_health"></div>
 </section>
+</div>
+<div class="row" align="center">
+  <h3>Jouw score</h3>
+</div>
+<table class="table">
+    <tr>
+      <td>{{ recipe_count }} recepten gemaakt</td>
+      <td>{{ recipe_count_score }} dopamine-shotjes <span class="fa fa-thumbs-o-up"></span></td>
+    </tr>
+    <tr>
+      <td>{{ sc_count }} cijfers gemaakt</td>
+      <td>{{ sc_count_score }} dopamine-shotjes <span class="fa fa-thumbs-o-up"></span></td>
+    </tr>
+    <tr>
+      <td><strong>Totaal</strong></td>
+      <td><strong>{{ total_score }} dopamine-shotjes <span class="fa fa-thumbs-o-up"></span></strong></td>
+    </tr>
+</table>
 
 {% endblock %}
