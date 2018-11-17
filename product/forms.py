@@ -67,3 +67,12 @@ class RecipeForm(forms.Form):
     preparation_time_in_min = forms.IntegerField(label='Bereidingstijd in minuten', widget=forms.NumberInput(attrs={'placeholder': 'Bereidingstijd...'}))
     preparation = forms.CharField(label='Bereidingswijze', required=False,
                            widget=forms.Textarea(attrs={'placeholder': 'Bereidingswijze...'}))
+
+
+class ScoreCreatorForm(forms.Form):
+
+    name = forms.CharField(label='Naam', max_length=256,
+                           widget=forms.TextInput(attrs={'placeholder': 'Naam van dit type eten...'}))
+    production_in_ton_per_ha = forms.FloatField(label='Productie in ton per hectare', required=False)
+    killed_animal_iq_points = forms.FloatField(label='Aantal hercencellen per kg', required=False)
+    sources = forms.CharField(label='Bron', max_length=256, widget=forms.TextInput(attrs={'placeholder': 'Bron...'}))

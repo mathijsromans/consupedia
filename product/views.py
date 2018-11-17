@@ -74,11 +74,6 @@ class RecipesView(TemplateView):
 def calculateTotalScore(recipe, up):
     scores = recipe.score(up)
     return scores
-    return scores['total_price_weight'] + \
-        scores['total_environment_weight'] + \
-        scores['total_social_weight'] + \
-        scores['total_animals_weight'] + \
-        scores['total_personal_health_weight']
 
 
 class RecipeDetailView(TemplateView):
@@ -403,6 +398,40 @@ class FoodEditView(FormView):
         return context
 
 
+class ScoreCreatorEditView(FormView):
+    template_name = 'contribute/score_creator_edit.html'
+    form_class = forms.ScoreCreatorForm
+
+    @property
+    def success_url(self):
+        return '/contribute/'
+
+    def score_creator(self):
+        return ScoreCreator.objects.get(id=self.kwargs['sc_id'])
+
+    def get_initial(self):
+        sc = self.score_creator()
+        return {'name': sc.name,
+                'production_in_ton_per_ha': sc.production_in_ton_per_ha,
+                'killed_animal_iq_points': sc.killed_animal_iq_points,
+                'sources': sc.sources}
+
+    @transaction.atomic
+    def form_valid(self, form):
+        sc = self.score_creator()
+        sc.name = form.cleaned_data['name']
+        sc.production_in_ton_per_ha = form.cleaned_data['production_in_ton_per_ha']
+        sc.killed_animal_iq_points = form.cleaned_data['killed_animal_iq_points']
+        sc.sources = form.cleaned_data['sources']
+        sc.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['sc'] = self.score_creator()
+        return context
+
+
 class UserPreferenceEditView(FormView):
     template_name = 'user/user_preference_edit.html'
     form_class = forms.UserPreferenceForm
@@ -463,9 +492,17 @@ class ContributeFoodsView(TemplateView):
     template_name = 'contribute/foods.html'
 
     def get_context_data(self, **kwargs):
-        default = ScoreCreator.objects.get(name='default')
         context = super().get_context_data(**kwargs)
         context['foods'] = Food.objects.all().order_by('name')
+        return context
+
+
+class ContributeScoreCreatorsView(TemplateView):
+    template_name = 'contribute/score_creators.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['scs'] = ScoreCreator.objects.all().order_by('name')
         return context
 
 

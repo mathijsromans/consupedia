@@ -1,0 +1,20 @@
+{% extends "website/base.html" %}
+
+{% load static %}
+{% load consupedia %}
+
+{% block title %} Cijfers {{ block.super }}{% endblock %}
+
+{% block content %}
+
+
+<h3 class="view-title">Eten</h3>
+
+<div class="row" align="center">
+  {% for sc in scs %}
+  <a href="{% url 'contribute-sc' sc.id %}"><div class="food" id="{{sc.id}}">{{ sc.name }}</div></a>
+  {% endfor %}
+</div>
+<hr/>
+
+{% endblock %}
