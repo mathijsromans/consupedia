@@ -22,7 +22,7 @@ function sliderChanged(e) {
 }
 
 function updateUiWeights(preferences) {
-	var totalSize = 75;
+	var totalSize = 100;
 	var combinedRelWeight = 0;
 	
 	for(var i = 0; i < preferences.length; i++)
@@ -42,7 +42,7 @@ function updateUiWeights(preferences) {
 		
 		var relSize = maxSize * relWeight;
 		
-		$('.csp-settings-relview .csp-' + pref).css({"width" : relSize + "vw", "height" : relSize + "vw"});
+		$('.csp-settings-relview .csp-' + pref).css({"width" : relSize + "%"});
 		$('.csp-setting-sliders .csp-' + pref +'-value').text(weight + "%");
 	}
 	

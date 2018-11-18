@@ -107,9 +107,8 @@ body {
 .csp-settings-relview > div  {
 	float:left;
 	margin:0;
-	height:8vw;
+	height:6vh;
 	width:8vw;
-	border-radius:50%;
 	transition:width 1s, height 1s;
 }
 

@@ -1,0 +1,18 @@
+{% extends "website/base.html" %}
+
+{% load bootstrap3 %}
+
+{% block title %}Edit recipe {{ recipe.name }} {{ block.super }}{% endblock %}
+
+{% block content %}
+
+<div class="vertical-spacer-20"></div>
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    {% include "recipe/recipe_detail_panel_edit.html" %}
+  </div>
+</div>
+
+
+{% endblock %}
