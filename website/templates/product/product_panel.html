@@ -3,7 +3,7 @@
 <div class="panel">
 
   <div class="panel-heading">
-    <span class="h5"><a href="{% url 'product' product.id %}">{{ product.name|title }}</a></span>
+    <span class="h5"><a href="{% url 'product' product.id %}">{{ product.name }}</a></span>
     {% if not is_anonymous_user %}
       {% get_product_rating product user as user_rating %}
     {% endif %}
