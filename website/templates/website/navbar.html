@@ -15,9 +15,9 @@
       <div class="navbar-collapse collapse navbar-responsive-collapse">
         <ul class="nav navbar-nav">
 
-          <li><a href="{% url 'products' %}">Producten</a></li>
           <li><a href="{% url 'foods' %}">Eten</a></li>
           <li><a href="{% url 'recipes' %}">Recepten</a></li>
+          <li><a href="{% url 'products' %}">Producten</a></li>
           {% if user.is_authenticated %}
           <li><a href="{% url 'user_prefs' %}">Voorkeuren</a></li>
           <li><a href="{% url 'contribute' %}">Help mee</a></li>
