@@ -21,7 +21,9 @@ def create_types(apps, schema_editor):
     Type = apps.get_model("product", "ScoreCreator")
     User = apps.get_registered_model('auth', 'User')
     user_default = User.objects.get(email='default@default.com')
-    Type.objects.using(db_alias).create(name="default", user=user_default)
+    score_creators = Type.objects.using(db_alias).filter(name="default")
+    if not score_creators.exists():
+        Type.objects.using(db_alias).create(name="default", user=user_default)
 
 
 class Migration(migrations.Migration):
