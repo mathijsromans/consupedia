@@ -63,6 +63,12 @@ class FoodsView(TemplateView):
         return context
 
 
+def update_food_products(request, food_id):
+    food = Food.objects.get(id=food_id)
+    ProductService.update_products(food)
+    return redirect(reverse('food-products-edit', args=(food.id,)))
+
+
 class RecipesView(TemplateView):
     template_name = 'recipe/recipe_list.html'
 

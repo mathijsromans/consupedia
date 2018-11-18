@@ -37,6 +37,7 @@ urlpatterns = [
     url(r'^food/edit/(?P<food_id>[0-9]+)/$', product.views.FoodEditView.as_view(), name='food-edit'),
     url(r'^food/product/remove/$', product.views.remove_food_product),
     url(r'^food/products/edit/(?P<food_id>[0-9]+)/$', product.views.FoodProductsEditView.as_view(), name='food-products-edit'),
+    url(r'^food/products/update/(?P<food_id>[0-9]+)/$', product.views.update_food_products, name='food-products-update'),
 
     url(r'^contribute/$', TemplateView.as_view(template_name="website/contribute.html"), name='contribute'),
     url(r'^contribute/incomplete/$', product.views.IncompleteView.as_view(), name='incomplete'),
