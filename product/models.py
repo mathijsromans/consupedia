@@ -261,10 +261,6 @@ class Product(models.Model):
     certificates = models.ManyToManyField(Certificate)
     usages = models.ManyToManyField(ProductUsage)
 
-    def save(self, *args, **kwargs):
-        self.name = self.name.lower()
-        return super().save(*args, **kwargs)
-
     def score(self, user_pref):
         s = Score(user_pref)
         if self.price:
