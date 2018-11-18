@@ -1,6 +1,7 @@
 import json
 import logging
 from django.db.models import Q
+from django.contrib.auth.models import User, Group
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.db import transaction
@@ -15,7 +16,7 @@ from .models import *
 from .productservice import RecipeService
 from . import forms
 from product.productservice import ProductService
-from product import settings
+from product import utils
 
 logger = logging.getLogger(__name__)
 
@@ -486,17 +487,9 @@ class UserPreferenceEditView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        recipe_count = Recipe.objects.filter(user=self.request.user).count()
-        sc_count = ScoreCreator.objects.filter(user=self.request.user).count()
-        recipe_count_score = recipe_count * settings.POINTS_PER_CREATED_RECIPE
-        sc_count_score = sc_count * settings.POINTS_PER_CREATED_SCORE_CREATOR
-        total_score = recipe_count_score + sc_count_score
+        user_scores = utils.get_user_scores(self.request.user)
         context['userPreference'] = self.get_my_preference()
-        context['recipe_count'] = recipe_count
-        context['recipe_count_score'] = recipe_count_score
-        context['sc_count'] = sc_count
-        context['sc_count_score'] = sc_count_score
-        context['total_score'] = total_score
+        context['user_scores'] = user_scores
         return context
         
 
@@ -525,6 +518,22 @@ class ContributeFoodsView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['foods'] = Food.objects.all().order_by('name')
+        return context
+
+
+class ContributeRankingsView(TemplateView):
+    template_name = 'contribute/rankings.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        scores_and_users = []
+        anonymous_group = Group.objects.get(name='anonymous')
+        for user in User.objects.exclude(groups__id=anonymous_group.id):
+            if not user.is_anonymous:
+                score = utils.get_user_scores(user)
+                scores_and_users.append((score, user))
+        scores_and_users.sort(key=lambda x: x[0].total_score, reverse=True)
+        context['scores_and_users'] = scores_and_users
         return context
 
 

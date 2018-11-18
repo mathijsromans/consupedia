@@ -45,6 +45,7 @@ urlpatterns = [
     url(r'^contribute/scs/$', product.views.ContributeScoreCreatorsView.as_view(), name='contribute-scs'),
     url(r'^contribute/sc/(?P<sc_id>[0-9]+)/$', product.views.ScoreCreatorEditView.as_view(), name='contribute-sc'),
     url(r'^contribute/sc/add/$', product.views.ScoreCreatorCreateView.as_view(), name='sc-add'),
+    url(r'^contribute/rankings/$', product.views.ContributeRankingsView.as_view(), name='contribute-rankings'),
 
     url(r'^user_preferences/$', product.views.UserPreferenceEditView.as_view(), name='user_prefs'),
     url(r'^user_preference/set/?', login_required(product.views.set_user_preference_data)),

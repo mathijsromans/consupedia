@@ -1,0 +1,22 @@
+{% extends "website/base.html" %}
+
+{% load static %}
+{% load consupedia %}
+
+{% block title %} Hoogste scores van vrijwilligers {{ block.super }}{% endblock %}
+
+{% block content %}
+
+
+<h3 class="view-title">Hoogste scores van vrijwilligers</h3>
+
+<table class="table">
+  {% for score, user in scores_and_users %}
+    <tr>
+      <td>{{ score.total_score }} dopamine-shotjes <span class="fa fa-thumbs-o-up"></span></td>
+      <td>{{ user }} </td>
+    </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}
