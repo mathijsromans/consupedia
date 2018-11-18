@@ -307,7 +307,7 @@ class RecipeItemEditView(FormView):
 
     @property
     def success_url(self):
-        return '/recipe/' + str(self.recipe_item.recipe.id)
+        return '/recipes/edit/' + str(self.recipe_item.recipe.id)
 
     @property
     def recipe_item(self):
