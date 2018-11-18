@@ -20,15 +20,16 @@ body {
     height: 20px;
 }
 
-.consupediaLogo
-{
+.consupedia-logo {
    background: url("ConsupediaLogo.png");
    background-size: 30px 60px;
    background-repeat: no-repeat;
-   width: 150px;
-   height: 60px;
    padding-left: 30px;
-   font-size: 20px;
+}
+
+.consupedia-brand-text {
+   padding-left: 10px;
+   font-size: 22px;
    font-weight: 500;
 }
 

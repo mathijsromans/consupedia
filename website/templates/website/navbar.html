@@ -7,7 +7,9 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand consupediaLogo" href="/">Consupedia</a>
+        <a class="navbar-brand consupedia-logo" href="/">
+          <span class="consupedia-brand-text">Consupedia</span>
+        </a>
       </div>
 
       <div class="navbar-collapse collapse navbar-responsive-collapse">
@@ -19,7 +21,7 @@
           {% if user.is_authenticated %}
           <li><a href="{% url 'user_prefs' %}">Voorkeuren</a></li>
           <li><a href="{% url 'contribute' %}">Help mee</a></li>
-		  {% endif %}
+		      {% endif %}
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
