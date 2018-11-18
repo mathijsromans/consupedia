@@ -51,7 +51,7 @@ class FoodsView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         create_query = self.request.GET.get('create_box', None)
         if create_query:
-            food, created = Food.objects.get_or_create(name=create_query)
+            food, created = Food.objects.get_or_create(name=create_query.lower())
             if self.request.GET.get('create_new_with_products'):
                 ProductService.update_products(food)
                 return redirect(reverse('food-products-edit', args=(food.id,)))
