@@ -40,7 +40,7 @@ class FoodForm(forms.Form):
     name = forms.CharField(label='Naam', max_length=256)
     unit = forms.ChoiceField(label='Eenheid', choices=ProductAmount.UNIT_CHOICES)
     equiv_weight = forms.FloatField(label='Equivalent gewicht in gram', required=False)
-    score_creator = forms.ModelChoiceField(label='Cijfers', queryset=ScoreCreator.objects.all().order_by('name'))
+    score_creator = forms.ModelChoiceField(label='Cijfers', queryset=ScoreCreator.objects.all().order_by('name'), required=False)
 
 
 class UserPreferenceForm(forms.Form):
