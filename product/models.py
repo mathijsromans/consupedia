@@ -108,7 +108,7 @@ class Food(models.Model):
     """
 
     name = models.CharField(max_length=255)
-    unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.NO_UNIT)
+    unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.GRAM)
     score_creator = models.ForeignKey(ScoreCreator, null=True)
     equiv_weight = models.FloatField(null=True, blank=True)
 
