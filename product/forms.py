@@ -12,7 +12,7 @@ def validate_price(value):
 
 class FoodWithUnitChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, food):
-        return '(' + food.unit + ') ' + food.name
+        return food.name + ' (' + food.unit + ')'
 
 
 class ProductForm(forms.Form):
