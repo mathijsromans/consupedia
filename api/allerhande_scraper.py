@@ -63,7 +63,7 @@ def get_name(page_html_text):
 
 def get_number_persons(page_html_text):
     matches = regex_number_persons.findall(page_html_text)
-    return int(matches[0])
+    return int(matches[0]) if matches else 1
 
 
 def get_picture(page_html_text):

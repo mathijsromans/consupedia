@@ -52,7 +52,7 @@ class UserPreferenceForm(forms.Form):
 
 
 class RecipeURLForm(forms.Form):
-    url = forms.CharField(label='url', max_length=256)
+    url = forms.CharField(label='AH R-Rxxxxxxx code', max_length=256)
     provides = forms.ModelChoiceField(label='resultaat', empty_label=None, queryset=Food.objects.all().order_by('name'))
     quantity = forms.IntegerField(label='hoeveelheid', min_value=1)
 
