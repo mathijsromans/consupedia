@@ -388,7 +388,8 @@ class FoodEditView(FormView):
     def get_initial(self):
         food = self.food
         return {'name': food.name,
-                'unit': food.unit}
+                'unit': food.unit,
+                'equiv_weight': food.equiv_weight}
 
     @transaction.atomic
     def form_valid(self, form):
