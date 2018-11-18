@@ -1,18 +1,22 @@
 
-<div class="panel">
+<div class="panel panel-default">
   <div class="panel-heading" >
-    <span align="center">
-      <h5><a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.name }}</a></h5>
-    </span>
-    <div><i class="fa fa-clock-o"></i> {{ recipe.preparation_time_in_min }} min</div>
-    <div><i class="fa fa-clock-o"></i> {{ recipe.waiting_time_in_min }} min</div>
-    <div><i class="fa fa-user"></i> {{ recipe.number_persons }}</div>
-    <div><i class="fa fa-euro"></i>{{ score.price }}</div>
+    <div class="text-center h5">
+      <a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.name }}</a>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-3" title="Bereidingstijd"><i class="fa fa-clock-o"></i> {{ recipe.preparation_time_in_min }} min</div>
+      <div class="col-sm-3" title="Wachttijd"><i class="fa fa-clock-o"></i> {{ recipe.waiting_time_in_min }} min</div>
+      <div class="col-sm-3" title="Personen"><i class="fa fa-user"></i> {{ recipe.number_persons }}</div>
+      <div class="col-sm-3" title="Kosten"><i class="fa fa-euro"></i>{{ score.price }}</div>
+    </div>
+
     <div><i class="fa fa-bar-chart"></i>{{ score }}</div>
   </div>
 
   {% if food_quantity_scores %}
-  <table class="table table-striped">
+  <table class="table">
     {% for fqs in food_quantity_scores %}
     <tr>
       <th>{{ fqs.quantity|floatformat }} {{ fqs.food.unit }}</th>
@@ -24,12 +28,14 @@
   </table>
   {% endif %}
 
+  <div class="panel-body">
    <div>
       Resultaat: <strong>{{ recipe.quantity }} {{ recipe.provides.unit }} <a href="{% url 'food' recipe.provides.id %}">{{ recipe.provides }}</a></strong>
     </div>
    <div>
       {{ preparation }}
     </div>
+  </div>
 
   {% if recipe.source_if_not_user %}
   <div class="panel-footer">
