@@ -41,6 +41,7 @@ urlpatterns = [
     url(r'^contribute/$', TemplateView.as_view(template_name="website/contribute.html"), name='contribute'),
     url(r'^contribute/incomplete/$', product.views.IncompleteView.as_view(), name='incomplete'),
     url(r'^contribute/foods/$', product.views.ContributeFoodsView.as_view(), name='contribute-foods'),
+    url(r'^contribute/foods/no_recipe/$', product.views.ContributeFoodsWithoutRecipeView.as_view(), name='contribute-food-without-recipes'),
     url(r'^contribute/food/(?P<food_id>[0-9]+)/$', product.views.FoodContributeEditView.as_view(), name='contribute-food'),
     url(r'^contribute/scs/$', product.views.ContributeScoreCreatorsView.as_view(), name='contribute-scs'),
     url(r'^contribute/sc/(?P<sc_id>[0-9]+)/$', product.views.ScoreCreatorEditView.as_view(), name='contribute-sc'),

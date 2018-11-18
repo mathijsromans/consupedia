@@ -522,6 +522,20 @@ class ContributeFoodsView(TemplateView):
         return context
 
 
+class ContributeFoodsWithoutRecipeView(TemplateView):
+    template_name = 'contribute/foods_without_recipe.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        foods_without_recipe = []
+        for food in Food.objects.all().order_by('name'):
+            if not food.conversion_set.exists() and food.recipeitem_set.exists():
+                foods_without_recipe.append(food)
+
+        context['foods'] = foods_without_recipe
+        return context
+
+
 class ContributeRankingsView(TemplateView):
     template_name = 'contribute/rankings.html'
 
