@@ -1,4 +1,8 @@
 import re
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class ProductAmount:
@@ -22,7 +26,7 @@ class ProductAmount:
     @staticmethod
     def extract_size_substring(s):
         re_amount1 = re.compile('[0-9,]+ *(?:gram|liter)', re.IGNORECASE)
-        re_amount2 = re.compile('[0-9,]+ *(?:g|ml|kg|l|cl)', re.IGNORECASE)
+        re_amount2 = re.compile('[0-9,]+ *(?:g|ml|kg|l|cl|stuk)', re.IGNORECASE)
         sizes = re_amount1.findall(s) or re_amount2.findall(s)
         if sizes:
             return sizes[-1]
@@ -32,15 +36,19 @@ class ProductAmount:
     def from_str(cls, size):
         quantity = 0
         unit = ProductAmount.NO_UNIT
+        #logger.info('Amount from_str: {} ->'.format(size))
         
         ### remove the circa, ca.
         size = size.replace(',', '.')
         size = size.replace('ca', '')
         size = size.replace('ca.', '')
         size = size.replace('circa', '')
+        size = size.replace('netje', '')
 
         # 'per stuk' -> '1 stuk'
         size = size.replace('per', '1')
+
+        #logger.info('-> {}'.format(size))
 
         numbers = re.findall(r'[-+]?\d*\.\d+|\d+', size)
         if numbers:

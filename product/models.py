@@ -293,6 +293,7 @@ class Product(models.Model):
 
     def amount_from_name(self):
         size = ProductAmount.extract_size_substring(self.name)
+        logger.info('amount_from_name {} -> {}'.format(self.name, size))
         if size:
             return ProductAmount.from_str(size)
         return None
