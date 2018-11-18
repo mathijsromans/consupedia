@@ -184,6 +184,12 @@ class Food(models.Model):
     def used_in_recipes(self):
         return Recipe.objects.filter(recipeitem__food=self).all()
 
+    def is_used_in_or_by_any_recipe(self):
+        return self.conversion_set.exists() or self.recipeitem_set.exists()
+
+    def can_be_removed(self):
+        return not self.is_used_in_or_by_any_recipe() and not self.product_set.exists()
+
     def __str__(self):
         return self.name
 

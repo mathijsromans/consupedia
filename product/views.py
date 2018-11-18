@@ -272,6 +272,19 @@ class FoodProductsEditView(TemplateView):
         return context
 
 
+class FoodRemoveView(TemplateView):
+    template_name = 'food/food_removed.html'
+
+    def get_context_data(self, food_id, **kwargs):
+        food = Food.objects.get(id=food_id)
+        food_name = food.name
+        context = super().get_context_data(**kwargs)
+        if food.can_be_removed():
+            food.delete()
+            context['food_name'] = food_name
+        return context
+
+
 class FoodView(TemplateView):
     template_name = 'food/food.html'
 
@@ -389,13 +402,13 @@ def add_recipe_item(request, recipe_id):
     return redirect(reverse('recipe_item-edit', args=(recipe_item.id,)))
 
 
-class FoodContributeEditView(FormView):
-    template_name = 'contribute/food_edit.html'
+class FoodEditView(FormView):
+    template_name = 'food/food_edit.html'
     form_class = forms.FoodForm
 
     @property
     def success_url(self):
-        return '/contribute/'
+        return '/food/' + str(self.food.id)
 
     @property
     def food(self):
@@ -414,39 +427,6 @@ class FoodContributeEditView(FormView):
         food.unit = form.cleaned_data['unit']
         food.equiv_weight = form.cleaned_data['equiv_weight']
         food.score_creator = form.cleaned_data['score_creator']
-        food.save()
-        return super().form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['food'] = self.food
-        return context
-
-
-class FoodEditView(FormView):
-    template_name = 'food/food_edit.html'
-    form_class = forms.FoodForm
-
-    @property
-    def success_url(self):
-        return '/food/' + str(self.food.id)
-
-    @property
-    def food(self):
-        return Food.objects.get(id=self.kwargs['food_id'])
-
-    def get_initial(self):
-        food = self.food
-        return {'name': food.name,
-                'unit': food.unit,
-                'equiv_weight': food.equiv_weight}
-
-    @transaction.atomic
-    def form_valid(self, form):
-        food = self.food
-        food.name = form.cleaned_data['name']
-        food.unit = form.cleaned_data['unit']
-        food.equiv_weight = form.cleaned_data['equiv_weight']
         food.save()
         return super().form_valid(form)
 
@@ -579,7 +559,7 @@ class ContributeFoodsWithoutRecipeView(TemplateView):
         context = super().get_context_data(**kwargs)
         foods_without_recipe = []
         for food in Food.objects.all().order_by('name'):
-            if not food.conversion_set.exists() and not food.recipeitem_set.exists():
+            if not food.is_used_in_or_by_any_recipe():
                 foods_without_recipe.append(food)
 
         context['foods'] = foods_without_recipe

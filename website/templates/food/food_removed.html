@@ -1,0 +1,13 @@
+{% extends "website/base.html" %}
+
+{% load static %}
+{% load consupedia %}
+
+{% block title %} Eten {{ food_name }} is verwijderd {{ block.super }}{% endblock %}
+
+{% block content %}
+
+
+<h3 class="view-title">Eten {{ food_name }} is verwijderd</h3>
+
+{% endblock %}
