@@ -30,6 +30,7 @@ class ProductsView(TemplateView):
             products_all = ProductService.search_products(search_query)
         else:
             products_all = ProductService.get_all_products()
+        products_all = products_all.order_by('name')
         paginator = Paginator(products_all, 100)
         page = self.request.GET.get('page')
         try:
