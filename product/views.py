@@ -190,8 +190,49 @@ class RecipeEditNewView(TemplateView):
         return context
 
 
-class RecipeEditView(TemplateView):
+class RecipeEditView(FormView):
     template_name = 'recipe/recipe_edit.html'
+    form_class = forms.RecipeForm
+
+    @property
+    def success_url(self):
+        return '/recipes/edit/items/' + str(self.recipe.id)
+
+    @property
+    def recipe(self):
+        return Recipe.objects.get(id=self.kwargs['recipe_id'])
+
+    def get_initial(self):
+        recipe = self.recipe
+        return {'name': recipe.name,
+                'provides': recipe.provides,
+                'quantity': recipe.quantity,
+                'source_if_not_user': recipe.source_if_not_user,
+                'preparation_time_in_min': recipe.preparation_time_in_min,
+                'waiting_time_in_min': recipe.waiting_time_in_min,
+                'preparation': recipe.preparation}
+
+    @transaction.atomic
+    def form_valid(self, form):
+        recipe = self.recipe
+        recipe.name = form.cleaned_data['name']
+        recipe.provides = form.cleaned_data['provides']
+        recipe.quantity = form.cleaned_data['quantity']
+        recipe.source_if_not_user = form.cleaned_data['source_if_not_user']
+        recipe.preparation_time_in_min = form.cleaned_data['preparation_time_in_min']
+        recipe.waiting_time_in_min = form.cleaned_data['waiting_time_in_min']
+        recipe.preparation = form.cleaned_data['preparation']
+        recipe.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['recipe'] = self.recipe
+        return context
+
+
+class RecipeEditItemsView(TemplateView):
+    template_name = 'recipe/recipe_edit_items.html'
 
     def get_context_data(self, recipe_id, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -6,13 +6,62 @@
 
 {% block content %}
 
-<div class="vertical-spacer-20"></div>
+<div class="row" align="center">
+  <h3>Verander recept</h3>
+</div>
 
 <div class="row">
-  <div class="col-md-8 col-md-offset-2">
-    {% include "recipe/recipe_detail_panel_edit.html" %}
+  <div class="col-md-6 col-md-offset-3">
+    <div class="well well-sm">
+
+      <form action="" method="post">
+        {% csrf_token %}
+
+        <div class="row">
+          <div class="col-sm-12">
+            {% bootstrap_field form.name %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-2">
+            {% bootstrap_field form.quantity %}
+          </div>
+          <div class="col-sm-4">
+            {% bootstrap_field form.provides %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            {% bootstrap_field form.source_if_not_user %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            {% bootstrap_field form.preparation_time_in_min %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            {% bootstrap_field form.waiting_time_in_min %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            {% bootstrap_field form.preparation %}
+          </div>
+        </div>
+        
+        {% buttons %}
+          <button type="submit" class="btn btn-primary">
+            Door naar ingrediënten
+          </button>
+        {% endbuttons %}
+      </form>
+
+    </div>
   </div>
 </div>
+
 
 
 {% endblock %}
