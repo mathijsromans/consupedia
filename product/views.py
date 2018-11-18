@@ -252,7 +252,7 @@ class FoodView(TemplateView):
                 context['recommended_product'] = prs.product
                 context['recommended_recipe'] = prs.recipe
                 context['score'] = score
-                if food.unit == 'g':
+                if food.unit == 'g' and score:
                     context['kg_price'] = score.price()*1000
         except ObjectDoesNotExist:
             pass
