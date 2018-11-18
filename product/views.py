@@ -529,7 +529,7 @@ class ContributeFoodsWithoutRecipeView(TemplateView):
         context = super().get_context_data(**kwargs)
         foods_without_recipe = []
         for food in Food.objects.all().order_by('name'):
-            if not food.conversion_set.exists() and food.recipeitem_set.exists():
+            if not food.conversion_set.exists() and not food.recipeitem_set.exists():
                 foods_without_recipe.append(food)
 
         context['foods'] = foods_without_recipe
