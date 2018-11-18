@@ -70,6 +70,8 @@
 </div>
 {% endif %}
 
+<hr/>
+
 <div class="row" align="center">
   <h4>Andere mogelijkheden</h4>
 </div>
@@ -89,11 +91,34 @@
 
 <div class="row">
   <div class="col-sm-12" align="center">
-    <div class="panel">
+    <div class="panel panel-default">
       <div class="panel-heading">
-        <h5>Recepten</h5>
+        <span class="h5">Recepten</span>
       </div>
       {% include "recipe/recipes_table.html" %}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-12" align="center">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <span class="h5">Gebruikt in Recepten</span>
+      </div>
+      {% if food.used_in_recipes %}
+      <table class="table">
+      {% for recipe in food.used_in_recipes %}
+        <tr>
+          <td>
+            <a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.name }}</a>
+          </td>
+        </tr>
+      {% endfor %}
+      </table>
+      {% else %}
+        Geen recepten gevonden
+      {% endif %}
     </div>
   </div>
 </div>

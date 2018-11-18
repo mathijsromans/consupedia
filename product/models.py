@@ -1,12 +1,15 @@
+import copy
 import logging
+import re
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Avg
 from django.core.validators import MinValueValidator
+from django.utils.functional import cached_property
+
 from .amount import ProductAmount
 from collections import namedtuple
-import re
-import copy
 
 logger = logging.getLogger(__name__)
 
@@ -176,6 +179,10 @@ class Food(models.Model):
         if not s:
             s = Score(user_preference)
         return s
+
+    @cached_property
+    def used_in_recipes(self):
+        return Recipe.objects.filter(recipeitem__food=self).all()
 
     def __str__(self):
         return self.name
