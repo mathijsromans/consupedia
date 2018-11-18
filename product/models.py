@@ -380,11 +380,16 @@ class Recipe(Conversion):
     source_if_not_user = models.CharField(max_length=256)
     number_persons = models.IntegerField(default=0)
     preparation_time_in_min = models.IntegerField(default=0)
+    waiting_time_in_min = models.IntegerField(default=0)
     picture_url = models.CharField(max_length=256)
     preparation = models.TextField()
 
     def __str__(self):
         return 'Recept ' + self.name
+
+    @property
+    def full_prep_time(self):
+        return max(self.waiting_time_in_min, self.preparation_time_in_min)
 
     FQS = namedtuple('FQS', ['food', 'quantity', 'score'])
 

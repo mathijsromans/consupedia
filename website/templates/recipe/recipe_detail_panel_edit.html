@@ -5,6 +5,7 @@
       <h5><a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.name }}</a></h5>
     </span>
     <div><i class="fa fa-clock-o"></i> {{ recipe.preparation_time_in_min }} min</div>
+    <div><i class="fa fa-clock-o"></i> {{ recipe.waiting_time_in_min }} min</div>
     <div><i class="fa fa-user"></i> {{ recipe.number_persons }}</div>
   </div>
 

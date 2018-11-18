@@ -64,7 +64,10 @@ class RecipeForm(forms.Form):
     quantity = forms.IntegerField(label='Aantal', widget=forms.NumberInput(attrs={'placeholder': 'Hoeveelheid...'}))
     source_if_not_user = forms.CharField(label='Bron', initial='-', max_length=256, required=False,
                            widget=forms.TextInput())
-    preparation_time_in_min = forms.IntegerField(label='Bereidingstijd in minuten', widget=forms.NumberInput(attrs={'placeholder': 'Bereidingstijd...'}))
+    preparation_time_in_min = forms.IntegerField(
+        label='Bereidingstijd in minuten',widget=forms.NumberInput(attrs={'placeholder': 'Bereidingstijd...'}))
+    waiting_time_in_min = forms.IntegerField(
+        label='Wachttijd in minuten',widget=forms.NumberInput(attrs={'placeholder': 'Wachttijd...'}))
     preparation = forms.CharField(label='Bereidingswijze', required=False,
                            widget=forms.Textarea(attrs={'placeholder': 'Bereidingswijze...'}))
 

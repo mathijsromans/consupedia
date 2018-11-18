@@ -127,6 +127,7 @@ def create_new_recipe(request):
             quantity = recipe_form.cleaned_data.get('quantity')
             source_if_not_user = recipe_form.cleaned_data.get('source_if_not_user')
             preparation_time_in_min = recipe_form.cleaned_data.get('preparation_time_in_min')
+            waiting_time_in_min = recipe_form.cleaned_data.get('waiting_time_in_min')
             preparation = recipe_form.cleaned_data.get('preparation')
             recipe = Recipe.objects.create(name=name,
                                            provides=provides,
@@ -134,6 +135,7 @@ def create_new_recipe(request):
                                            user=user,
                                            source_if_not_user=source_if_not_user,
                                            preparation_time_in_min=preparation_time_in_min,
+                                           waiting_time_in_min=waiting_time_in_min,
                                            preparation=preparation)
             for form in formset:
                 quantity = form.cleaned_data.get('quantity')
