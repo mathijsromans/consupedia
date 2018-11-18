@@ -26,7 +26,7 @@ class ProductAmount:
     @staticmethod
     def extract_size_substring(s):
         re_amount1 = re.compile('[0-9,]+ *(?:gram|liter)', re.IGNORECASE)
-        re_amount2 = re.compile('[0-9,]+ *(?:g|ml|kg|l|cl|stuk)', re.IGNORECASE)
+        re_amount2 = re.compile('[0-9,]+ *(?:g|ml|kg|l|cl|st)', re.IGNORECASE)
         sizes = re_amount1.findall(s) or re_amount2.findall(s)
         if sizes:
             return sizes[-1]
