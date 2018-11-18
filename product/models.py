@@ -112,6 +112,10 @@ class Food(models.Model):
     score_creator = models.ForeignKey(ScoreCreator, null=True)
     equiv_weight = models.FloatField(null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        self.name = self.name.lower()
+        return super().save(*args, **kwargs)
+
     def get_score_creator(self):
         if not self.score_creator:
             self.score_creator, created = ScoreCreator.objects.get_or_create(name='default')
@@ -256,6 +260,10 @@ class Product(models.Model):
     fiber_in_g_per_100_g = models.FloatField(blank=True, null=True, default=None)
     certificates = models.ManyToManyField(Certificate)
     usages = models.ManyToManyField(ProductUsage)
+
+    def save(self, *args, **kwargs):
+        self.name = self.name.lower()
+        return super().save(*args, **kwargs)
 
     def score(self, user_pref):
         s = Score(user_pref)
