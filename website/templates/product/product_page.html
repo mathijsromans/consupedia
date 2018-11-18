@@ -1,6 +1,6 @@
 {% extends "website/base.html" %}
 
-{% block title %}{{ product.name }} {{ block.super }}{% endblock %}
+{% block title %}{{ product.name|title }} {{ block.super }}{% endblock %}
 
 {% block content %}
 

@@ -1,7 +1,7 @@
 <table class="table">
   {% for product, total_score in products_and_total_scores %}
     <tr id="row-{{ product.id }}">
-      <td><a href="{% url 'product' product.id %}">{{ product.name }}</a></td>
+      <td><a href="{% url 'product' product.id %}">{{ product.name|title }}</a></td>
       <td>{% if product.price %}{{ product.price }}{% endif %}</td>
       <td>({{ total_score }})</td>
       {% if anonymous_can_edit or not is_anonymous_user %}

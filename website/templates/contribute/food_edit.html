@@ -2,12 +2,12 @@
 
 {% load bootstrap3 %}
 
-{% block title %}Constructie {{ food.name }} {{ block.super }}{% endblock %}
+{% block title %}Constructie {{ food.name|title }} {{ block.super }}{% endblock %}
 
 {% block content %}
 
 <div class="row" align="center">
-  <h3>Constructie {{ food.name }}</h3>
+  <h3>Constructie {{ food.name|title }}</h3>
 </div>
 
 <div class="row">

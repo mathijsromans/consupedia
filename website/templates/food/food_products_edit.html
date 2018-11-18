@@ -1,12 +1,12 @@
 {% extends "website/base.html" %}
 
-{% block title %}{{ food.name }} {{ block.super }}{% endblock %}
+{% block title %}{{ food.name|title }} {{ block.super }}{% endblock %}
 
 {% block content %}
 
 {% if food %}
 <div class="row" align="left">
-  <h3>{{ food.name }}</h3>
+  <h3>{{ food.name|title }}</h3>
   <hr/>
 </div>
 {% endif %}

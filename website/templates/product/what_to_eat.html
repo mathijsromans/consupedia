@@ -28,7 +28,7 @@
 <hr/>
 <div class="row" align="center">
   {% for food in foods %}
-  <div class="food" id="{{food.id}}">{{ food.name }}</div>
+  <div class="food" id="{{food.id}}">{{ food.name|title }}</div>
   {% endfor %}
 </div>
 <hr/>

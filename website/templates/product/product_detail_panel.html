@@ -2,7 +2,7 @@
   <div class="col-md-6 col-md-offset-3">
     <div class="panel">
       <div class="panel-heading">
-        <h3 class="nopadding"><a href="{% url 'product' product.id %}">{{ product.name }}</a></h3>
+        <h3 class="nopadding"><a href="{% url 'product' product.id %}">{{ product.name|title }}</a></h3>
       </div>
       <div class="panel-body">
         {% if product.thumb_url %}
@@ -10,7 +10,7 @@
         {% endif %}
       </div>
       <table class="table table-striped">
-        <tr><th>Naam</th><td>{{ product.name }}</td></tr>
+        <tr><th>Naam</th><td>{{ product.name|title }}</td></tr>
         <tr><th>Categorie</th><td><a href="{% url 'food' product.food.id %}">{{ product.food.name }}</a></td>
         <tr><th>Merk</th><td> {{ product.brand.name }}</td></tr>
         <tr><th>Beste prijs</th><td> {{ product.price }}</td></tr>
