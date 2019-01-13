@@ -1,5 +1,5 @@
 {% load humanize %}
-
+(per {{ score_unit }})
 <table class="table">
   <thead>
   <tr>
@@ -11,13 +11,13 @@
   </tr>
   </thead>
   <tbody>
-  {% for recipe, score in recipes_with_score %}
+  {% for item in recipes_with_score %}
     <tr id="row-{{ recipe.id }}">
-      <td><a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.name }}</a></td>
-      <td>{{ score.price }}</td>
-      <td>{{ score.land_use_m2|floatformat:2|intcomma }}</td>
-      <td>{{ score.animal_harm|floatformat:2|intcomma }}</td>
-      <td>{{ score.total|floatformat:0 }}</td>
+      <td><a href="{% url 'recipe_detail' item.recipe.id %}">{{ item.recipe.name }}</a></td>
+      <td>{{ item.score.price }}</td>
+      <td>{{ item.score.land_use_m2|floatformat:2|intcomma }}</td>
+      <td>{{ item.score.animal_harm|floatformat:2|intcomma }}</td>
+      <td>{{ item.score.total|floatformat:0 }}</td>
     </tr>
   {% endfor %}
   </tbody>

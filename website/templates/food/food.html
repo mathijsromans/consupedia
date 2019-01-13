@@ -26,11 +26,11 @@
 </div>
 <div class="row" align="left">
   <div class="col-sm-12" align="center">
-    {% if kg_price %}
-      {{ kg_price }} / kg
-    {% else %}
-      {{ score.price }}
+    {{ score_price }}
+    {% if score_unit %}
+    / {{ score_unit }}
     {% endif %}
+
   </div>
 </div>
 <div class="row" align="left">

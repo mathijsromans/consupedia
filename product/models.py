@@ -102,7 +102,7 @@ class ScoreCreator(models.Model):
         m2_per_g = 0.01
         days_per_year = 365
         score.add_score('land_use_m2', weight*days_per_year*m2_per_g/self.production_in_ton_per_ha)
-        score.add_score('animal_harm', weight*self.killed_animal_iq_points)
+        score.add_score('animal_harm', weight*self.killed_animal_iq_points/1000000)
 
     def __str__(self):
         return self.name

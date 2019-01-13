@@ -310,13 +310,23 @@ class FoodView(TemplateView):
                         recommended_recipe = recipes_and_scores[0][0]
                         score = recommended_recipe_score
                 context['products_and_total_scores'] = [(p[0], p[1].total) for p in products_and_scores]
-                context['recipes_with_score'] = [(p[0], p[1]) for p in recipes_and_scores]
+                context['recipes_with_score'] = [
+                    {'recipe': p[0],
+                     'score': p[1]} for p in recipes_and_scores]
                 prs = food.recommended_product_recipe_score(up)
                 context['recommended_product'] = prs.product
                 context['recommended_recipe'] = prs.recipe
                 context['score'] = score
-                if food.unit == 'g' and score:
-                    context['kg_price'] = score.price*1000
+                score_conversion_factor = 1
+                context['score_unit'] = food.unit
+                if food.unit == 'g':
+                    score_conversion_factor = 1000
+                    context['score_unit'] = 'kg'
+                context['score_price'] = score.price * score_conversion_factor
+                context['score_land_use_m2'] = score.land_use_m2 * score_conversion_factor
+                context['score_animal_harm'] = score.animal_harm * score_conversion_factor
+                context['score_total'] = score.total * score_conversion_factor
+
         except ObjectDoesNotExist:
             pass
         return context
