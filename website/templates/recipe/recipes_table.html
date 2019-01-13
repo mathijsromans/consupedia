@@ -17,7 +17,7 @@
       <td>{{ score.price }}</td>
       <td>{{ score.land_use_m2|floatformat:2|intcomma }}</td>
       <td>{{ score.animal_harm|floatformat:2|intcomma }}</td>
-      <td>{{ score.total|floatformat:0 }}</td>
+      <td title="{{ score }}">{{ score.total|floatformat:0 }}</td>
     </tr>
   {% endfor %}
   </tbody>
