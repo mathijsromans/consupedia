@@ -1,9 +1,22 @@
+{% load humanize %}
+
 <table class="table">
-  {% for product, total_score in products_and_total_scores %}
+  <thead>
+  <tr>
+    <th>Naam</th>
+    <th>Prijs</th>
+    <th>Score</th>
+    {% if anonymous_can_edit or not is_anonymous_user %}
+    <th>Verwijder</th>
+    {% endif %}
+  </tr>
+  </thead>
+  <tbody>
+  {% for product, score in products_and_scores %}
     <tr id="row-{{ product.id }}">
       <td><a href="{% url 'product' product.id %}">{{ product.name }}</a></td>
       <td>{% if product.price %}{{ product.price }}{% endif %}</td>
-      <td>({{ total_score }})</td>
+      <td title="{{ score }}">{{ score.total|floatformat:0|intcomma }}</td>
       {% if anonymous_can_edit or not is_anonymous_user %}
       <td align="right">
         <button id="button-remove-{{ product.id }}" class="btn btn-info btn-sm"><i class="fa fa-remove"></i></button>
@@ -27,4 +40,5 @@
       });
     </script>
   {% endfor %}
+  </tbody>
 </table>
