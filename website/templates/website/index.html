@@ -13,22 +13,29 @@
   </div>
   <div class="row">
     <div class="col-sm-12" align="center">
-        <h3 class="welcome-text__sub"> Welkom bij Consupedia, de site die weet wat jij graag eet! <br><strong>Prijs, Milieu, Sociaal, Dierenwelzijn of Gezondheid?</strong> <br>Geef met de schuifjes aan wat jij belangrijk vindt en je krijgt een lijst van recepten die het best bij je passen.{% if is_anonymous_user %}<br><h6>Inloggen niet nodig</h6><br>{% endif %}</h2>
+        <h3 class="welcome-text__sub">de site die weet wat jij graag eet!<br>
+        <br>{% if is_anonymous_user %}<br><h6>Inloggen niet nodig</h6><br>{% endif %}</h2>
     </div>
   </div>
 
   <div class="step-background-gray">
+    <section class="csp-setting-sliders container">
+      <strong>Prijs, Milieu, Sociaal, Dierenwelzijn of Gezondheid?</strong> 
+      <div>
+          Geef met de schuifjes aan wat jij belangrijk vindt en je krijgt een lijst van recepten die het best bij je passen.
+      </div>
+      <br>
+    </section>
   {% include "user/user_preference_edit_block.html" %}
-  </div>
-
   <div class="row">
-    <div class="col-sm-12" align="center">      
-        <button id="get-recipes" class="btn btn-primary" style="margin-bottom:30px;">Haal recepten op</button>
-        <div class="loader"></div>
+      <div class="col-sm-12" align="center">      
+          <button id="get-recipes" class="btn btn-primary" style="margin-bottom:30px;">Geef mijn recepten</button>
+          <div class="loader"></div>
+      </div>
     </div>
   </div>
-
-  <div class="step-background-gray recipe-list" id="recipes-list">
+  <div class="step-background-gray" id="recipes-list-box">
+    <div class="recipe-list" id="recipes-list"></div>
   </div>
 
   <script src="{% static 'js/homepage.js' %}" type="text/javascript"></script>

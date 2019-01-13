@@ -101,3 +101,4 @@ ENV/
 
 # caching
 data/cache/
+/.vscode

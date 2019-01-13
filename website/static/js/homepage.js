@@ -1,5 +1,6 @@
 $('#get-recipes').click(getRecipes);
 $('.loader').hide();
+$("#recipes-list-box").hide();
 
 function getRecipes(e) {
 	var pref = e.target.name;
@@ -23,6 +24,11 @@ function getRecipes(e) {
 
 function showRecipes(recipeList) {	
 	$("#recipes-list").empty();
+	$("#recipes-list-box").show();
+	var resultCount = '<h5 class="col-sm-12 text-center">' +
+		'Er zijn ' + recipeList.length + ' recepten gevonden op basis van jou voorkeuren.' +
+  	'</h5>';
+	$("#recipes-list").append(resultCount);
 	recipeList.forEach(function(recipe){
 		var name = recipe.name;
 		var content = recipe.content;
