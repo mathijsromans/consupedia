@@ -56,6 +56,7 @@ class UserPreferenceForm(forms.Form):
     personal_health_weight = forms.IntegerField(label='Gezond')
     land_use_m2 = forms.IntegerField(label='land_use_m2')
     animal_harm = forms.IntegerField(label='animal_harm')
+    prep_time = forms.IntegerField(label='prep_time')
 
 
 class RecipeURLForm(forms.Form):

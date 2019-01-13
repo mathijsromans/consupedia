@@ -511,6 +511,7 @@ class UserPreferenceEditView(FormView):
         userPreference.personal_health_weight = form.cleaned_data['personal_health_weight']
         userPreference.land_use_m2 = form.cleaned_data['land_use_m2']
         userPreference.animal_harm = form.cleaned_data['animal_harm']
+        userPreference.prep_time = form.cleaned_data['prep_time']
         userPreference.save()
         return super().form_valid(form)
 
@@ -631,6 +632,7 @@ def get_what_to_eat_result(request):
     up.personal_health_weight = 5
     up.land_use_m2 = 5
     up.animal_harm = 5
+    up.prep_time = 5
     result = None  # TODO: get product
     scores = result.scores
   
@@ -658,6 +660,8 @@ def set_user_preference_data(request):
         up.land_use_m2 = new_weight
     elif pref_to_change == 'animal_harm':
         up.animal_harm = new_weight
+    elif pref_to_change == 'prep_time':
+        up.prep_time = new_weight
     up.save()
     return get_user_preference_data(up)
 

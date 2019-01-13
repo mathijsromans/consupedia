@@ -37,18 +37,25 @@
 		<div class="col-sm-3 csp-personal_health-value">{{ userPreference.personal_health_weight }}%</div>	
 	</div>
 	<div class="row">
-		<label class="col-sm-3" for="land_use_m2" title="Landgebruik"><span class="fa fa-bug"></span> Landgebruik</label>
+		<label class="col-sm-3" for="land_use_m2" title="Landgebruik"><span class="fa fa-square-o"></span> Landgebruik</label>
 		<div class="col-sm-6">
 			<input type="range" name="land_use_m2" min="0" max="100" value="{{ userPreference.land_use_m2 }}">
 		</div>
 		<div class="col-sm-3 csp-land_use_m2-value">{{ userPreference.land_use_m2 }}%</div>
 	</div>
 	<div class="row">
-		<label class="col-sm-3" for="animal_harm" title="IQ dierenleed"><span class="fa fa-heartbeat"></span> IQ dierenleed</label>
+		<label class="col-sm-3" for="animal_harm" title="IQ dierenleed"><span class="fa fa-bug"></span> IQ dierenleed</label>
 		<div class="col-sm-6">
 			<input type="range" name="animal_harm" min="0" max="100" value="{{ userPreference.animal_harm }}">
 		</div>
 		<div class="col-sm-3 csp-animal_harm-value">{{ userPreference.animal_harm }}%</div>
+	</div>
+	<div class="row">
+		<label class="col-sm-3" for="prep_time" title="Bereidingstijd"><span class="fa fa-clock-o"></span> Bereidingstijd</label>
+		<div class="col-sm-6">
+			<input type="range" name="prep_time" min="0" max="100" value="{{ userPreference.prep_time }}">
+		</div>
+		<div class="col-sm-3 csp-prep_time-value">{{ userPreference.prep_time }}%</div>
 	</div>
 </section>
 

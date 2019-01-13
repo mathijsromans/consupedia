@@ -134,7 +134,8 @@ body {
 .csp-animals {	background-color: brown;}
 .csp-personal_health {	background-color: blue;}
 .csp-land_use_m2 {	background-color: red;}
-.csp-animal_harm {	background-color: black;}
+.csp-animal_harm {	background-color: yellow;}
+.csp-prep_time {	background-color: black;}
 
 .food {
     float:left;

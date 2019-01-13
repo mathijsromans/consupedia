@@ -348,6 +348,7 @@ class UserPreferences(models.Model):
     personal_health_weight = models.IntegerField(default=50)
     land_use_m2 = models.IntegerField(default=50)
     animal_harm = models.IntegerField(default=50)
+    prep_time = models.IntegerField(default=50)
 
     def norm_weights(self):
         userweights = self.get_weights()
@@ -374,6 +375,7 @@ class UserPreferences(models.Model):
             'health': self.personal_health_weight,
             'land_use_m2': self.land_use_m2,
             'animal_harm': self.animal_harm,
+            'prep_time': self.prep_time,
         }
 
     def __str__(self):
@@ -441,6 +443,7 @@ class Recipe(Conversion):
         s = Score(user_pref)
         for recipe_item in self.recipeitem_set.all():
             s.add(recipe_item.score(user_pref))
+        s.add_score('prep_time', self.full_prep_time)
         s.scale(1.0/self.quantity)
         return s
 
