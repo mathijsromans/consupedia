@@ -268,7 +268,7 @@ class FoodProductsEditView(TemplateView):
         if self.request.user.is_authenticated():
             up, created = UserPreferences.objects.get_or_create(user=self.request.user)
             products_and_scores = food.recommended_products_and_scores(up)
-            context['products_and_total_scores'] = [(p[0], p[1].total) for p in products_and_scores]
+            context['products_and_scores'] = [(p[0], p[1]) for p in products_and_scores]
         return context
 
 
@@ -313,6 +313,8 @@ class FoodView(TemplateView):
                 context['recipes_with_score'] = [
                     {'recipe': p[0],
                      'score': p[1]} for p in recipes_and_scores]
+                context['products_and_scores'] = [(p[0], p[1]) for p in products_and_scores]
+
                 prs = food.recommended_product_recipe_score(up)
                 context['recommended_product'] = prs.product
                 context['recommended_recipe'] = prs.recipe
