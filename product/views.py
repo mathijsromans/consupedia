@@ -316,7 +316,9 @@ class FoodView(TemplateView):
                 context['products_and_total_scores'] = [(p[0], p[1].total) for p in products_and_scores]
                 context['recipes_with_score'] = [
                     {'recipe': p[0],
+                     'score': p[1],
                      'score_price': p[1].price * score_conversion_factor,
+                     'score_prep_time': p[1].get_or_0('prep_time'),
                      'score_land_use_m2': p[1].land_use_m2 * score_conversion_factor,
                      'score_animal_harm': p[1].animal_harm * score_conversion_factor,
                      'score_total': p[1].total * score_conversion_factor,
@@ -328,6 +330,7 @@ class FoodView(TemplateView):
                 context['recommended_recipe'] = prs.recipe
                 context['score'] = score
                 context['score_price'] = score.price * score_conversion_factor
+                context['score_prep_time'] = score.get_or_0('prep_time') * score_conversion_factor,
                 context['score_land_use_m2'] = score.land_use_m2 * score_conversion_factor
                 context['score_animal_harm'] = score.animal_harm * score_conversion_factor
                 context['score_total'] = score.total * score_conversion_factor

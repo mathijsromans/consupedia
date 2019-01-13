@@ -5,6 +5,7 @@
   <tr>
     <th>Naam</th>
     <th>Prijs</th>
+    <th>Voorbereiding [minuten]</th>
     <th>Landgebruik [m^2]</th>
     <th>Dierenwelzijn</th>
     <th>Totaal score</th>
@@ -15,9 +16,10 @@
     <tr id="row-{{ recipe.id }}">
       <td><a href="{% url 'recipe_detail' item.recipe.id %}">{{ item.recipe.name }}</a></td>
       <td>{{ item.score_price }}</td>
+      <td>{{ item.score_prep_time|floatformat:0|intcomma }}</td>
       <td>{{ item.score_land_use_m2|floatformat:2|intcomma }}</td>
       <td>{{ item.score_animal_harm|floatformat:2|intcomma }}</td>
-      <td title="{{ score }}">{{ item.score_total|floatformat:0 }}</td>
+      <td title="{{ item.score }}">{{ item.score_total|floatformat:0 }}</td>
     </tr>
   {% endfor %}
   </tbody>

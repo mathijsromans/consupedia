@@ -69,6 +69,13 @@ class Score:
     def animal_harm(self):
         return self._scores.get('animal_harm')
 
+    def get(self, key):
+        return self._scores.get(key)
+
+    def get_or_0(self, key):
+        value = self._scores.get(key)
+        return value if value is not None else 0
+
     @property
     def total(self):
         result = 0
@@ -421,7 +428,8 @@ class Recipe(Conversion):
 
     @property
     def full_prep_time(self):
-        return max(self.waiting_time_in_min, self.preparation_time_in_min)
+        # return max(self.waiting_time_in_min, self.preparation_time_in_min)
+        return self.waiting_time_in_min + self.preparation_time_in_min
 
     FQS = namedtuple('FQS', ['food', 'quantity', 'score'])
 
