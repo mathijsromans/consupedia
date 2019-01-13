@@ -25,10 +25,17 @@ function getRecipes(e) {
 function showRecipes(recipeList) {	
 	$("#recipes-list").empty();
 	$("#recipes-list-box").show();
-	var resultCount = '<h5 class="col-sm-12 text-center">' +
-		'Er zijn ' + recipeList.length + ' recepten gevonden op basis van jou voorkeuren.' +
-  	'</h5>';
+	$("#user-preferences-search-recipes").slideUp();
+	var resultCount = '<div class="col-sm-12 text-center">' +
+		'<h5> Er zijn ' + recipeList.length + ' recepten gevonden op basis van jou voorkeuren.</h5>' +
+		'<button id="show-user-preferences" class="btn btn-primary ml-3">Voorkeuren opnieuw instellen</button>' +
+		'<hr class="horizontal-dotted-line">' +
+  	'</div>';
 	$("#recipes-list").append(resultCount);
+	$('#show-user-preferences').click(function(){
+		$("#user-preferences-search-recipes").slideDown();
+		$('#show-user-preferences').hide();
+	});
 	recipeList.forEach(function(recipe){
 		var name = recipe.name;
 		var content = recipe.content;

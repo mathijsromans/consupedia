@@ -264,6 +264,13 @@ body {
   animation: spin 2s linear infinite;
 }
 
+.horizontal-dotted-line {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 0;
+  border-top: 1px dotted #333;
+}
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
