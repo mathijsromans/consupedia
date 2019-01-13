@@ -346,19 +346,24 @@ class UserPreferences(models.Model):
     social_weight = models.IntegerField(default=50)
     animals_weight = models.IntegerField(default=50)
     personal_health_weight = models.IntegerField(default=50)
+    land_use_m2 = models.IntegerField(default=50)
+    animal_harm = models.IntegerField(default=50)
+
+    def norm_weights(self):
+        userweights = self.get_weights()
+        return max(userweights) or 1
 
     def get_rel_weights(self):
         #normaliseren van de gebruikersgewichten.
         #voorbeeld : 6,2,4,1 => 1,0.3333,0.66666,0.
-        userweights = self.get_weights()
-        maxval = max(userweights) or 1
+        norm = self.norm_weights()
         normalizedUserweights = []
-        for weight in userweights:
-            normalizedUserweights.append(float(weight / maxval))
+        for weight in self.get_weights():
+            normalizedUserweights.append(float(weight / norm))
         return normalizedUserweights
 
     def get_weights(self):
-        return [self.price_weight, self.environment_weight, self.social_weight, self.animals_weight, self.personal_health_weight]
+        return [value for key, value in self.get_dict().items()]
 
     def get_dict(self):
         return {
@@ -367,6 +372,8 @@ class UserPreferences(models.Model):
             'social': self.social_weight,
             'animals': self.animals_weight,
             'health': self.personal_health_weight,
+            'land_use_m2': self.land_use_m2,
+            'animal_harm': self.animal_harm,
         }
 
     def __str__(self):

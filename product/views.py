@@ -499,11 +499,7 @@ class UserPreferenceEditView(FormView):
         return up
 
     def get_initial(self):
-        return {'price_weight': self.get_my_preference().price_weight,
-                'environment_weight': self.get_my_preference().environment_weight,
-                'social_weight': self.get_my_preference().social_weight,
-                'animals_weight': self.get_my_preference().animals_weight,
-                'personal_health_weight': self.get_my_preference().personal_health_weight}
+        return  self.get_my_preference().get_dict()
 
     @transaction.atomic
     def form_valid(self, form):
@@ -513,6 +509,8 @@ class UserPreferenceEditView(FormView):
         userPreference.social_weight = form.cleaned_data['social_weight']
         userPreference.animals_weight = form.cleaned_data['animals_weight']
         userPreference.personal_health_weight = form.cleaned_data['personal_health_weight']
+        userPreference.land_use_m2 = form.cleaned_data['land_use_m2']
+        userPreference.animal_harm = form.cleaned_data['animal_harm']
         userPreference.save()
         return super().form_valid(form)
 
@@ -631,6 +629,8 @@ def get_what_to_eat_result(request):
     up.social_weight = 5
     up.animals_weight = 5
     up.personal_health_weight = 5
+    up.land_use_m2 = 5
+    up.animal_harm = 5
     result = None  # TODO: get product
     scores = result.scores
   
@@ -654,29 +654,25 @@ def set_user_preference_data(request):
         up.animals_weight = new_weight
     elif pref_to_change == 'personal_health':
         up.personal_health_weight = new_weight
+    elif pref_to_change == 'land_use_m2':
+        up.land_use_m2 = new_weight
+    elif pref_to_change == 'animal_harm':
+        up.animal_harm = new_weight
     up.save()
     return get_user_preference_data(up)
 
 @login_required
 def get_user_preference_data(up):
     rel = up.get_rel_weights()
+    norm = up.norm_weights()
+    pref_list = []
+    for key, value in up.get_dict().items():
+        pref_list.append(
+            {"preference": key,
+             "weight": value,
+             "rel_weight": float(value / norm)})
     response = json.dumps({'status': 'success',
-                           'user_preferences': [
-                               { "preference": "price",
-                                 "weight": up.price_weight,
-                                 "rel_weight": rel[0] },
-                               { "preference": "environment",
-                                 "weight": up.environment_weight,
-                                 "rel_weight": rel[1] },
-                               { "preference": "social",
-                                 "weight": up.social_weight,
-                                 "rel_weight": rel[2] },
-                               { "preference": "animals",
-                                 "weight": up.animals_weight,
-                                 "rel_weight": rel[3] },
-                               { "preference": "personal_health",
-                                 "weight": up.personal_health_weight,
-                                 "rel_weight": rel[4] } ] })
+                           'user_preferences': pref_list })
     return HttpResponse(response, content_type='application/json')
 
 @login_required

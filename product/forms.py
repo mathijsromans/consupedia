@@ -54,6 +54,8 @@ class UserPreferenceForm(forms.Form):
     social_weight = forms.IntegerField(label='Mensenrechten')
     animals_weight = forms.IntegerField(label='Dieren')
     personal_health_weight = forms.IntegerField(label='Gezond')
+    land_use_m2 = forms.IntegerField(label='land_use_m2')
+    animal_harm = forms.IntegerField(label='animal_harm')
 
 
 class RecipeURLForm(forms.Form):
@@ -83,4 +85,4 @@ class ScoreCreatorForm(forms.Form):
                            widget=forms.TextInput(attrs={'placeholder': 'Naam van dit type eten...'}))
     production_in_ton_per_ha = forms.FloatField(label='Productie in ton per hectare', required=False)
     killed_animal_iq_points = forms.FloatField(label='Aantal hercencellen per kg', required=False)
-    sources = forms.CharField(label='Bron', max_length=256, widget=forms.TextInput(attrs={'placeholder': 'Bron...'}))
+    sources = forms.CharField(label='Bron', widget=forms.Textarea(attrs={'placeholder': 'Bron...'}))
