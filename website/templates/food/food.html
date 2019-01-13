@@ -9,21 +9,26 @@
 <div class="vertical-spacer-20"></div>
 
 {% if food %}
-<div class="row">
   <div class="panel panel-default">
 
     <div class="panel-heading text-center h3">
       <span>{{ food.name|title }}</span>
     </div>
 
-    <div class="panel-body">
-      Eenheid: {{ food.unit }}
-      <br/>
-      Prijs: {{ score_price }}
-      {% if score_unit %} / {{ score_unit }}{% endif %}
-      <br/>
-      Scores: {{ score }}
-    </div>
+    <table class="table">
+      <thead>
+      {% include "items/score_table_headers.html" %}
+      </thead>
+      <tbody>
+      <tr>
+        <td>{{ score_price }}</td>
+        <td>{{ score_prep_time|floatformat:0|intcomma }}</td>
+        <td>{{ score_land_use_m2|floatformat:2|intcomma }}</td>
+        <td>{{ score_animal_harm|floatformat:2|intcomma }}</td>
+        <td title="{{ score }}">{{ score_total|floatformat:0 }}</td>
+      </tr>
+      </tbody>
+    </table>
 
     <div class="panel-footer" style="height: 55px;">
       {% if not is_anonymous_user %}
@@ -35,94 +40,70 @@
     </div>
 
   </div>
-</div>
 {% endif %}
 
 {% if recipes %}
-<div class="row" align="center">
   <h4>Recepten</h4>
   {% for recipe in recipes %}
   {% include "recipe/recipe_panel.html" %}
   {% endfor %}
-</div>
-<hr/>
+  <hr/>
 {% endif %}
 
 {% if recommended_product %}
-<div class="row" align="center">
   <h3>Aanbevolen</h3>
-    {% with product=recommended_product %}
-      {% include "product/product_detail_panel.html" %}
-    {% endwith %}
-</div>
+  {% with product=recommended_product %}
+    {% include "product/product_detail_panel.html" %}
+  {% endwith %}
 {% endif %}
 
 {% if recommended_recipe %}
-<div class="row" align="center">
   <h4>Aanbevolen</h4>
-  <div class="row">
-    <div class="col-md-12">
-      {% with recipe=recommended_recipe %}
-        {% include "recipe/recipe_panel.html" %}
-      {% endwith %}
-    </div>
-  </div>
-</div>
+  {% with recipe=recommended_recipe %}
+    {% include "recipe/recipe_panel.html" %}
+  {% endwith %}
 {% endif %}
 
 <hr/>
 
-<div class="row" align="center">
-  <h4>Andere mogelijkheden</h4>
-</div>
-<div class="row">
-  <div class="col-sm-12" align="center">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <span class="h5">Producten</span>
-      </div>
-      {% include "product/products_table.html" %}
-      <div class="panel-footer" style="height: 55px;">
-        {% if anonymous_can_edit or not is_anonymous_user %}
-        <a class='btn btn-primary pull-right' href="{% url 'food-products-update' food.id %}">Zoek opnieuw</a>
-        {% endif %}
-      </div>
-    </div>
+<h4>Andere mogelijkheden</h4>
+
+<div class="panel panel-default">
+  <div class="panel-heading text-center">
+    <span class="h5">Producten</span>
+  </div>
+  {% include "product/products_table.html" %}
+  <div class="panel-footer" style="height: 55px;">
+    {% if anonymous_can_edit or not is_anonymous_user %}
+    <a class='btn btn-primary pull-right' href="{% url 'food-products-update' food.id %}">Zoek opnieuw</a>
+    {% endif %}
   </div>
 </div>
 
-<div class="row">
-  <div class="col-sm-12" align="center">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <span class="h5">Recepten</span>
-      </div>
-      {% include "recipe/recipes_table.html" %}
-    </div>
+<div class="panel panel-default">
+  <div class="panel-heading text-center">
+    <span class="h5">Recepten</span>
   </div>
+  {% include "recipe/recipes_table.html" %}
 </div>
 
-<div class="row">
-  <div class="col-sm-12" align="center">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <span class="h5">Gebruikt in Recepten</span>
-      </div>
-      {% if food.used_in_recipes %}
-      <table class="table">
-      {% for recipe in food.used_in_recipes %}
-        <tr>
-          <td>
-            <a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.name }}</a>
-          </td>
-        </tr>
-      {% endfor %}
-      </table>
-      {% else %}
-        Geen recepten gevonden
-      {% endif %}
-    </div>
+<div class="panel panel-default">
+  <div class="panel-heading text-center">
+    <span class="h5">Gebruikt in Recepten</span>
   </div>
+  {% if food.used_in_recipes %}
+  <table class="table">
+  {% for recipe in food.used_in_recipes %}
+    <tr>
+      <td>
+        <a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.name }}</a>
+      </td>
+    </tr>
+  {% endfor %}
+  </table>
+  {% else %}
+    Geen recepten gevonden
+  {% endif %}
 </div>
 
 {% endblock %}
