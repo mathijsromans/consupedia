@@ -33,7 +33,7 @@ class Score:
         self._scores = {}
 
     def __lt__(self, other):
-        return self.total() < other.total()
+        return self.total < other.total
 
     def scale(self, scalar):
         for key, value in self._scores.items():
@@ -50,16 +50,26 @@ class Score:
             self.add_score(key, value)
 
     def add_score(self, key, value):
-        if not key or not value:
+        if not key or value is None:
             return
         if key in self._scores:
             self._scores[key] += value
         else:
             self._scores[key] = value
 
+    @property
     def price(self):
         return Price(self._scores.get('price'))
 
+    @property
+    def land_use_m2(self):
+        return self._scores.get('land_use_m2')
+
+    @property
+    def animal_harm(self):
+        return self._scores.get('animal_harm')
+
+    @property
     def total(self):
         result = 0
         user_pref_dict = self.user_pref.get_dict()
@@ -77,7 +87,7 @@ class Score:
             if user_pref_dict and value is not None:
                 partial = value * user_pref_value
                 result += '[{}: {:.2f} -> {:.2f}] '.format(key, value, partial)
-        result += '-> {:.2f}'.format(self.total())
+        result += '-> {:.2f}'.format(self.total)
         return result
 
 
@@ -143,7 +153,7 @@ class Food(models.Model):
             score = product.score(user_preference)
             sc.append_score(score, self.weight())
             products_and_scores.append((product, score))
-        products_and_scores.sort(key=lambda x: x[1].total())
+        products_and_scores.sort(key=lambda x: x[1].total)
         return products_and_scores
 
     def recommended_recipe_and_score(self, user_preference):
@@ -161,7 +171,7 @@ class Food(models.Model):
         for r in recipes:
             logger.info('Recipe {}'.format(r))
         recipes_and_scores = [(recipe, recipe.score(user_preference)) for recipe in recipes]
-        recipes_and_scores.sort(key=lambda x: x[1].total())
+        recipes_and_scores.sort(key=lambda x: x[1].total)
         return recipes_and_scores
 
     def recommended_product_recipe_score(self, user_preference):

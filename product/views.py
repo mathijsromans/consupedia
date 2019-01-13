@@ -268,7 +268,7 @@ class FoodProductsEditView(TemplateView):
         if self.request.user.is_authenticated():
             up, created = UserPreferences.objects.get_or_create(user=self.request.user)
             products_and_scores = food.recommended_products_and_scores(up)
-            context['products_and_total_scores'] = [(p[0], p[1].total()) for p in products_and_scores]
+            context['products_and_total_scores'] = [(p[0], p[1].total) for p in products_and_scores]
         return context
 
 
@@ -309,14 +309,14 @@ class FoodView(TemplateView):
                     if not score or recommended_recipe_score < score:
                         recommended_recipe = recipes_and_scores[0][0]
                         score = recommended_recipe_score
-                context['products_and_total_scores'] = [(p[0], p[1].total()) for p in products_and_scores]
-                context['recipes_with_info'] = [(p[0], p[1].price(), p[1].total()) for p in recipes_and_scores]
+                context['products_and_total_scores'] = [(p[0], p[1].total) for p in products_and_scores]
+                context['recipes_with_score'] = [(p[0], p[1]) for p in recipes_and_scores]
                 prs = food.recommended_product_recipe_score(up)
                 context['recommended_product'] = prs.product
                 context['recommended_recipe'] = prs.recipe
                 context['score'] = score
                 if food.unit == 'g' and score:
-                    context['kg_price'] = score.price()*1000
+                    context['kg_price'] = score.price*1000
         except ObjectDoesNotExist:
             pass
         return context

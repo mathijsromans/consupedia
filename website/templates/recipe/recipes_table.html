@@ -1,9 +1,24 @@
+{% load humanize %}
+
 <table class="table">
-  {% for recipe, price, total_score in recipes_with_info %}
+  <thead>
+  <tr>
+    <th>Naam</th>
+    <th>Prijs</th>
+    <th>Landgebruik [m^2]</th>
+    <th>Dierenwelzijn</th>
+    <th>Totaal score</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for recipe, score in recipes_with_score %}
     <tr id="row-{{ recipe.id }}">
       <td><a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.name }}</a></td>
-      <td>{% if price %}{{ price }}{% else %}? {% endif %}</td>
-      <td>({{ total_score }})</td>
+      <td>{{ score.price }}</td>
+      <td>{{ score.land_use_m2|floatformat:2|intcomma }}</td>
+      <td>{{ score.animal_harm|floatformat:2|intcomma }}</td>
+      <td>{{ score.total|floatformat:0 }}</td>
     </tr>
   {% endfor %}
+  </tbody>
 </table>
