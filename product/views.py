@@ -309,21 +309,28 @@ class FoodView(TemplateView):
                     if not score or recommended_recipe_score < score:
                         recommended_recipe = recipes_and_scores[0][0]
                         score = recommended_recipe_score
+                score_conversion_factor = 1
+                context['score_unit'] = food.unit
+                if food.unit == 'g':
+                    score_conversion_factor = 1000
+                    context['score_unit'] = 'kg'
+                elif food.unit == 'ml':
+                    score_conversion_factor = 1000
+                    context['score_unit'] = 'liter'
                 context['products_and_total_scores'] = [(p[0], p[1].total) for p in products_and_scores]
                 context['recipes_with_score'] = [
                     {'recipe': p[0],
-                     'score': p[1]} for p in recipes_and_scores]
+                     'score_price': p[1].price * score_conversion_factor,
+                     'score_land_use_m2': p[1].land_use_m2 * score_conversion_factor,
+                     'score_animal_harm': p[1].animal_harm * score_conversion_factor,
+                     'score_total': p[1].total * score_conversion_factor,
+                     } for p in recipes_and_scores]
                 context['products_and_scores'] = [(p[0], p[1]) for p in products_and_scores]
 
                 prs = food.recommended_product_recipe_score(up)
                 context['recommended_product'] = prs.product
                 context['recommended_recipe'] = prs.recipe
                 context['score'] = score
-                score_conversion_factor = 1
-                context['score_unit'] = food.unit
-                if food.unit == 'g':
-                    score_conversion_factor = 1000
-                    context['score_unit'] = 'kg'
                 context['score_price'] = score.price * score_conversion_factor
                 context['score_land_use_m2'] = score.land_use_m2 * score_conversion_factor
                 context['score_animal_harm'] = score.animal_harm * score_conversion_factor
