@@ -1,14 +1,19 @@
 {% load static %}
 
 <section class="csp-setting-sliders container">
-		<div class="row"> 
+	<div class="row"> 
+		<i class="col-sm-2 col-sm-offset-3 text-left">onbelangerijk</i>
+		<i class="col-sm-2 text-center">gemiddeld</i>
+		<i class="col-sm-2 text-right">belangerijk</i>
+	</div>
+	<div class="row"> 
 		<label class="col-sm-3" for="price" title="De prijs van een product"><span class="fa fa-eur"></span> Prijs</label>
 		<div class="col-sm-6">
 			<input type="range" name="price" min="0" max="100" value="{{ userPreference.price_weight }}">
 		</div>
 		<div class="col-sm-3 csp-price-value">{{ userPreference.price_weight }}%</div>
 	</div>
-		<div class="row">
+	<div class="row">
 		<label class="col-sm-3" for="environment" title="De impact van de productieketen op klimaatverandering, biodiversiteit en water"><span class="fa fa-leaf"></span> Milieu</label>
 		<div class="col-sm-6">		
 			<input type="range" name="environment" min="0" max="100" value="{{ userPreference.environment_weight }}">

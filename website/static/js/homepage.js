@@ -27,7 +27,7 @@ function showRecipes(recipeList) {
 	$("#recipes-list-box").show();
 	$("#user-preferences-search-recipes").slideUp();
 	var resultCount = '<div class="col-sm-12 text-center">' +
-		'<h5> Er zijn ' + recipeList.length + ' recepten gevonden op basis van jou voorkeuren.</h5>' +
+		'<h5> Er zijn ' + recipeList.length + ' recepten gevonden op basis van jouw voorkeuren.</h5>' +
 		'<button id="show-user-preferences" class="btn btn-primary ml-3">Voorkeuren opnieuw instellen</button>' +
 		'<hr class="horizontal-dotted-line">' +
   	'</div>';
