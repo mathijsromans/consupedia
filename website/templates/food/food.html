@@ -1,52 +1,49 @@
 {% extends "website/base.html" %}
 
+{% load humanize %}
+
 {% block title %}{{ food.name|title }} {{ block.super }}{% endblock %}
 
 {% block content %}
 
+<div class="vertical-spacer-20"></div>
+
 {% if food %}
-<div class="row" align="left">
-  <div class="col-sm-1"></div>
-  <div class="col-sm-9" align="center">
- <h3>{{ food.name|title }}</h3>
-  </div>
-    <div class="col-sm-2" align="right">
-    {% if not is_anonymous_user %}
-      <a class='btn btn-primary' href="{% url 'food-edit' food.id %}">Edit</a>
-      {% if food.can_be_removed %}
-        <a class='btn btn-primary' href="{% url 'food-remove' food.id %}">Verwijderen</a>
+<div class="row">
+  <div class="panel panel-default">
+
+    <div class="panel-heading text-center h3">
+      <span>{{ food.name|title }}</span>
+    </div>
+
+    <div class="panel-body">
+      Eenheid: {{ food.unit }}
+      <br/>
+      Prijs: {{ score_price }}
+      {% if score_unit %} / {{ score_unit }}{% endif %}
+      <br/>
+      Scores: {{ score }}
+    </div>
+
+    <div class="panel-footer" style="height: 55px;">
+      {% if not is_anonymous_user %}
+        <a class='btn btn-primary pull-right' href="{% url 'food-edit' food.id %}">Edit</a>
+        {% if food.can_be_removed %}
+          <a class='btn btn-primary pull-right' href="{% url 'food-remove' food.id %}">Verwijderen</a>
+        {% endif %}
       {% endif %}
-    {% endif %}
-  </div>
-</div>
-<div class="row" align="left">
-  <div class="col-sm-12" align="center">
-    ({{ food.unit }})
-  </div>
-</div>
-<div class="row" align="left">
-  <div class="col-sm-12" align="center">
-    {{ score_price }}
-    {% if score_unit %}
-    / {{ score_unit }}
-    {% endif %}
+    </div>
 
   </div>
 </div>
-<div class="row" align="left">
-  <div class="col-sm-12" align="center">
-    <i class="fa fa-bar-chart"></i> {{ score }}
-  </div>
-</div>
-<hr/>
 {% endif %}
 
 {% if recipes %}
 <div class="row" align="center">
   <h4>Recepten</h4>
-{% for recipe in recipes %}
-{% include "recipe/recipe_panel.html" %}
-{% endfor %}
+  {% for recipe in recipes %}
+  {% include "recipe/recipe_panel.html" %}
+  {% endfor %}
 </div>
 <hr/>
 {% endif %}
