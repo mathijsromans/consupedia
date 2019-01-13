@@ -38,5 +38,18 @@
       <td><strong>{{ user_scores.total_score }} dopamine-shotjes <span class="fa fa-thumbs-o-up"></span></strong></td>
     </tr>
 </table>
+<div class="row" align="center">
+  <h3>Voorraad</h3>
+</div>
+<a href="{% url 'supply-add' %}">Voeg toe...</a>
+  <table class="table">
+    {% for s in supplies %}
+    <tr>
+      <td>{{ s.quantity }} {{ s.food.unit }}</td>
+      <th>{{ s.food.name }}</th>
+    </tr>
+    {% endfor %}
+  </table>
+
 
 {% endblock %}

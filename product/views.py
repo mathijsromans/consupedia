@@ -521,8 +521,26 @@ class UserPreferenceEditView(FormView):
         user_scores = utils.get_user_scores(self.request.user)
         context['userPreference'] = self.get_my_preference()
         context['user_scores'] = user_scores
+        context['supplies'] = self.request.user.supplyitem_set.all()
         return context
-        
+
+
+class SupplyNewView(FormView):
+    template_name = 'user/supply_add.html'
+    form_class = forms.SupplyItemForm
+    success_url = '/user_preferences/'
+
+    @transaction.atomic
+    def form_valid(self, form):
+        SupplyItem.objects.create(
+            user=self.request.user,
+            quantity=form.cleaned_data['quantity'],
+            food=form.cleaned_data['food'])
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
 class WhatToEatView(TemplateView):
     template_name = 'product/what_to_eat.html'

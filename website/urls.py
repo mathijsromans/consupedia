@@ -51,6 +51,7 @@ urlpatterns = [
     url(r'^contribute/rankings/$', product.views.ContributeRankingsView.as_view(), name='contribute-rankings'),
 
     url(r'^user_preferences/$', product.views.UserPreferenceEditView.as_view(), name='user_prefs'),
+    url(r'^user_preferences/supply/add$', product.views.SupplyNewView.as_view(), name='supply-add'),
     url(r'^user_preference/set/?', login_required(product.views.set_user_preference_data)),
     url(r'^what_to_eat/$', product.views.WhatToEatView.as_view(), name='what_to_eat'),
     url(r'^what_to_eat/get_result/?', product.views.get_what_to_eat_result),

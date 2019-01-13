@@ -24,6 +24,11 @@ class RecipeItemForm(forms.Form):
     food = FoodWithUnitChoiceField(label='', queryset=Food.objects.all().order_by('name'))
 
 
+class SupplyItemForm(forms.Form):
+    quantity = forms.IntegerField(label='')
+    food = FoodWithUnitChoiceField(label='', queryset=Food.objects.all().order_by('name'))
+
+
 class TestForm(forms.Form):
     quantity = forms.CharField(
         label='quantity',

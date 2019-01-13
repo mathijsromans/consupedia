@@ -459,6 +459,15 @@ class RecipeItem(models.Model):
         return str(self.quantity) + ' ' + str(self.food.unit) + ' ' + str(self.food)
 
 
+class SupplyItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    food = models.ForeignKey(Food, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.quantity) + ' ' + str(self.food.unit) + ' ' + str(self.food)
+
+
 class ProductPrice(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
