@@ -330,7 +330,7 @@ class FoodView(TemplateView):
                 context['recommended_recipe'] = prs.recipe
                 context['score'] = score
                 context['score_price'] = score.price * score_conversion_factor
-                context['score_prep_time'] = score.get_or_0('prep_time') * score_conversion_factor,
+                context['score_prep_time'] = score.get_or_0('prep_time')
                 context['score_land_use_m2'] = score.land_use_m2 * score_conversion_factor
                 context['score_animal_harm'] = score.animal_harm * score_conversion_factor
                 context['score_total'] = score.total * score_conversion_factor
