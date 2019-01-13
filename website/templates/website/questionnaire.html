@@ -1,0 +1,53 @@
+{% extends "website/base.html" %}
+
+{% block title %}Vragenlijst {{ block.super }}{% endblock %}
+
+{% block content %}
+
+{% load static %}
+
+<h3 class="view-title">Voorkeuren vragenlijst</h3>
+
+<div class="row">
+  <div class="col-sm-12">
+    <h5>Vul de vragenlijst in om je voorkeuren te achterhalen.</h5>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <h5>Vraag 1: Let je op de prijs bij het winkelen?</h5>
+  </div>
+  <div class="col-sm-12">
+    <div class="col-sm-3 questionnaire-answer" id="priceNotImportant">
+        Prijs is voor mij niet belangerijk.
+    </div>
+    <div class="col-sm-3 questionnaire-answer" id="priceMediumImportant">
+        Ik let op de prijs maar ben geen koopjes jager.
+    </div>
+    <div class="col-sm-3 questionnaire-answer" id="priceVeryImportant">
+        Prijs is voor mij het belangerijkste tijdens het winkelen.
+    </div>
+  </div>  
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <h5>Vraag 2: Ben je een vegetarier of eet je bewust minder of geen vlees?</h5>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <h5>Vraag 3: ect ect. </h5>
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <a href="{% url 'homepage' %}">Terug naar recepten zoeken</a>
+    </div>
+  </div>
+
+<script src="{% static 'js/questionnaire.js' %}" type="text/javascript"></script>
+{% endblock %}

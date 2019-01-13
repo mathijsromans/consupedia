@@ -276,6 +276,32 @@ body {
   border-top: 1px dotted #333;
 }
 
+.questionnaire-answer {
+  border: 1px dotted #333;
+  min-height: 100px;
+  padding: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.questionnaire-answer_selected, .questionnaire-answer:hover {
+  border: 1px solid #333;
+}
+
+.questionnaire-answer_selected::before {
+  content:'\f00c';
+  font-family: 'FontAwesome';
+  font-size: 30px;
+  display: inline-block;
+  vertical-align: top;
+  height: 30px;
+  width: 30px;
+  position: absolute;
+  bottom: 15px;
+  right: 10px;
+  color: rgba(14, 185, 57, 0.75);
+}
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }

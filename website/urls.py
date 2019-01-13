@@ -62,6 +62,8 @@ urlpatterns = [
 
     url(r'^recipes/get_for_user', login_required(product.views.get_recipes_for_user)),
 
+    url(r'^questionnaire/$', TemplateView.as_view(template_name="website/questionnaire.html"), name='questionnaire'),
+
     url(r'^admin/', admin.site.urls),
 ]
 
