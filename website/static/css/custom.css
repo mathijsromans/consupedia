@@ -224,9 +224,11 @@ body {
 
 .step-background-gray {
   padding: 30px 0px;
-  background:#EAEAEA;
+  background:#FAFFFA;
   width: 100%;
   margin-bottom: 40px;
+  border: 2px solid #0D7A07;
+  border-radius: 10px;
 }
 
 .recipe-list
@@ -277,4 +279,92 @@ body {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* Slider style */
+
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  margin: 5.5px 0;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 9px;
+  cursor: pointer;
+  box-shadow: 1.1px 1.1px 1.8px rgba(0, 0, 0, 0.4), 0px 0px 1.1px rgba(13, 13, 13, 0.4);
+  background: #6ec982;
+  border-radius: 1px;
+  border: 0.1px solid #010101;
+}
+input[type=range]::-webkit-slider-thumb {
+  box-shadow: 1px 1px 1px #003200, 0px 0px 1px #004c00;
+  border: 1px solid #009600;
+  height: 20px;
+  width: 16px;
+  border-radius: 3px;
+  background: #fafffa;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -5.6px;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #a2dcaf;
+}
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 9px;
+  cursor: pointer;
+  box-shadow: 1.1px 1.1px 1.8px rgba(0, 0, 0, 0.4), 0px 0px 1.1px rgba(13, 13, 13, 0.4);
+  background: #6ec982;
+  border-radius: 1px;
+  border: 0.1px solid #010101;
+}
+input[type=range]::-moz-range-thumb {
+  box-shadow: 1px 1px 1px #003200, 0px 0px 1px #004c00;
+  border: 1px solid #009600;
+  height: 20px;
+  width: 16px;
+  border-radius: 3px;
+  background: #fafffa;
+  cursor: pointer;
+}
+input[type=range]::-ms-track {
+  width: 100%;
+  height: 9px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+  background: #41af59;
+  border: 0.1px solid #010101;
+  border-radius: 2px;
+  box-shadow: 1.1px 1.1px 1.8px rgba(0, 0, 0, 0.4), 0px 0px 1.1px rgba(13, 13, 13, 0.4);
+}
+input[type=range]::-ms-fill-upper {
+  background: #6ec982;
+  border: 0.1px solid #010101;
+  border-radius: 2px;
+  box-shadow: 1.1px 1.1px 1.8px rgba(0, 0, 0, 0.4), 0px 0px 1.1px rgba(13, 13, 13, 0.4);
+}
+input[type=range]::-ms-thumb {
+  box-shadow: 1px 1px 1px #003200, 0px 0px 1px #004c00;
+  border: 1px solid #009600;
+  height: 20px;
+  width: 16px;
+  border-radius: 3px;
+  background: #fafffa;
+  cursor: pointer;
+  height: 9px;
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: #6ec982;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: #a2dcaf;
 }
