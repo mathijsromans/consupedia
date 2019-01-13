@@ -86,7 +86,9 @@
       </div>
       {% include "product/products_table.html" %}
       <div class="panel-footer" style="height: 55px;">
-        <a class='btn btn-primary pull-right' href="{% url 'food-products-update' food.id %}">Update producten</a>
+        {% if anonymous_can_edit or not is_anonymous_user %}
+        <a class='btn btn-primary pull-right' href="{% url 'food-products-update' food.id %}">Zoek opnieuw</a>
+        {% endif %}
       </div>
     </div>
   </div>
