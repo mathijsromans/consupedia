@@ -350,7 +350,7 @@ def remove_food_product(request):
 
 class ProductCreateView(FormView):
     template_name = 'product/product_add.html'
-    form_class = forms.ProductForm
+    form_class = forms.NewProductForm
     success_url = '/products/'
 
     @transaction.atomic

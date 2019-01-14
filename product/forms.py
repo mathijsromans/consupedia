@@ -15,6 +15,11 @@ class FoodWithUnitChoiceField(forms.ModelChoiceField):
         return food.name + ' (' + food.unit + ')'
 
 
+class NewProductForm(forms.Form):
+    name = forms.CharField(label='Naam', max_length=256)
+    food = FoodWithUnitChoiceField(label='', queryset=Food.objects.all().order_by('name'))
+
+
 class ProductForm(forms.Form):
     quantity = forms.IntegerField(label='hoeveelheid', min_value=1)
     food = FoodWithUnitChoiceField(label='', queryset=Food.objects.all().order_by('name'))
