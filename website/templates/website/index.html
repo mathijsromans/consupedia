@@ -28,6 +28,13 @@
       <br>
     </section>
   {% include "user/user_preference_edit_block.html" %}
+
+  <div class="row">
+      <div class="col-sm-12" align="center">
+          <a class="btn btn-primary" href="{% url 'food' maaltijd_id %}">Beveel een maaltijd aan (duurt even)</a>
+      </div>
+  </div>
+      <hr>
   <div class="row">
       <div class="col-sm-12" align="center">      
           <button id="get-recipes" class="btn btn-primary" style="margin-bottom:30px;">Geef mijn recepten</button>

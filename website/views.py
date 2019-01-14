@@ -8,7 +8,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import TemplateView, UpdateView
 
 from product.models import UserPreferences
-from product.models import Product
+from product.models import Product, Food
 from website import settings
 
 logger = logging.getLogger(__name__)
@@ -49,6 +49,7 @@ class MainView(TemplateView):
         context['recommended_product'] = product_list[0] if product_list else None
         context['all_products'] = product_list
         context['userPreference'] = up
+        context['maaltijd_id'] = Food.objects.get(name='maaltijd').id
         return context
 
 
