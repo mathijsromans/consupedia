@@ -353,26 +353,47 @@ class ProductCreateView(FormView):
 
     @transaction.atomic
     def form_valid(self, form):
-        Product.objects.create(name=form.cleaned_data['name'], price=form.cleaned_data['price'])
+        Product.objects.get_or_create(
+            name=form.cleaned_data['name'],
+            food=form.cleaned_data['food'])
+        return super().form_valid(form)
+
+
+class PriceCreateView(FormView):
+    template_name = 'product/price_add.html'
+    form_class = forms.PriceForm
+    success_url = '/products/'
+
+    @transaction.atomic
+    def form_valid(self, form):
+        ProductPrice.objects.get_or_create(
+            product=form.cleaned_data['product'],
+            shop=form.cleaned_data['shop'],
+            price=form.cleaned_data['price'])
         return super().form_valid(form)
 
 
 class ProductEditView(FormView):
     template_name = 'product/product_edit.html'
     form_class = forms.ProductForm
-    success_url = '/'
+
+    @property
+    def success_url(self):
+        return '/product/' + str(self.product.id)
 
     @property
     def product(self):
         return Product.objects.get(id=self.kwargs['product_id'])
 
     def get_initial(self):
-        return {'food': self.product.food}
+        return {'food': self.product.food,
+                'quantity': self.product.quantity}
 
     @transaction.atomic
     def form_valid(self, form):
         product = self.product
         product.food = form.cleaned_data['food']
+        product.quantity = form.cleaned_data['quantity']
         product.save()
         return super().form_valid(form)
 

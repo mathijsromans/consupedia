@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^product/edit/(?P<product_id>[0-9]+)/$', product.views.ProductEditView.as_view(), name='product-edit'),
     url(r'^product/(?P<product_id>[0-9]+)/$', product.views.ProductView.as_view(), name='product'),
     url(r'^product/rating/set/?', login_required(product.views.set_product_rating)),
+    url(r'^product/price/add/$', product.views.PriceCreateView.as_view(), name='price-add'),
 
     url(r'^recipes/$', product.views.RecipesView.as_view(), name='recipes'),
     url(r'^recipe/(?P<recipe_id>[0-9]+)/$', product.views.RecipeDetailView.as_view(), name='recipe_detail'),

@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import formset_factory
 from django.core.exceptions import ValidationError
-from product.models import Food, ScoreCreator
+from product.models import Food, ScoreCreator, Product, Shop
 from product.amount import ProductAmount
 
 
@@ -16,7 +16,14 @@ class FoodWithUnitChoiceField(forms.ModelChoiceField):
 
 
 class ProductForm(forms.Form):
+    quantity = forms.IntegerField(label='hoeveelheid', min_value=1)
     food = FoodWithUnitChoiceField(label='', queryset=Food.objects.all().order_by('name'))
+
+
+class PriceForm(forms.Form):
+    product = forms.ModelChoiceField(label='product', empty_label=None, queryset=Product.objects.all().order_by('name'))
+    shop = forms.ModelChoiceField(label='winkel', empty_label=None, queryset=Shop.objects.all().order_by('name'))
+    price = forms.IntegerField(label='prijs in centen', min_value=1)
 
 
 class RecipeItemForm(forms.Form):
