@@ -59,18 +59,18 @@ class Score:
 
     @property
     def price(self):
-        return Price(self._scores.get('price'))
+        return Price(self.get_or_0('price'))
 
     @property
     def land_use_m2(self):
-        return self._scores.get('land_use_m2')
+        return self.get_or_0('land_use_m2')
 
     @property
     def animal_harm(self):
-        return self._scores.get('animal_harm')
+        return self.get_or_0('animal_harm')
 
     def get(self, key):
-        return self._scores.get(key)
+        return self.get(key)
 
     def get_or_0(self, key):
         value = self._scores.get(key)

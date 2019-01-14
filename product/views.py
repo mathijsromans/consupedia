@@ -305,6 +305,8 @@ class FoodView(TemplateView):
                     recommended_recipe_score = recipes_and_scores[0][1]
                     if not score or recommended_recipe_score < score:
                         score = recommended_recipe_score
+                if score is None:
+                    score = Score(up)
                 score_conversion_factor = 1
                 context['score_unit'] = food.unit
                 if food.unit == 'g':
