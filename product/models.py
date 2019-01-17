@@ -9,7 +9,7 @@ from django.core.validators import MinValueValidator
 from django.utils.functional import cached_property
 
 from .amount import ProductAmount
-from .score import Score, Price
+from .score import Score, Price, ScoreValue
 from collections import namedtuple
 
 logger = logging.getLogger(__name__)
@@ -376,9 +376,10 @@ class Recipe(Conversion):
 
     def score(self, user_pref):
         s = Score(user_pref)
+        my_prep_time = self.full_prep_time
         for recipe_item in self.recipeitem_set.all():
             s.add(recipe_item.score(user_pref))
-        s.add_score('prep_time', self.full_prep_time)
+        s.add_score('prep_time', my_prep_time, ScoreValue.ScalingProperty.NoScale)
         s.scale(1.0/self.quantity)
         return s
 
