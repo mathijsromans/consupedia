@@ -17,6 +17,8 @@ from .productservice import RecipeService
 from . import forms
 from product.productservice import ProductService
 from product import utils
+from .score import Score
+
 
 logger = logging.getLogger(__name__)
 
@@ -731,8 +733,7 @@ def get_recipes_for_user(request):
     tupelDictionary.sort(key=lambda tup: tup[0])
     sortedList = [entry for sortKey, entry in tupelDictionary]
 
-    #Return first 6 results.
-    list_result = [{'name': entry.name, 
+    list_result = [{'name': entry.name,
                     'number_persons': entry.number_persons,
                     'preparation_time_in_min': entry.preparation_time_in_min,
                     'content': entry.number_persons,
