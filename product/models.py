@@ -379,7 +379,8 @@ class Recipe(Conversion):
         my_prep_time = self.full_prep_time
         for recipe_item in self.recipeitem_set.all():
             s.add(recipe_item.score(user_pref))
-        s.add_score('prep_time', my_prep_time, ScoreValue.ScalingProperty.NoScale)
+        # divide by 10 to make it less dominating
+        s.add_score('prep_time', my_prep_time/10, ScoreValue.ScalingProperty.NoScale)
         s.scale(1.0/self.quantity)
         return s
 
