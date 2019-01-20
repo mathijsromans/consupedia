@@ -93,9 +93,13 @@ class RecipeForm(forms.Form):
 
 
 class ScoreCreatorForm(forms.Form):
-
     name = forms.CharField(label='Naam', max_length=256,
                            widget=forms.TextInput(attrs={'placeholder': 'Naam van dit type eten...'}))
     production_in_ton_per_ha = forms.FloatField(label='Productie in ton per hectare', required=False)
     killed_animal_iq_points = forms.FloatField(label='Aantal hercencellen per kg', required=False)
     sources = forms.CharField(label='Bron', widget=forms.Textarea(attrs={'placeholder': 'Bron...'}))
+
+
+class FoodPropertyCreatorForm(forms.Form):
+    value_bool = forms.NullBooleanField(label='Ja/Nee')
+    sources = forms.CharField(label='Bron', widget=forms.Textarea(attrs={'placeholder': 'Bron...'}), required=False)

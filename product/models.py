@@ -1,4 +1,4 @@
-import copy
+from enum import Enum
 import logging
 import re
 
@@ -32,6 +32,21 @@ class ScoreCreator(models.Model):
         return self.name
 
 
+class CombineStrategy(Enum):
+    OR = "Overerving - logische of"
+
+
+class FoodPropertyType(models.Model):
+    name = models.CharField(max_length=255)
+    combine_strategy = models.CharField(
+        max_length=5,
+        choices=[(tag.name, tag.value) for tag in CombineStrategy]
+    )
+
+    def __str__(self):
+        return self.name
+
+
 class Food(models.Model):
     """ Describes anything that can be eaten with various degrees of specificity
 
@@ -48,6 +63,7 @@ class Food(models.Model):
     unit = models.CharField(max_length=5, choices=ProductAmount.UNIT_CHOICES, default=ProductAmount.GRAM)
     score_creator = models.ForeignKey(ScoreCreator, null=True)
     equiv_weight = models.FloatField(null=True, blank=True)
+    property_types = models.ManyToManyField(FoodPropertyType, through='FoodProperty')
 
     def save(self, *args, **kwargs):
         self.name = self.name.lower()
@@ -87,7 +103,6 @@ class Food(models.Model):
         return None
 
     def recommended_recipes_and_scores(self, user_preference):
-        logger.info('recommended_recipes_and_scores for {}'.format(self))
         conversions = self.conversion_set.all()
         for c in conversions:
             logger.info('Conversion {}'.format(c))
@@ -126,6 +141,13 @@ class Food(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class FoodProperty(models.Model):
+    type = models.ForeignKey(FoodPropertyType, on_delete=models.CASCADE)
+    food = models.ForeignKey(Food, on_delete=models.CASCADE)
+    value_bool = models.NullBooleanField(null=True, default=None)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class ProductScore(models.Model):

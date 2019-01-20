@@ -30,6 +30,35 @@
       </tbody>
     </table>
 
+    <div class="panel-heading text-center h5">
+      <span>Eigenschappen:</span>
+    </div>
+
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Naam</th>
+        <th>Waarde</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for property in properties %}
+        <tr>
+          <td>{{ property.type.name }}</td>
+          <td>
+            {% if property.value_bool is not None %}
+              {% if property.value_bool %}
+              <i class="fa fa-check"></i>
+              {% else %}
+              <i class="fa fa-times"></i>
+              {% endif %}
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
     <div class="panel-footer" style="height: 55px;">
       {% if not is_anonymous_user %}
         <a class='btn btn-primary pull-right' href="{% url 'food-edit' food.id %}">Edit</a>
@@ -51,14 +80,18 @@
 {% endif %}
 
 {% if recommended_product %}
-  <h3>Aanbevolen</h3>
+  <div class="panel-heading text-center h4">
+    <span>Aanbevolen product</span>
+  </div>
   {% with product=recommended_product %}
     {% include "product/product_detail_panel.html" %}
   {% endwith %}
 {% endif %}
 
 {% if recommended_recipe %}
-  <h4>Aanbevolen</h4>
+  <div class="panel-heading text-center h4">
+    <span>Aanbevolen recept</span>
+  </div>
   {% with recipe=recommended_recipe %}
     {% include "recipe/recipe_panel.html" %}
   {% endwith %}

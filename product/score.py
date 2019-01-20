@@ -79,7 +79,6 @@ class Score:
         else:
             self._scores[key] = ScoreValue(value, scale_property)
         assert(key != 'prep_time' or scale_property==ScoreValue.ScalingProperty.NoScale)
-        print('{}: {} has property {}'.format(scale_property, key, self._scores[key].scale_property))
 
     @property
     def price(self):

@@ -1,0 +1,39 @@
+{% extends "website/base.html" %}
+
+{% load bootstrap3 %}
+
+{% block title %}Eigenschap van {{ food.name }} {{ block.super }}{% endblock %}
+
+{% block content %}
+
+<div class="row" align="center">
+  <h3>Eigenschap van {{ food.name }}</h3>
+</div>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <div class="well well-sm">
+      <form action="" method="post">
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-sm-12">
+            {{ property_type.name|title }}
+            {% bootstrap_field form.value_bool %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            {% bootstrap_field form.sources %}
+          </div>
+        </div>
+        {% buttons %}
+          <button type="submit" class="btn btn-primary">
+            Save
+          </button>
+        {% endbuttons %}
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

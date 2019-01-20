@@ -274,6 +274,33 @@ class FoodProductsEditView(TemplateView):
         return context
 
 
+class FoodPropertyAddView(FormView):
+    template_name = 'food/food_property_add.html'
+    form_class = forms.FoodPropertyCreatorForm
+    success_url = '/contribute/incomplete/'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        food = Food.objects.get(id=self.kwargs['food_id'])
+        property_type = FoodPropertyType.objects.get(id=self.kwargs['property_type_id'])
+        context['food'] = food
+        context['property_type'] = property_type
+        return context
+
+    @transaction.atomic
+    def form_valid(self, form):
+        if not self.request.user.is_authenticated():
+            return super().form_invalid(form)
+        food = Food.objects.get(id=self.kwargs['food_id'])
+        property_type = FoodPropertyType.objects.get(id=self.kwargs['property_type_id'])
+        FoodProperty.objects.create(
+            type=property_type,
+            food=food,
+            value_bool=form.cleaned_data['value_bool'],
+            created_by=self.request.user)
+        return super().form_valid(form)
+
+
 class FoodRemoveView(TemplateView):
     template_name = 'food/food_removed.html'
 
@@ -338,6 +365,7 @@ class FoodView(TemplateView):
                 context['score_land_use_m2'] = score.land_use_m2 * score_conversion_factor
                 context['score_animal_harm'] = score.animal_harm * score_conversion_factor
                 context['score_total'] = score.total * score_conversion_factor
+                context['properties'] = food.foodproperty_set.all()
 
         except ObjectDoesNotExist:
             pass
@@ -597,9 +625,14 @@ class IncompleteView(TemplateView):
     template_name = 'contribute/incomplete.html'
 
     def get_context_data(self, **kwargs):
-        default = ScoreCreator.objects.get(name='default')
         context = super().get_context_data(**kwargs)
-        context['foods'] = Food.objects.filter(Q(score_creator=default) | Q(score_creator=None)).order_by('name')
+        property_types = FoodPropertyType.objects.all().order_by('name')
+        properties_to_foods = {}
+        for property_type in property_types:
+            foods_with_this_property = property_type.food_set.all()
+            foods_without_this_property = Food.objects.exclude(property_types=property_type)
+            properties_to_foods[property_type] = foods_without_this_property
+        context['properties_to_foods'] = properties_to_foods
         return context
 
 

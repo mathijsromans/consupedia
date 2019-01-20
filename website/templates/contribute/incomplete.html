@@ -7,14 +7,15 @@
 {% block content %}
 
 <div class="row" align="center">
-  <h4>Eten met missende cijfers</h4>
+  <h4>Eten met missende eigenschappen</h4>
 </div>
-<div class="row" align="center">
+  {% for property, foods in properties_to_foods.items %}
+  <h4>Eigenschap {{ property.name }}:</h4>
+  <div class="row" align="center">
   {% for food in foods %}
-  <a href="{% url 'food-edit' food.id %}"><div class="food" id="{{food.id}}">{{ food.name|title }}</div></a>
-  {% endfor %}
-</div>
-<hr/>
-
+      <a href="{% url 'food-property-add' food.id property.id %}"><div class="food" id="{{food.id}}">{{ food.name }}</div></a>
+    {% endfor %}
+  </div>
+{% endfor %}
 {% endblock %}
 
