@@ -2,12 +2,12 @@
 
 {% load bootstrap3 %}
 
-{% block title %}Eigenschap van {{ food.name }} {{ block.super }}{% endblock %}
+{% block title %}Eigenschap {{ property_type }} van {{ food.name }} {{ block.super }}{% endblock %}
 
 {% block content %}
 
 <div class="row" align="center">
-  <h3>Eigenschap van {{ food.name }}</h3>
+  <h3>Eigenschap {{ property_type }} van {{ food.name }}</h3>
 </div>
 
 <div class="row">
@@ -23,7 +23,12 @@
         </div>
         <div class="row">
           <div class="col-sm-12">
-            {% bootstrap_field form.sources %}
+            {% bootstrap_field form.value_float %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            {% bootstrap_field form.source %}
           </div>
         </div>
         {% buttons %}

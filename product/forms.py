@@ -102,4 +102,5 @@ class ScoreCreatorForm(forms.Form):
 
 class FoodPropertyCreatorForm(forms.Form):
     value_bool = forms.NullBooleanField(label='Ja/Nee')
-    sources = forms.CharField(label='Bron', widget=forms.Textarea(attrs={'placeholder': 'Bron...'}), required=False)
+    value_float = forms.FloatField(label='Getal')
+    source = forms.CharField(label='Bron', widget=forms.Textarea(attrs={'placeholder': 'Bron...'}), required=False)

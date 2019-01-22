@@ -94,9 +94,16 @@ class RecipeDetailView(TemplateView):
         context = super().get_context_data(**kwargs)
         recipe = Recipe.objects.get(id=recipe_id)
         up, created = UserPreferences.objects.get_or_create(user=self.request.user)
+        score = recipe.score(up)
+        score_conversion_factor = 1
+        if recipe.provides.unit == 'g':
+            score_conversion_factor = 1000
+        elif recipe.provides.unit == 'ml':
+            score_conversion_factor = 1000
         context['recipe'] = recipe
         context['food_quantity_scores'] = recipe.food_quantity_scores(up)
-        context['score'] = recipe.score(up)
+        context['score'] = score
+        context['price'] = score.price * score_conversion_factor
         context['preparation'] = recipe.preparation
         return context
 
@@ -297,6 +304,8 @@ class FoodPropertyAddView(FormView):
             type=property_type,
             food=food,
             value_bool=form.cleaned_data['value_bool'],
+            value_float=form.cleaned_data['value_float'],
+            source=form.cleaned_data['source'],
             created_by=self.request.user)
         return super().form_valid(form)
 
@@ -327,13 +336,7 @@ class FoodView(TemplateView):
                 up, created = UserPreferences.objects.get_or_create(user=self.request.user)
                 products_and_scores = food.recommended_products_and_scores(up)
                 recipes_and_scores = food.recommended_recipes_and_scores(up)
-                score = None
-                if products_and_scores:
-                    score = products_and_scores[0][1]
-                if recipes_and_scores:
-                    recommended_recipe_score = recipes_and_scores[0][1]
-                    if not score or recommended_recipe_score < score:
-                        score = recommended_recipe_score
+                score = food.score(up)
                 if score is None:
                     score = Score(up)
                 score_conversion_factor = 1
@@ -348,10 +351,10 @@ class FoodView(TemplateView):
                 context['recipes_with_score'] = [
                     {'recipe': p[0],
                      'score': p[1],
-                     'score_price': p[1].price * score_conversion_factor,
-                     'score_prep_time': p[1].get_or_0('prep_time'),
-                     'score_land_use_m2': p[1].land_use_m2 * score_conversion_factor,
-                     'score_animal_harm': p[1].animal_harm * score_conversion_factor,
+                     'score_price': 0.01 * p[1].get_or_0('prijs') * score_conversion_factor,
+                     'score_prep_time': p[1].get_or_0('bereidingstijd'),
+                     'score_land_use_m2': p[1].get_or_0('landgebruik') * score_conversion_factor,
+                     'score_animal_harm': p[1].get_or_0('dierenleed') * score_conversion_factor,
                      'score_total': p[1].total * score_conversion_factor,
                      } for p in recipes_and_scores]
                 context['products_and_scores'] = [(p[0], p[1]) for p in products_and_scores]
@@ -360,12 +363,14 @@ class FoodView(TemplateView):
                 context['recommended_product'] = prs.product
                 context['recommended_recipe'] = prs.recipe
                 context['score'] = score
-                context['score_price'] = score.price * score_conversion_factor
-                context['score_prep_time'] = score.get_or_0('prep_time')
-                context['score_land_use_m2'] = score.land_use_m2 * score_conversion_factor
-                context['score_animal_harm'] = score.animal_harm * score_conversion_factor
+                context['score_items'] = {}
+                context['score_price'] = 0.01 * score.get_or_0('prijs') * score_conversion_factor
+                context['score_prep_time'] = score.get_or_0('bereidingstijd')
+                context['score_land_use_m2'] = score.get_or_0('landgebruik') * score_conversion_factor
+                context['score_animal_harm'] = score.get_or_0('dierenleed') * score_conversion_factor
                 context['score_total'] = score.total * score_conversion_factor
-                context['properties'] = food.foodproperty_set.all()
+                # logger.info('score_values are {}'.format(score.get_dict().values()))
+                context['score_values'] = score.get_dict().values()
 
         except ObjectDoesNotExist:
             pass

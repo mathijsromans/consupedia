@@ -21,7 +21,7 @@
       </thead>
       <tbody>
       <tr>
-        <td>{{ score_price }}</td>
+        <td>€ {{ score_price|floatformat:2|intcomma }}</td>
         <td>{{ score_prep_time|floatformat:0|intcomma }}</td>
         <td>{{ score_land_use_m2|floatformat:2|intcomma }}</td>
         <td>{{ score_animal_harm|floatformat:2|intcomma }}</td>
@@ -42,16 +42,22 @@
       </tr>
       </thead>
       <tbody>
-      {% for property in properties %}
+      {% for score_value in score_values %}
         <tr>
-          <td>{{ property.type.name }}</td>
+          <td>{{ score_value.food_property_type.name }}</td>
           <td>
-            {% if property.value_bool is not None %}
-              {% if property.value_bool %}
-              <i class="fa fa-check"></i>
+            {% if score_value.food_property_type.has_boolean_type %}
+              {% if score_value.value is not None %}
+                {% if score_value.value %}
+                <i class="fa fa-check"></i>
+                {% else %}
+                <i class="fa fa-times"></i>
+                {% endif %}
               {% else %}
-              <i class="fa fa-times"></i>
+                ?
               {% endif %}
+            {% else %}
+              {{ score_value.value }}
             {% endif %}
           </td>
         </tr>

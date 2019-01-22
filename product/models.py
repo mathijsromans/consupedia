@@ -32,16 +32,46 @@ class ScoreCreator(models.Model):
         return self.name
 
 
-class CombineStrategy(Enum):
-    OR = "Overerving - logische of"
-
-
 class FoodPropertyType(models.Model):
+    class CombineStrategy(Enum):
+        OR = "Logische of"
+        AND = "Logische en"
+        PLUS = "Optellen"
+
+    class ValueType(Enum):
+        BOOL = "Ja of Nee"
+        FLOAT = "Getal"
+
     name = models.CharField(max_length=255)
     combine_strategy = models.CharField(
         max_length=5,
         choices=[(tag.name, tag.value) for tag in CombineStrategy]
     )
+    scale_strategy = models.BooleanField()
+    value_type = models.CharField(
+        max_length=5,
+        choices=[(tag.name, tag.value) for tag in ValueType]
+    )
+
+    def combine(self, old_value, add_value, quantity):
+        if old_value is None or add_value is None:
+            return None
+        strategy = self.combine_strategy
+        result = {
+            FoodPropertyType.CombineStrategy.OR: old_value or add_value,
+            FoodPropertyType.CombineStrategy.AND: old_value and add_value,
+            FoodPropertyType.CombineStrategy.PLUS: old_value+add_value,
+        }[FoodPropertyType.CombineStrategy[strategy]]
+        # logger.info('combining {}: {} + {} -> {}'.format(self.name, old_value, add_value, result))
+        return result
+
+
+    def is_scaling(self):
+        return self.scale_strategy
+
+    @property
+    def has_boolean_type(self):
+        return FoodPropertyType.ValueType[self.value_type] == FoodPropertyType.ValueType.BOOL
 
     def __str__(self):
         return self.name
@@ -91,7 +121,8 @@ class Food(models.Model):
         sc = self.get_score_creator()
         for product in product_list:
             score = product.score(user_preference)
-            sc.append_score(score, self.weight())
+#            sc.append_score(score, self.weight())
+            self.override_score(score)
             products_and_scores.append((product, score))
         products_and_scores.sort(key=lambda x: x[1].total)
         return products_and_scores
@@ -103,13 +134,12 @@ class Food(models.Model):
         return None
 
     def recommended_recipes_and_scores(self, user_preference):
-        conversions = self.conversion_set.all()
-        for c in conversions:
-            logger.info('Conversion {}'.format(c))
         recipes = Recipe.objects.filter(provides=self)
-        for r in recipes:
-            logger.info('Recipe {}'.format(r))
-        recipes_and_scores = [(recipe, recipe.score(user_preference)) for recipe in recipes]
+        recipes_and_scores = []
+        for recipe in recipes:
+            score = recipe.score(user_preference)
+            self.override_score(score)
+            recipes_and_scores.append((recipe, score))
         recipes_and_scores.sort(key=lambda x: x[1].total)
         return recipes_and_scores
 
@@ -125,9 +155,16 @@ class Food(models.Model):
 
     def score(self, user_preference):
         s = self.recommended_product_recipe_score(user_preference).score
+        # logger.info('food score = {}'.format(s))
         if not s:
             s = Score(user_preference)
         return s
+
+    def override_score(self, score):
+        # logger.info('overriding...')
+        for food_property in self.foodproperty_set.all():
+            # logger.info('with {} -> {}'.format(food_property.type.name, food_property.value))
+            score.override(food_property)
 
     @cached_property
     def used_in_recipes(self):
@@ -147,7 +184,16 @@ class FoodProperty(models.Model):
     type = models.ForeignKey(FoodPropertyType, on_delete=models.CASCADE)
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
     value_bool = models.NullBooleanField(null=True, default=None)
+    value_float = models.FloatField(null=True, default=None)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    source = models.TextField(blank=True)
+
+    @property
+    def value(self):
+        return {
+            FoodPropertyType.ValueType.BOOL: self.value_bool,
+            FoodPropertyType.ValueType.FLOAT: self.value_float,
+        }[FoodPropertyType.ValueType[self.type.value_type]]
 
 
 class ProductScore(models.Model):
@@ -233,9 +279,12 @@ class Product(models.Model):
     def score(self, user_pref):
         s = Score(user_pref)
         if self.price:
-            s.add_score('price', self.price.price)
-        if self.scores:
-            s.add(self.scores.score(user_pref))
+            price_property_type = FoodPropertyType.objects.get(name='prijs')
+            if price_property_type:
+                # logger.info('product.score {} : adding prijs score'.format(self))
+                s.set(price_property_type, self.price.price)
+        # if self.scores:
+        #     s.add(self.scores.score(user_pref))
         if self.quantity:
             s.scale(1.0/self.quantity)
         return s
@@ -324,14 +373,14 @@ class UserPreferences(models.Model):
 
     def get_dict(self):
         return {
-            'price': self.price_weight,
+            'prijs': self.price_weight,
             'environment': self.environment_weight,
             'social': self.social_weight,
             'animals': self.animals_weight,
             'health': self.personal_health_weight,
-            'land_use_m2': self.land_use_m2,
-            'animal_harm': self.animal_harm,
-            'prep_time': self.prep_time,
+            'landgebruik': self.land_use_m2,
+            'dierenleed': self.animal_harm,
+            'bereidingstijd': self.prep_time,
         }
 
     def __str__(self):
@@ -397,12 +446,24 @@ class Recipe(Conversion):
         return result + self.preparation
 
     def score(self, user_pref):
+        # logger.info('score of {}'.format(self))
         s = Score(user_pref)
-        my_prep_time = self.full_prep_time
         for recipe_item in self.recipeitem_set.all():
-            s.add(recipe_item.score(user_pref))
-        s.add_score('prep_time', my_prep_time, ScoreValue.ScalingProperty.NoScale)
+            # logger.info('calculating score of recipe_item {}'.format(recipe_item))
+            score = recipe_item.score(user_pref)
+            # logger.info('adding score of recipe_item {}'.format(recipe_item))
+            s.add(score, recipe_item.quantity)
+
+        prep_time_property_type = FoodPropertyType.objects.get(name='bereidingstijd')
+        # logger.info('prep_time_property_type: {}'.format(prep_time_property_type))
+        if prep_time_property_type:
+            my_prep_time = self.full_prep_time
+            s.add_food_property_type_and_value(prep_time_property_type, my_prep_time, 1)
         s.scale(1.0/self.quantity)
+
+        # logger.info('DONE score of {} has properties'.format(self, str()))
+        # for value in s.get_dict().values():
+        #     logger.info('{}'.format(value))
         return s
 
 

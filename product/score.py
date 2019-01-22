@@ -1,6 +1,9 @@
 import copy
 import collections
 from enum import Enum
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class ReadonlyDictWrapper(collections.Mapping):
@@ -32,22 +35,24 @@ class Price:
 
 
 class ScoreValue:
-    class ScalingProperty(Enum):
-        NormalScale = 1
-        NoScale = 2
-
-    def __init__(self, value, scale_property):
+    def __init__(self, value, food_property_type=None):
         2+value  # check that value is a number
         self.value = value
-        self.scale_property = scale_property
+        self.food_property_type = food_property_type
+
+    def is_scaling(self):
+        return self.food_property_type.is_scaling()
 
     def scale(self, scalar):
-        if self.scale_property == ScoreValue.ScalingProperty.NormalScale:
+        if self.is_scaling():
             self.value *= scalar
 
     def add(self, v):
         print('adding {}+{}={}'.format(self.value, v, self.value+v))
         self.value += v
+
+    def __str__(self):
+        return '{} -> {}'.format(self.food_property_type, self.value)
 
 
 class Score:
@@ -67,30 +72,41 @@ class Score:
         result.scale(scalar)
         return result
 
-    def add(self, other):
+    def add(self, other, quantity):
         for key, svalue in other.get_dict().items():
-            self.add_score(key, svalue.value, svalue.scale_property)
+            self.add_food_property_type_and_value(svalue.food_property_type, svalue.value, quantity)
 
-    def add_score(self, key, value, scale_property=ScoreValue.ScalingProperty.NormalScale):
-        if not key or value is None:
-            return
-        if key in self._scores:
-            self._scores[key].add(value)
-        else:
-            self._scores[key] = ScoreValue(value, scale_property)
-        assert(key != 'prep_time' or scale_property==ScoreValue.ScalingProperty.NoScale)
+    def add_food_property(self, food_property, quantity):
+        self.add_food_property_type_and_value(food_property.type, food_property.value_bool, quantity)
+
+    def add_food_property_type_and_value(self, food_property_type, food_property_value, quantity):
+        # logger.info('add_food_property_type_and_value {}: {} ({})'.format(food_property_type, food_property_value, quantity))
+        key = food_property_type.name
+        try:
+            old_value = self._scores[key]
+            new_value = food_property_type.combine(old_value.value, food_property_value, quantity)
+        except KeyError:
+            new_value = food_property_value
+        self._scores[key] = ScoreValue(new_value, food_property_type)
+
+    def override(self, food_property):
+        self.set(food_property.type, food_property.value)
+
+    def set(self, food_property_type, food_property_value):
+        key = food_property_type.name
+        self._scores[key] = ScoreValue(food_property_value, food_property_type)
 
     @property
     def price(self):
-        return Price(self.get_or_0('price'))
+        return Price(self.get_or_0('prijs'))
 
     @property
     def land_use_m2(self):
-        return self.get_or_0('land_use_m2')
+        return self.get_or_0('landgebruik')
 
     @property
     def animal_harm(self):
-        return self.get_or_0('animal_harm')
+        return self.get_or_0('dierenleed')
 
     def get(self, key):
         return self._scores[key].value
