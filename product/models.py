@@ -43,6 +43,7 @@ class FoodPropertyType(models.Model):
         FLOAT = "Getal"
 
     name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, null=True)
     combine_strategy = models.CharField(
         max_length=5,
         choices=[(tag.name, tag.value) for tag in CombineStrategy]
@@ -64,7 +65,6 @@ class FoodPropertyType(models.Model):
         }[FoodPropertyType.CombineStrategy[strategy]]
         # logger.info('combining {}: {} + {} -> {}'.format(self.name, old_value, add_value, result))
         return result
-
 
     def is_scaling(self):
         return self.scale_strategy
