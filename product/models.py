@@ -196,6 +196,10 @@ class FoodProperty(models.Model):
         }[FoodPropertyType.ValueType[self.type.value_type]]
 
 
+    def __str__(self):
+        return 'property {} for {}'.format(self.type, self.food)
+
+
 class ProductScore(models.Model):
     environment = models.IntegerField(null=True)
     social = models.IntegerField(null=True)
