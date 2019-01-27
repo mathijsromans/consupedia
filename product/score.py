@@ -74,17 +74,14 @@ class Score:
 
     def add(self, other, quantity):
         for key, svalue in other.get_dict().items():
-            self.add_food_property_type_and_value(svalue.food_property_type, svalue.value, quantity)
+            self.add_food_property_type_and_value(svalue.food_property_type, svalue.value)
 
-    def add_food_property(self, food_property, quantity):
-        self.add_food_property_type_and_value(food_property.type, food_property.value_bool, quantity)
-
-    def add_food_property_type_and_value(self, food_property_type, food_property_value, quantity):
+    def add_food_property_type_and_value(self, food_property_type, food_property_value):
         # logger.info('add_food_property_type_and_value {}: {} ({})'.format(food_property_type, food_property_value, quantity))
         key = food_property_type.name
         try:
             old_value = self._scores[key]
-            new_value = food_property_type.combine(old_value.value, food_property_value, quantity)
+            new_value = food_property_type.combine(old_value.value, food_property_value)
         except KeyError:
             new_value = food_property_value
         self._scores[key] = ScoreValue(new_value, food_property_type)

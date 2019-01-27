@@ -54,7 +54,7 @@ class FoodPropertyType(models.Model):
         choices=[(tag.name, tag.value) for tag in ValueType]
     )
 
-    def combine(self, old_value, add_value, quantity):
+    def combine(self, old_value, add_value):
         if old_value is None or add_value is None:
             return None
         strategy = self.combine_strategy
@@ -462,7 +462,7 @@ class Recipe(Conversion):
         # logger.info('prep_time_property_type: {}'.format(prep_time_property_type))
         if prep_time_property_type:
             my_prep_time = self.full_prep_time
-            s.add_food_property_type_and_value(prep_time_property_type, my_prep_time, 1)
+            s.add_food_property_type_and_value(prep_time_property_type, my_prep_time)
         s.scale(1.0/self.quantity)
 
         # logger.info('DONE score of {} has properties'.format(self, str()))
