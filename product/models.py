@@ -42,6 +42,10 @@ class FoodPropertyType(models.Model):
         BOOL = "Ja of Nee"
         FLOAT = "Getal"
 
+    class ScoringTransformationStrategy(Enum):
+        NONE = "Geen transformatie"
+        INV = "Inverteren"
+
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, null=True)
     combine_strategy = models.CharField(
@@ -49,6 +53,12 @@ class FoodPropertyType(models.Model):
         choices=[(tag.name, tag.value) for tag in CombineStrategy]
     )
     scale_strategy = models.BooleanField()
+    scoring_scaling = models.FloatField(null=False, default=1)
+    scoring_transformation_strategy = models.CharField(
+        max_length=5,
+        choices=[(tag.name, tag.value) for tag in ScoringTransformationStrategy],
+        default='NONE'
+    )
     value_type = models.CharField(
         max_length=5,
         choices=[(tag.name, tag.value) for tag in ValueType]
