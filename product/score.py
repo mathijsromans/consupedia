@@ -35,7 +35,7 @@ class Price:
 
 
 class ScoreValue:
-    def __init__(self, value, food_property_type=None):
+    def __init__(self, value, food_property_type):
         2+value  # check that value is a number
         self.value = value
         self.food_property_type = food_property_type
@@ -117,21 +117,22 @@ class Score:
     def get_dict(self):
         return ReadonlyDictWrapper(self._scores)
 
+    def calculate_total(self):
+        result = 0
+        explanation = ''
+        user_pref_dict = self.user_pref.get_dict()
+        for key, svalue in self._scores.items():
+            user_pref_value = user_pref_dict.get(key, 0.0)
+            eff_value = svalue.food_property_type.get_effective_value(svalue.value)
+            partial = eff_value * user_pref_value
+            explanation += '[{}: {:.2f} -> {:.2f} * {} = {:.2f}] '.format(key, svalue.value, eff_value, user_pref_value, partial)
+            result += partial
+        explanation += '-> {:.2f}'.format(result)
+        return result, explanation
+
     @property
     def total(self):
-        result = 0
-        user_pref_dict = self.user_pref.get_dict()
-        for key, svalue in self._scores.items():
-            user_pref_value = user_pref_dict.get(key, 0.0)
-            result += svalue.value * user_pref_value
-        return result
+        return self.calculate_total()[0]
 
     def __str__(self):
-        result = ''
-        user_pref_dict = self.user_pref.get_dict()
-        for key, svalue in self._scores.items():
-            user_pref_value = user_pref_dict.get(key, 0.0)
-            partial = svalue.value * user_pref_value
-            result += '[{}: {:.2f} -> {:.2f}] '.format(key, svalue.value, partial)
-        result += '-> {:.2f}'.format(self.total)
-        return result
+        return self.calculate_total()[1]

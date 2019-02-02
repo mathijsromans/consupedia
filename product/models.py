@@ -76,6 +76,11 @@ class FoodPropertyType(models.Model):
         # logger.info('combining {}: {} + {} -> {}'.format(self.name, old_value, add_value, result))
         return result
 
+    def get_effective_value(self, value):
+        if self.scoring_transformation_strategy == FoodPropertyType.ScoringTransformationStrategy.INV:
+            value = 1 / value
+        return self.scoring_scaling * value
+
     def is_scaling(self):
         return self.scale_strategy
 
